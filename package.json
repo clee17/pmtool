@@ -1,0 +1,26 @@
+{
+  "name": "pmtool",
+  "version": "1.0.0",
+  "description": "my very personal website GUI for manage programs ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "clee",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.7.7",
+    "angular-cookies": "^1.7.7",
+    "angular-md5": "^0.1.10",
+    "cookie-parser": "^1.4.4",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.15.6",
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.2",
+    "lz-string": "^1.4.4",
+    "mongod": "^2.0.0",
+    "mongoose": "^5.4.11",
+    "nodejs": "0.0.0"
+  }
+}

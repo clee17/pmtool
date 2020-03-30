@@ -1,0 +1,83 @@
+<style>
+    #add{
+        margin-top:1rem;
+    }
+
+    #add select{
+        margin-right:1rem;
+        margin-top:auto;
+        margin-bottom:auto;
+        height:1.5rem;
+    }
+
+    #add input{
+        margin-left:1rem;
+    }
+
+    #detailInfo select{
+        min-width:8rem;
+    }
+
+</style>
+<div id="add">
+    <div style="display:flex;flex-direction:row;height:1.5rem;">
+        <div style="font-weight: bold;">添加新的项目工程：</div>
+        <div style="margin-left:1rem;">项目状态：</div>
+        <select ng-model='add.status'>
+            <option value='0'>contact</option>
+            <option value='1'>nlasigned</option>
+            <option value='2'>sow</option>
+            <option value='3'>contracts</option>
+            <option value='4'>development</option>
+            <option value='5'>delivered</option>
+            <option value='6'>payment</option>
+            <option value='7'>maintenance</option>
+        </select>
+        <div>优先级：</div>
+        <select ng-model='add.priority'>
+            <option value="0">1</option>
+            <option value="1">2</option>
+            <option value="2">3</option>
+            <option value="3">4</option>
+            <option value="4">5</option>
+        </select>
+    </div>
+    <div style="display:flex;flex-direction:column;" id="detailInfo">
+        <div class="row"> 客户名称: <input ng-model='add.customer'> </div>
+        <div class="row">
+            <div>联系人：</div>
+            <select ng-model='add.contact' ng-options='contact.name for contact in add.customer.contacts || []'>
+
+            </select>
+            <button>添加</button>
+        </div>
+        <div>背景介绍:</div>
+        <div style="min-height:6rem;"><textarea id="comment"></textarea></div>
+        <div class="row">
+            <div>开发者：</div>
+            <select ng-model='add.developer' ng-options='developer.name for developer in developers'>
+
+            </select>
+            <button>添加</button>
+        </div>
+
+        <div ng-repeat="developer in add.developers">
+            <span>developer.name</span>
+            <span>developer.mail</span>
+        </div>
+
+        <div class="row">
+            <div>签约产品：</div>
+            <select ng-model='add.product' ng-options='product.name for product in products'></select>
+            <button>添加</button>
+        </div>
+        <div ng-repeat="product in add.products">
+            <span>product.name</span>
+        </div>
+
+        <div style="display:flex;flex-direction:row;">
+            <div>相关供应商：</div>
+            <select ng-model='add.supply' ng-options='supplier.name for supplier in suppliers'></select>
+        </div>
+    </div>
+</div>

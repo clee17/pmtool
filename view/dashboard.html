@@ -2,15 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><%- title %></title>
-    <base href="/">
+    <title>PMTool</title>
     <script src="/lib/angular.min.js"></script>
     <script src="/lib/lz-string.min.js"></script>
     <script>
-        var app = angular.module("tableEditor",[]);
-        app.config(function($locationProvider){
-            $locationProvider.html5Mode(true);
-        });
+        var app = angular.module("dashboard",[]);
     </script>
     <script src="/js/tableEditController.js"></script>
 </head>
@@ -100,40 +96,39 @@
         padding-left:0.2rem;
     }
 </style>
-<body ng-app="tableEditor"
-      ng-controller="tableEditCon">
-<info-receiver  ng-init="contents = '<%= JSON.stringify(contents) %>';
-                         tableId = '<%= tableId %>';">
+<body ng-app="dashboard"
+      ng-controller="dashboardCon">
+<info-receiver  ng-init="contents = '<%= JSON.stringify(contents) %>'">
 
 </info-receiver>
 <div id="guidebar">
     <a href="/">dashboard</a>
-<!--    关联contacts和efforts-->
+    <!--    关联contacts和efforts-->
     <a href="/user">Employee</a>
-<!--    关联department和location-->
+    <!--    关联department和location-->
     <a href="/contacts">contact</a>
-<!--    关联contacts和location-->
+    <!--    关联contacts和location-->
     <a href="/account">account</a>
     <a href="/product">product</a>
     <a href="/project">project</a>
 </div>
 <div id="contents">
     <div id="title" class="row">
-        <%- headline %>
+        <div style="min-width:6rem;max-width:6rem;">account</div>
+        <div style="min-width:6rem;max-width:6rem;">priority</div>
+        <div style="min-width:8rem;max-width:8rem;">schedule</div>
+        <div style="min-width:8rem;max-width:8rem;">product</div>
+        <div style="min-width:8rem;max-width:8rem;">env</div>
+        <div style="min-width:4rem;max-width:4rem;">status</div>
     </div>
-    <div ng-repeat="content in contents" class="row content">
-        <%- contentTemplate %>
-    </div>
-    <div id="pageIndex" class="row">
-        <div ng-if="pageIndex.startIndex>1"><button ng-click="pageIndex.gotoPage(1)">1</button></div>
-        <div ng-if="pageIndex.startIndex>2">…</div>
-        <div ng-repeat="x in [].constructor(7) track by $index"><button ng-if="$index+pageIndex.startIndex <= pageIndex.pageMax"
-                ng-click="pageIndex.gotoPage($index+pageIndex.startIndex)"
-                ng-disabled="pageIndex.pageId-pageIndex.startIndex === $index">{{$index+pageIndex.startIndex}}</button></div>
-        <div ng-if="pageIndex.startIndex+7 < pageIndex.pageMax">…</div>
-        <div ng-if="pageIndex.startIndex+7 <= pageIndex.pageMax">{{pageIndex.pageMax}}</div>
-    </div>
-    <%- add %>
+    <a ng-repeat="content in contents" class="row content">
+        <a style="min-width:6rem;max-width:6rem;" href="{{'/account/'+content.account._id}}">{{ content.account.name || "" }} </a>
+        <a style="min-width:6rem;max-width:6rem;">{{ content.priority}}</a>
+        <div style="min-width:8rem;max-width:8rem;">{{ content.schedule}}</div>
+        <div style="min-width:8rem;max-width:8rem;">{{ content.product}}</div>
+        <div style="min-width:8rem;max-width:8rem;">{{ content.env}}</div>
+        <div style="min-width:4rem;max-width:4rem;">{{ content.status}}</div>
+    </a>
 </div>
 </body>
 </html>

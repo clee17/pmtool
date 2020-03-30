@@ -1,0 +1,66 @@
+<style>
+    #add{
+        margin-top:1rem;
+    }
+
+    #add select{
+        margin-top:auto;
+        margin-bottom:auto;
+        height:1.5rem;
+    }
+
+    #add input{
+        margin-left:1rem;
+    }
+
+    #detailInfo select{
+        min-width:8rem;
+    }
+
+</style>
+<div id="add">
+    <div style="display:flex;flex-direction:row;height:1.5rem;">
+        <div style="font-weight:bold;">添加新的用户：</div>
+        <button style="margin-left:auto;">添加</button>
+    </div>
+    <div class="row" style="padding-left:2rem;">
+        <div class="row">用户头衔：
+            <select ng-model='userAdd.title' style="min-width:8rem;">
+                <option value='0'>R&D Diretor</option>
+                <option value='1'>R&D leader</option>
+                <option value='1'>R&D</option>
+                <option value='2'>PM</option>
+                <option value='3'>CEO</option>
+                <option value='3'>Q&A leader</option>
+                <option value='3'>Q&A</option>
+                <option value='3'>Operation</option>
+            </select>
+        </div>
+
+        <div class="row">所属部门： <select ng-model='userAdd.department'>
+            <option value="0">R&D 1</option>
+            <option value="1">R&D 2</option>
+            <option value="2">Human Resource</option>
+            <option value="3">Q&A</option>
+            <option value="4">S&M</option>
+        </select></div>
+
+        <div class="row"> 办公地点： <select ng-model='userAdd.location'>
+            <option value='0'>Shanghai</option>
+            <option value='1'>TaiWan</option>
+            <option value='1'>ShenZhen</option>
+            <option value='2'>America</option>
+        </select> </div>
+    </div>
+
+    <div class="row" style="padding-left:2rem;">
+    <div class="row">姓名: <input ng-model='userAdd.name'></div>
+    <div class="row">别名: <input ng-model='userAdd.nameCN'></div>
+    </div>
+
+    <div class="row" style="padding-left:2rem;">
+    <div class="row"> 分机号: <input ng-model='userAdd.number'> </div>
+    <div class="row"> 邮箱地址: <input ng-model='userAdd.mail'> </div>
+    </div>
+
+</div>

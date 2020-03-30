@@ -2,10 +2,12 @@ var mongoose = require('mongoose');
 
 module.exports = new mongoose.Schema({
     title: {type:String,default:""},
-    department: {type:mongoose.Schema.ObjectId,ref:'department',default:null},
+    company:{type:mongoose.Schema.ObjectId,default:null,ref:"account"},
     name : {type:String,default:""},
-    nameCN:{type:String,default:""},
+    alias:{type:String,default:""},
     number:{type:Number,default:-1},
-    email:{type:String,default:""},
-    location:{type:mongoose.Schema.ObjectId,ref:'location',default:null}
+    mail:{type:String,default:""},
+    otherContacts:{QQ:{type:String,default:""},wechat:{type:String,default:""}},
+    location:{type:String,default:""},
+    preferredLanguage:{type:Number,default:0} //0 EN 1 CN 2 JP 3 IT
 });

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var connect = mongoose.createConnection('mongodb://127.0.0.1:27017/projects',{useNewUrlParser: true});
+var connect = mongoose.createConnection('mongodb://127.0.0.1:27017/Projects',{useNewUrlParser: true});
 
 connect.then(
     ()=>{

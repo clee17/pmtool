@@ -1,10 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<h1>UUID的分发</h1>
+
+<div class="contents">
+<p>UUID是Cidana公司较早期产品追踪与许可授予方式，相对比较原始，目前尚在使用的只有Elead（怡利）,LME(艾米）等有限的几个项目。</p>
+<p>每当上述公司有发行新产品的需求时，他们都会向我方的项目经理发送邮件，由我们收取固定的授权序号即UUID，并利用他们所发送的序号来生成许可license包并发送给用户，用这种方式来完成软件授权。。</p>
+<p>下面记述了对客户通过UUID方式进行许可授权的方法。</p>
+<h3>&nbsp注意事项&nbsp</h3>
+<p>注意文件夹命名与项目代称之间的关系。</p>
+<div class="table">
+    <div class="row rowHead">
+        <div>所属公司</div>
+        <div style="min-width:11rem;">文件夹名</div>
+        <div>项目名称</div>
+        <div style="min-width:11rem;">客户方项目名称</div>
+        <div style="min-width:12rem;">License maker名称</div>
+    </div>
+    <div class="row rowContent">
+        <div>Elead</div>
+        <div style="min-width:11rem;">Elead</div>
+        <div>A6</div>
+        <div style="min-width:11rem;">83082600001-00</div>
+        <div style="min-width:12rem;">Skip Customer Info</div>
+    </div>
+    <div class="row rowContent">
+        <div>Elead</div>
+        <div style="min-width:11rem;">EleadStreaming</div>
+        <div>DLNA</div>
+        <div style="min-width:11rem;">網路串流多媒體DLNA</div>
+        <div style="min-width:12rem;">Elead Streaming Prima2</div>
+    </div>
+    <div class="row rowContent">
+        <div>Elead</div>
+        <div style="min-width:11rem;">Elead DVB-T Prima2</div>
+        <div>DVBT</div>
+        <div style="min-width:11rem;"><s>未知待更新</s></div>
+        <div style="min-width:12rem;"><s>Elead DVB-T Prima2</s><br>&nbsp&nbsp&nbsp&nbsp(基本停产)</div>
+    </div>
+    <div class="row rowContent">
+        <div>Other</div>
+        <div style="min-width:11rem;">【Other】</div>
+        <div>【Other】</div>
+        <div style="min-width:11rem;">【Other】</div>
+        <div style="min-width:12rem;">Skip Customer Info</div>
+    </div>
+</div>
+
+<h3>&nbsp收取UUID&nbsp</h3>
+    <p>现阶段客户会不定期寄送邮件给PM，所以要随时注意邮箱中来自客户的UUID获取邮件。</p>
+    <p>目前只有来自Elead公司的A6项目与DLNA项目尚在更新，因此主要注意来自<a href="/accountInfo?name=elead">Elead</a>方的联络，具体Royalty联络人请前往公司信息主页查看。</p>
+    <p>检测并与客户确认如下信息:</p>
+    <ul style="margin-left:1.5rem;margin-top:0.5rem;">
+        <li><b>需求日期</b>:注意需求日期不是邮件的发送日期，客户通常会写在邮件中。</li>
+        <li><b>UUID需求总数</b>:客户虽然会提供一下总数，但通常收取后还需要自己计算一下总数是否正确。</li>
+        <li><b>UUID授权码</b>：客户使用的UUID授权码通常会用邮件的附件形式提供，这些文件要妥善收取并按照每次需求的日期保存</li>
+    </ul>
+ <h3>&nbsp分发流程&nbsp</h3>
+    <p>a)	进入svn到本地的UUID文件夹，如果没有，可以联系IT在本地SVN clone一个。更新前，右击UUID文件夹选中“SVN update”，将文件夹内容同步至最新状态。
+        <img src="/img/2020-04-23_10-25-06.png" alt="演示图片" >
+    </p>
+    <p>b)	在相应文件夹中新建，以需求日期命名。</p>
+    <p>c)	将客户发出需要添加UUID的excel文档复制粘贴至新建文件夹中。</p>
+    <p>d)	将最新更新的UUID text.文件也复制粘贴至新建文件夹中。</p>
+    <p>e)	右击选择“Edit with Notepad++”将UUID text.文件打开。</p>
+    <p>f)	在打开的“Notepad++”中新建文档，将excel中的UUID复制粘贴到里面。</p>
+    <p>g)	所有UUID前面的“0”都替换成空白。</p>
+    <p>h)	将UUID复制粘贴到原UUID文档中，并将第一行的总数量更新（记录总数）。</p>
+    <p>i)	打开“License maker”选择更新后的UUID 文档开始创建 (等候时间较长，需耐心)。期间软件头栏会出现“未响应”，不用管。</p>
+    <p>j)	回到日期文件夹页面，在空白处右击选择“Add”，确认将新建的文档添加，并OK。</p>
+    <p>k)	将“Latest”文件夹中的“license”文档替换成最新的。</p>
+    <p>l)	回到最外层“UUID”文件夹，右击选择“SVN commit”，确认OK。</p>
+
+</div>

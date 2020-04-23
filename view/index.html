@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <title><%- title %></title>
     <base href="/">
-    <script src="/lib/angular.min.js"></script>
-    <script src="/lib/lz-string.min.js"></script>
+    <script src="/public/lib/angular.min.js"></script>
+    <script src="/public/lib/lz-string.min.js"></script>
     <script>
         var app = angular.module("tableEditor",[]);
         app.config(function($locationProvider){
             $locationProvider.html5Mode(true);
         });
     </script>
-    <script src="/js/tableEditController.js"></script>
+    <script src="/public/js/tableEditController.js"></script>
 </head>
 <style>
     body{
@@ -68,7 +68,7 @@
         padding-left:2rem;
         padding-top:2rem;
         padding-bottom:2rem;
-        color:rgba(158,158,158,255);
+        color:rgba(88,88,88,255);
         display:flex;
         flex-direction:column;
     }
@@ -107,15 +107,15 @@
 
 </info-receiver>
 <div id="guidebar">
-    <a href="/">dashboard</a>
+    <a href="/" target="_self">dashboard</a>
 <!--    关联contacts和efforts-->
-    <a href="/user">Employee</a>
+    <a href="/user" target="_self">Employee</a>
 <!--    关联department和location-->
-    <a href="/contacts">contact</a>
+    <a href="/contacts" target="_self">contact</a>
 <!--    关联contacts和location-->
-    <a href="/account">account</a>
-    <a href="/product">product</a>
-    <a href="/project">project</a>
+    <a href="/account" target="_self">account</a>
+    <a href="/product" target="_self">product</a>
+    <a href="/project" target="_self">project</a>
 </div>
 <div id="contents">
     <div id="title" class="row">

@@ -5,7 +5,7 @@ var express = require('express'),
 
 var efforts = require('./../data/model/efforts'),
     account = require('../data/model/accounts'),
-    product = require('./../data/model/product'),
+    productModel = require('./../data/model/product'),
     project = require('./../data/model/project'),
     userModel = require('./../data/model/user'),
     contacts = require('./../data/model/contacts');
@@ -13,7 +13,7 @@ var efforts = require('./../data/model/efforts'),
 let tableList = {
     "efforts":efforts,
     "account":account,
-    "product":product,
+    "product":productModel,
     "project":project,
     "user":userModel,
     "contacts":contacts
@@ -105,6 +105,20 @@ let handler = {
         }).populate('company');
     },
 
+    tutorial:function(req,res){
+        let contentId = req.params.contentId;
+        try{
+            if(!contentId || contentId === '')
+                contentId = 'preface';
+            contentId = contentId.toLowerCase();
+           let contents =  fs.readFileSync(path.join(basedir,'/view/tutorial/'+contentId+'.html'));
+            res.render('tutorial.html',{title:"PM教程",contents:contents});
+        }catch(e){
+            res.render('tutorial.html',{title:"PM教程",contents:e});
+        }
+
+    },
+
     count:function(req,res){
         let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let response = {
@@ -129,7 +143,38 @@ let handler = {
                 handler.sendResult(res,response);
             }
         })
+    },
 
+    vague:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent:false,
+            index:received.index,
+            result:[],
+            message:"unknown failure"
+        };
+
+        let tableId = received.index;
+        if(!tableList[tableId]){
+            handler.renderError(res,'no valid tableId received');
+            return;
+        }
+
+        if(received.value.length === 0){
+            response.success = true;
+            handler.sendResult(res,response);
+        }
+        let reg = new RegExp(received.value,'i');
+        tableList[tableId].find({name:{$regex:reg}},function(err,docs){
+            if(err){
+                handler.renderError(res,JSON.stringify(err));
+            }else{
+                response.result = JSON.parse(JSON.stringify(docs));
+                response.message = "";
+                response.success = true;
+                handler.sendResult(res,response);
+            }
+        })
     },
 
     developers:function(req,res){
@@ -151,19 +196,48 @@ let handler = {
                 handler.sendResult(res,data);
             }
         });
-    }
+    },
 
+    products:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent:false,
+            index:received.index,
+            maxCount:0,
+            message:"unknown failure"
+        };
+        let condition = received.condition || {};
+        tableList['product'].find(condition,function(err,docs){
+            if(err){
+                response.message= JSON.stringify(err);
+                handler.sendResult(res,response);
+            }
+            else{
+                response.success = true;
+                response.result = JSON.parse(JSON.stringify(docs));
+                handler.sendResult(res,response);
+            }
+        });
+    }
 
 };
 
 router.get('/',handler.index);
 router.get('/:tableId',handler.table);
+router.get('/tutorial',handler.tutorial);
+router.get('/tutorial/:contentId',handler.tutorial);
 router.post('/countInfo/',handler.count);
+router.post('/vagueSearch/',handler.vague);
 router.post('/getInfo/developers',handler.developers);
+router.post('/getInfo/products',handler.products);
+
 
 module.exports = function(app){
-    app.use('/lib',express.static(path.join(basedir,"/lib")));
-    app.use('/js',express.static(path.join(basedir,"/js")));
+    app.use('/lib',express.static(path.join(basedir,"/public/lib")));
+    app.use('/js',express.static(path.join(basedir,"/public/js")));
+    app.use('/css',express.static(path.join(basedir,"/public/css")));
+    app.use('/img',express.static(path.join(basedir,"/public/img")));
+    app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
     app.use('/',router);
 
     app.get('*', function(req, res){

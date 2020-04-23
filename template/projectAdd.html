@@ -3,6 +3,10 @@
         margin-top:1rem;
     }
 
+    ul{
+        font-size:0.9rem;
+    }
+
     #add select{
         margin-right:1rem;
         margin-top:auto;
@@ -22,16 +26,17 @@
 <div id="add">
     <div style="display:flex;flex-direction:row;height:1.5rem;">
         <div style="font-weight: bold;">添加新的项目工程：</div>
-        <div style="margin-left:1rem;">项目状态：</div>
+        <div style="margin-left:auto;">项目状态：</div>
         <select ng-model='add.status'>
-            <option value='0'>contact</option>
-            <option value='1'>nlasigned</option>
-            <option value='2'>sow</option>
-            <option value='3'>contracts</option>
+            <option value='0'>opportunity</option>
+            <option value='1'>NLA</option>
+            <option value='2'>SOW</option>
+            <option value='3'>contract</option>
             <option value='4'>development</option>
-            <option value='5'>delivered</option>
+            <option value='5'>delivery</option>
             <option value='6'>payment</option>
             <option value='7'>maintenance</option>
+            <option value='8'>closed</option>
         </select>
         <div>优先级：</div>
         <select ng-model='add.priority'>
@@ -41,41 +46,68 @@
             <option value="3">4</option>
             <option value="4">5</option>
         </select>
+        <button style="margin-left:2rem;margin-right:2rem;" ng-click="addProject()">添加工程</button>
     </div>
     <div style="display:flex;flex-direction:column;" id="detailInfo">
-        <div class="row"> 客户名称: <input ng-model='add.customer'> </div>
+        <div class="row">
+            <div>客户名称:</div>
+            <div style="display:flex;flex-direction:column;padding:0;position:relative;z-index:99;">
+                <input ng-model='add.customer' ng-change="checkInfo(add.customer,'account',add.customerInfo)" ng-blur="clearVague()">
+                <div style="position:absolute;top:0;margin-left:1rem;padding-top:1.5rem;display:flex;flex-direction:column;" ng-if="vagueSearch==='account'">
+                    <div ng-show="vagueValue.length ===0 && !add.customerInfo && add.customer.length >0">没有该公司</div>
+                    <button ng-repeat="item in vagueValue" ng-click="selectVague('add','customer',item,item.name)">{{item.name}}</button>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div>联系人：</div>
-            <select ng-model='add.contact' ng-options='contact.name for contact in add.customer.contacts || []'>
-
-            </select>
-            <button>添加</button>
+            <div style="display:flex;flex-direction:column;padding:0;position:relative;z-index:88;pointer-events:auto;">
+                <input ng-model="add.contact" ng-change="checkInfo(add.contact,'contacts',add.contactInfo)" ng-blur ="clearVague()" style="height:1rem;max-width:10rem;">
+                <div style="position:absolute;top:0;margin-left:1rem;padding-top:1.5rem;" ng-if="vagueSearch==='contacts'">
+                    <div ng-show="vagueValue.length ===0 && !add.contactInfo && add.contact.length >0">没有该联系人，请先前往联系人tag添加该联系人</div>
+                    <button ng-repeat="item in vagueValue" ng-click="selectVague('add','contact',item,item.name)">{{item.name}}</button>
+                </div>
+            </div>
+            <button style="margin-left:2rem;height:1.5rem;" ng-click="pushValue(add.contactInfo,add.contacts)">添加</button>
         </div>
-        <div>背景介绍:</div>
-        <div style="min-height:6rem;"><textarea id="comment"></textarea></div>
+        <ul>
+        <li ng-repeat="contact in add.contacts" style="margin-left:2rem;">
+            {{contact.name}}<{{contact.mail}}>
+            <button style="display:inline-block;" ng-click ="deleteItem($index,add.contacts)">删除</button>
+        </li>
+        </ul>
+
+        <div class="row">背景介绍:</div>
+        <div style="min-height:6rem;padding-left:2rem;">
+            <textarea id="comment"></textarea>
+        </div>
         <div class="row">
             <div>开发者：</div>
             <select ng-model='add.developer' ng-options='developer.name for developer in developers'>
-
             </select>
-            <button>添加</button>
+
+            <button ng-click="pushValue(add.developer,add.developers)">添加</button>
         </div>
 
-        <div ng-repeat="developer in add.developers">
-            <span>developer.name</span>
-            <span>developer.mail</span>
-        </div>
+        <ul>
+        <li ng-repeat="developer in add.developers">
+            {{developer.name}}<{{developer.mail}}>
+        </li>
+        </ul>
+
 
         <div class="row">
             <div>签约产品：</div>
             <select ng-model='add.product' ng-options='product.name for product in products'></select>
-            <button>添加</button>
+            <button ng-click="pushValue(add.product,add.products)">添加</button>
         </div>
-        <div ng-repeat="product in add.products">
-            <span>product.name</span>
-        </div>
+        <ul>
+        <li ng-repeat="product in add.products">
+            <span>{{product.name}}</span>
+        </li>
+        </ul>
 
-        <div style="display:flex;flex-direction:row;">
+        <div class="row">
             <div>相关供应商：</div>
             <select ng-model='add.supply' ng-options='supplier.name for supplier in suppliers'></select>
         </div>

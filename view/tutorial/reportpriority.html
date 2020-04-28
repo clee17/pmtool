@@ -1,0 +1,33 @@
+<h1 style="letter-spacing:0.2rem;">Priority Report</h1>
+
+<div class="contents">
+    <p>Priority Report主要在每周五交付，需要根据项目的priority,汇总归纳PM一周所做的工作。</p>
+    <p>报告通常在<span class="critical">每周五</span>以邮件形式寄送给相关人员，需要在deadline之前完成。</p>
+
+
+    <h3>&nbsp抄送人员&nbsp</h3>
+    <p>完成的report需要寄送给如下人员(自己除外）:</p>
+    <table style="margin-left:3rem;">
+        <tr><td>寄送方式</td><td>名称</td><td>邮箱地址</td></tr>
+        <% for(let i=0; i< cidanaContact.length;++i){ %>
+        <% if(cidanaContact[i].title ==="Program Manager"){ %>
+        <tr>
+            <td>
+                <% if(cidanaContact[i].number === 861){ %>
+                TO
+                <% }else{ %>
+                CC
+                <% } %>
+            </td>
+            <td><%- cidanaContact[i].name %></td>
+            <td><%- cidanaContact[i].mail %></td>
+        </tr>
+        <% }} %>
+    </table>
+
+    <h3>&nbsp历史文件地址&nbsp</h3>
+    <p>历史文件地址在asset management/reports/priority report中:</p>
+    <p>跳转连接待文档管理系统上线后更新。</p>
+    <p>更新前请利用本地的cidana assets management文档来管理。</p>
+
+</div>

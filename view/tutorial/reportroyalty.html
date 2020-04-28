@@ -2,7 +2,11 @@
 
 <div class="contents">
     <p>Royalty Report主要在每周四交付，需要对已发行的产品许可数量进行记录与报告。</p>
+    <p>报告通常在<span class="critical">每周四</span>以邮件形式寄送给相关人员，需要在deadline之前完成。</p>
     <p>数据采集来源主要来自公司内部的<a href="https://sshz.cidanash.com:9090/content.html#/itemClick/CONTENT_CUSTOMER?_k=qlpl7b">cidana Server</a>与Google 的<a href="https://analytics.google.com/analytics/web/?hl=zh-CN&pli=1#/report-home/a57757385w92473877p96271569">Google Analytics</a></p>
+
+
+
     <h3>&nbsp使用工具&nbsp</h3>
     <div class="row" style="margin-top:0.5rem;">
         <h4 style="margin-top:auto;">a) cidana Server</h4>
@@ -29,18 +33,136 @@
         网址：https://analytics.google.com/analytics/web/?hl=zh-CN&pli=1#/report-home/a57757385w92473877p96271569
     </div>
 
-    <h3>&nbspRoyalty Report表格&nbsp</h3>
-    <p>表格格式如下</p>
-    <img src="/img/2020-04-23_12-20-41.png" alt="演示图片">
-    <p><span class="numOrder">①</span>这里是统计的时间周期，对于当季度的时间，按周为单位进行统计；对本年度的过往季度，以季度为时间周期进行统计；对于往年，以年为单位进行统计；</p>
-    <p><span class="numOrder">②</span>来源于CidanaServer的数据，用该颜色标注和source为CI的客户都是来自于Cidana Server的数据</p>
+    <h3>&nbsp抄送人员&nbsp</h3>
+    <p>完成的report需要寄送给如下人员(自己除外):</p>
+    <table style="margin-left:3rem;">
+        <tr><td>寄送方式</td><td>名称</td><td>邮箱地址</td></tr>
+        <% for(let i=0; i< cidanaContact.length;++i){ %>
+        <% if(cidanaContact[i].title === 'CEO' || cidanaContact[i].title ==="Program Manager"){ %>
+        <tr>
+            <td>
+                <% if(cidanaContact[i].title === 'CEO'){ %>
+                TO
+                <% }else{ %>
+                CC
+                <% } %>
+            </td>
+            <td><%- cidanaContact[i].name %></td>
+            <td><%- cidanaContact[i].mail %></td>
+        </tr>
+        <% }} %>
+    </table>
 
-    <h3>&nbspCidana Server数据采集流程&nbsp</h3>
+
+    <h3>&nbsp历史文件地址&nbsp</h3>
+    <p>历史文件地址在asset management/reports/royalty report中:</p>
+    <p>跳转连接待文档管理系统上线后更新。</p>
+    <p>更新前请利用本地的cidana assets management文档来管理。</p>
+
+
+    <h3>&nbspRoyalty Report表格&nbsp</h3>
+    <p>表格格式如下：</p>
+    <img src="/img/2020-04-23_12-20-41.png" alt="演示图片">
+    <p><span class="numOrder">①</span>这里是统计的时间周期，对于当季度的时间，按周为单位进行统计；对本年度的过往季度，以季度为时间周期进行统计；对于往年，以年为单位进行统计。</p>
+    <p><span class="numOrder">②</span>来源于CidanaServer的数据，用该颜色标注和source为CI的信息都是来自于Cidana Server的数据。这里的数据通过Cidana Server进行采集，具体方法可以在下文中<a href="#cidanaServer" target="_self">查阅</a>。</p>
+    <p><span class="numOrder">③</span>来源于Google Analytics的数据，用该颜色标注和source为GO的信息都是来自于Google Analytics的数据。具体采集方法可以在下文中<a href="#googleAnalytics" target="_self">查阅</a>。</p>
+    <p><span class="numOrder">④</span>暂无</p>
+    <p><span class="numOrder">⑤</span>暂无</p>
+    <p><span class="numOrder">⑥</span>暂无</p>
+    <p><span class="numOrder">⑦</span>广告相关信息，通常不需要填写，留空即可。</p>
+
+
+
+
+    <h3 id="cidanaServer" style="margin-top:3rem;">&nbspCidana Server数据采集流程&nbsp</h3>
     <p>a)	使用提供的账户登陆Cidana Server，进入如下页面，并选择Customer。
         <img src="/img/2020-04-23_12-19-44.png" alt="演示图片" >
     </p>
+    <p>b)	选择需要获取数据的日期区间，如一周或一年：
+        <img src="/img/2020-04-23_13-02-59.png" alt="演示图片" >
+    </p>
+    <p>c)	将<b>Devices</b>一栏中的数据填入Excel表格相应的位置，进行计算：
+        <img src="/img/2020-04-23_13-04-12.png" alt="演示图片" >
+        <img src="/img/2020-04-23_13-44-28.png" alt="演示图片">
+    </p>
+    <p style="font-weight:bold;">注意事项：</p>
+    <p style="margin-left:1.5rem;">（1） 如果表格中没有的项目，存在在cidana Server上也可以无视。有新增加的项目需要与工程师和CEO确认。</p>
+    <p style="margin-left:1.5rem;">（2） 表格1：Cidana Server名称与Report名称对照表</p>
+    <p></p>
+    <table class="dashTable" style="margin-left:7rem;">
+        <tr>
+            <td>cidana Server Customer</td>
+            <td>Cidana Server OEM</td>
+            <td>run-rate report Customer</td>
+            <td>run-rate report Product</td>
+        </tr>
+        <tr>
+            <td>浥晨.深圳</td>
+            <td>EACHN.DTMB.STD</td>
+            <td>EACHN</td>
+            <td>DTMB</td>
+        </tr>
+        <tr>
+            <td>浥晨.深圳</td>
+            <td>ATSC USB Dongle for 白牌客户</td>
+            <td>EACHN</td>
+            <td>General ATSC</td>
+        </tr>
+        <tr>
+            <td>浥晨.深圳</td>
+            <td>EACHN.ATSC.USB.ShockTV</td>
+            <td>EACHN</td>
+            <td>ShockTV</td>
+        </tr>
+        <tr>
+            <td>浥晨.深圳</td>
+            <td>GHIA TV</td>
+            <td>EACHN</td>
+            <td>GHIA TV</td>
+        </tr>
+        <tr>
+            <td>浥晨.深圳</td>
+            <td>DVB-T(T2) USB Dongle for 白牌客户</td>
+            <td>EACHN</td>
+            <td>General T2</td>
+        </tr>
+        <tr>
+            <td>浥晨.深圳</td>
+            <td>ISDBT USB dongle 白牌客户</td>
+            <td>EACHN</td>
+            <td>ISDB-T</td>
+        </tr>
+        <tr>
+            <td>艾米</td>
+            <td>IME.DTMB.AVN</td>
+            <td>IME</td>
+            <td>DTMB AVN</td>
+        </tr>
+        <tr>
+            <td>NERCDTV</td>
+            <td>DTMB.CVB.全国通用版<br>new CVB.SDK Kenny<br>（合计）</td>
+            <td>NERCDTV</td>
+            <td>DTMB.CVB</td>
+        </tr>
+        <tr>
+            <td>HDIC</td>
+            <td>INNOR 代收</td>
+            <td>HDIC (Innor)</td>
+            <td>DTMB</td>
+        </tr>
+        <tr>
+            <td>Dexatek</td>
+            <td>Asus Zenphone</td>
+            <td>Dexatek</td>
+            <td>Asus.SBTVD</td>
+        </tr>
+    </table>
 
+    <h3 id="googleAnalytics" style="margin-top:4rem;">&nbspGoogle Analytics数据采集流程&nbsp</h3>
+    <p>尚未建立，等待更新</p>
+    <p>a) 进入Google Analytics主页，按下图所示进入Audience
+        <img href="/img/20200423155211.jpgd">
+    </p>
 
-    <h3>&nbspGoogle Analytics数据采集流程&nbsp</h3>
 
 </div>

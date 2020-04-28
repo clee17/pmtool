@@ -1,0 +1,65 @@
+<h1>产品的寄送</h1>
+
+<div class="contents">
+    <p>尽管cidana是一个软件公司，但我们偶尔会有需要接收或者向客户寄送样品零件等等的情况，下面记录了各种产品的相关快递寄送参数选项与相关流程。</p>
+
+    <h3>&nbsp寄送流程&nbsp</h3>
+    <p>本办公楼的快递员每天<span class="critical">上午十点</span>和<span class="critical">下午四点</span>会各来一次，需要寄送的话需要在那之前通知到前台并提供相应的信息。</p>
+    <p>因为电器等收寄有一定的限定，而每个国家地区和产品的收寄信息都有所不同，具体内容可以参考如下表格。</p>
+    <p>前台联系方式：</p>
+    <table style="margin-left:3rem;">
+        <tr><td>名称</td><td>邮箱地址</td></tr>
+        <% for(let i=0; i< cidanaContact.length;++i){ %>
+        <% if(cidanaContact[i].title ==="Front desk"){ %>
+        <tr>
+            <td><%- cidanaContact[i].name %></td>
+            <td><%- cidanaContact[i].mail %></td>
+        </tr>
+        <% }} %>
+    </table>
+
+    <h3>&nbsp产品快递信息列表&nbsp</h3>
+    <table style="margin-left:3rem;margin-top:1rem;">
+        <tr>
+            <td>产品名称</td>
+            <td>商品种类</td>
+            <td>其他信息</td>
+            <td>可选快递方</td>
+        </tr>
+        <tr>
+            <td>DTV dongle<br>(电视棒)</td>
+            <td>电路板</td>
+            <td>
+                <ul>
+                <li>品牌：通常是电视棒上写着的品牌</li>
+                <li>型号：ATSC，DVBT等信息</li>
+                <li>价值：1美金左右</li>
+                </ul>
+            </td>
+            <td>
+                大部分均可寄，推荐顺丰
+            </td>
+        </tr>
+    </table>
+
+
+    <h3>&nbsp地区与国家信息&nbsp</h3>
+    <table style="margin-left:3rem;margin-top:1rem;">
+        <tr>
+            <td>地区</td>
+            <td>重要信息</td>
+            <td>备注</td>
+        </tr>
+        <tr>
+            <td>中国台湾</td>
+            <td>
+                <ul>
+                    <li>统一编号</li>
+                </ul>
+            </td>
+            <td style="max-width:15rem;">
+                台湾不管是企业还是个人大多拥有一个统一编号，用以收寄，寄送到台湾之前需要与客户获取此信息。
+            </td>
+        </tr>
+    </table>
+</div>

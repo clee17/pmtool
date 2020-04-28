@@ -1,22 +1,25 @@
 var express = require('express'),
     path = require('path'),
     fs = require('fs'),
+    ejs = require('ejs'),
     LZString = require('lz-string');
 
 var efforts = require('./../data/model/efforts'),
-    account = require('../data/model/accounts'),
+    accountModel = require('../data/model/accounts'),
     productModel = require('./../data/model/product'),
     project = require('./../data/model/project'),
     userModel = require('./../data/model/user'),
+    docModel = require('./../data/model/doc'),
     contacts = require('./../data/model/contacts');
 
 let tableList = {
     "efforts":efforts,
-    "account":account,
+    "account":accountModel,
     "product":productModel,
     "project":project,
     "user":userModel,
-    "contacts":contacts
+    "contacts":contacts,
+    "docs":docModel
 };
 
 let router = express.Router();
@@ -107,16 +110,58 @@ let handler = {
 
     tutorial:function(req,res){
         let contentId = req.params.contentId;
-        try{
-            if(!contentId || contentId === '')
-                contentId = 'preface';
-            contentId = contentId.toLowerCase();
-           let contents =  fs.readFileSync(path.join(basedir,'/view/tutorial/'+contentId+'.html'));
-            res.render('tutorial.html',{title:"PM教程",contents:contents});
-        }catch(e){
-            res.render('tutorial.html',{title:"PM教程",contents:e});
-        }
+        userModel.find({}).exec()
+            .then(function(contacts){
+                if(!contentId || contentId === '')
+                    contentId = 'preface';
+                contentId = contentId.toLowerCase();
+                let contents =  fs.readFileSync(path.join(basedir,'/view/tutorial/'+contentId+'.html'),'utf-8');
+                contents = ejs.render(contents,{cidanaContact:JSON.parse(JSON.stringify(contacts))});
+                res.render('tutorial.html',{title:"PM教程",contents:contents});
+            })
+            .catch(function(err){
+                res.render('tutorial.html',{title:"PM教程",contents:err});
+            });
+    },
 
+    docManager:function(req,res,next) {
+        let pageId = req.query.pid;
+        let render = {};
+        if(!pageId)
+            pageId = 1;
+        pageId--;
+        render.pageId=  pageId;
+        docModel.find({},null,{limit:20,skip:pageId*20}).populate('account project').exec()
+            .then(function (docs) {
+                render.entries = docs;
+                return docModel.estimatedDocumentCount().exec();
+            })
+            .then(function(count){
+                render.total = count;
+                return accountModel.find({}).exec();
+            })
+            .then(function(accounts){
+                render.accounts = accounts;
+                res.render('docManager.html',render);
+            })
+            .catch(function (err) {
+                res.render('docManager.html',render);
+            });
+    },
+
+    doc:function(req,res,next){
+        let docId = req.params.docId;
+        userModel.find({}).exec()
+            .then(function(contacts){
+                if(!docId || docId === '')
+                    next();
+                let contents =  fs.readFileSync(path.join(basedir,'/view/doc/'+docId+'.html'),'utf-8');
+                contents = ejs.render(contents,{cidanaContact:JSON.parse(JSON.stringify(contacts))});
+                res.render('doc.html',{title:"cidana文档",contents:contents});
+            })
+            .catch(function(err){
+                res.render('doc.html',{title:"cidana文档",contents:err});
+            });
     },
 
     count:function(req,res){
@@ -177,6 +222,67 @@ let handler = {
         })
     },
 
+    search:function(req,res){
+        let received = req.body;
+        let tableId = req.params.tableId;
+        if(!tableList[tableId]){
+            handler.renderError(res,'no valid tableId received');
+            return;
+        }
+        let response = {
+            sent:false,
+            index:tableId,
+            result:[],
+            message:"unknown failure"
+        };
+
+        tableList[tableId].find(received,function(err,docs){
+            if(err){
+                handler.renderError(res,JSON.stringify(err));
+            }else{
+                response.result = JSON.parse(JSON.stringify(docs));
+                response.message = "";
+                response.success = true;
+                handler.sendResult(res,response);
+            }
+        })
+    },
+
+    save:function(req,res){
+        let receivedStr = req.body.data;
+        receivedStr = decodeURIComponent(req.body.data);
+        let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
+        let tableId = req.params.tableId;
+        if(!tableList[tableId]){
+            handler.renderError(res,'no valid tableId received');
+            return;
+        }
+        let response = {
+            sent:false,
+            index:tableId,
+            result:[],
+            message:"unknown failure"
+        };
+
+        let searchCriteria = {};
+        if(received._id)
+            searchCriteria._id = received._id;
+        else
+            searchCriteria = received;
+
+        tableList[tableId].findOneAndUpdate(searchCriteria,received,{upsert:true,setDefaultsOnInsert:true},function(err,result){
+            if(err){
+                handler.renderError(res,JSON.stringify(err));
+            }else{
+                console.log(result);
+                response.result = JSON.parse(JSON.stringify(result));
+                response.message = "";
+                response.success = true;
+                handler.sendResult(res,response);
+            }
+        })
+    },
+
     developers:function(req,res){
         let data = {
             sent:false,
@@ -226,8 +332,13 @@ router.get('/',handler.index);
 router.get('/:tableId',handler.table);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
+router.get('/doc',handler.docManager);
+router.get('/doc/:projectId/:docId',handler.doc);
+
 router.post('/countInfo/',handler.count);
 router.post('/vagueSearch/',handler.vague);
+router.post('/search/:tableId',handler.search);
+router.post('/save/:tableId',handler.save);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
 

@@ -10,6 +10,16 @@ body{
     min-height:100vh;
 }
 
+#guide a{
+    text-decoration:none;
+    color:rgba(115,115,115,1);
+}
+
+#guide a:hover{
+    text-decoration:none;
+    color:lightskyblue;
+}
+
 a{
     margin-top:auto;
     margin-bottom:auto;
@@ -131,4 +141,43 @@ a{
     margin-left:2rem;
     margin-right:2rem;
     margin-bottom:5rem;
+}
+
+.dashTable tr:nth-child(odd){
+    background:lightsteelblue;
+
+}
+
+td{
+    padding:0.4rem;
+}
+
+table{
+    margin-top:0.6rem;
+    margin-bottom:0.6rem;
+}
+
+table, tr, td{
+    border:1px solid rgba(185,185,185,1);
+}
+
+td >ul{
+    margin-left:0.5rem;
+    padding-left:0.5rem;
+}
+
+.dashTable td{
+    padding:2px;
+    padding-left:5px;
+    padding-right:2px;
+}
+
+.critical{
+    color:orangered;
+    font-weight:bold;
+    border-bottom:3px double orangered;
+}
+
+.fileserver{
+    color:lightseagreen;
 }

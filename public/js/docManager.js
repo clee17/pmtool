@@ -34,7 +34,7 @@ var addDoc = function(){
     setTimeout(function(){
         let element = document.getElementById('addDoc');
         if(element)
-            element.style.height = '20rem';
+            element.style.height = '22rem';
     },10);
 }
 
@@ -49,15 +49,11 @@ var submitDoc = function(){
         result.name = element.value;
 
     element = document.getElementById('customerSelect');
-    if(!element || element.value === "0" || element.value === "1")
-        result.account = null;
-    else
+    if(element && element.value !== "0" && element.value !== "1")
         result.account = element.value;
 
     element = document.getElementById('projectSelect');
-    if(!element || element.value === "0" || element.value === "1")
-        result.project = null;
-    else
+    if(element && element.value !== "0" && element.value !== "1")
         result.project = element.value;
 
     element = document.getElementById('descriptionInput');
@@ -71,13 +67,17 @@ var submitDoc = function(){
     element = document.getElementById('sourceSelect');
         result.source = Number(element.value);
 
+    element = document.getElementById('typeSelect');
+        result.type = Number(element.value);
+
     element = document.getElementById('linkInput');
         result.link = element.value;
 
     element = document.getElementById('referenceInput');
         result.reference = element.value;
 
-        saveDoc(result);
+    console.log(result);
+    saveDoc(result);
 };
 
 
@@ -112,10 +112,11 @@ var changeAccount = function(target){
             if(!obj)
                 return;
             if(received.success){
+                obj.options.length = 0;
                 if(received.result.length ===0){
                     obj.options.add(new Option("当前客户没有项目","1")); //这个兼容IE与firefox
                 }else{
-                    obj.options.add(new Option("请选择客户项目","0")); //这个兼容IE与firefox
+                    obj.options.add(new Option("请选择客户项目","1")); //这个兼容IE与firefox
                     for(let i=0; i<received.result.length;++i){
                         obj.options.add(new Option(received.result[i].name,received.result[i]._id)); //这个兼容IE与firefox
                     }

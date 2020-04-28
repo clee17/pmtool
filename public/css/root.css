@@ -161,6 +161,10 @@ table, tr, td{
     border:1px solid rgba(185,185,185,1);
 }
 
+.noBorder, .noBorder tr, .noBorder td{
+    border:none;
+}
+
 td >ul{
     margin-left:0.5rem;
     padding-left:0.5rem;

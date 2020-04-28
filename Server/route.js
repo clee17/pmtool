@@ -131,7 +131,9 @@ let handler = {
             pageId = 1;
         pageId--;
         render.pageId=  pageId;
-        docModel.find({},null,{limit:20,skip:pageId*20}).populate('account project').exec()
+        docModel.find({},null,{limit:20,skip:pageId*20,  sort:{
+                date: -1
+            }}).populate('account project').exec()
             .then(function (docs) {
                 render.entries = docs;
                 return docModel.estimatedDocumentCount().exec();
@@ -272,9 +274,8 @@ let handler = {
 
         tableList[tableId].findOneAndUpdate(searchCriteria,received,{upsert:true,setDefaultsOnInsert:true},function(err,result){
             if(err){
-                handler.renderError(res,JSON.stringify(err));
+                handler.sendResult(res,response);
             }else{
-                console.log(result);
                 response.result = JSON.parse(JSON.stringify(result));
                 response.message = "";
                 response.success = true;

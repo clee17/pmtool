@@ -20,6 +20,21 @@ body{
     color:lightskyblue;
 }
 
+#guideExpand{
+    width:2rem;
+    background:lightgray;
+    transition:background 0.4s, color 0.2s;
+    color:rgba(115,115,115,1);
+    display:flex;
+    position:fixed;
+    height:100%;
+}
+
+#guideExpand:hover{
+    background:rgba(125,125,125,0.7);
+    color:white;
+}
+
 a{
     margin-top:auto;
     margin-bottom:auto;
@@ -51,11 +66,16 @@ a{
 }
 
 #main h2{
-    font-size: 1.8rem;
-    margin-top:1rem;
-    letter-spacing:0.5rem;
-    margin-left:auto;
+    font-size: 1.4rem;
+    margin-left:0;
     margin-right:auto;
+    margin-top:2rem;
+    margin-bottom:-0.5rem;
+}
+
+#main h2:before{
+    content: '➤';
+    margin-right:1rem;
 }
 
 
@@ -86,12 +106,20 @@ a{
 }
 
 #guide{
-    padding:1.5rem;
-    padding-left:0;
-    max-width:12rem;
+    max-width:16rem;
     overflow:auto;
     white-space:nowrap;
-    border-right:5px double rgba(181,181,181,1);
+    position:fixed;
+    left:0;
+    background:rgba(245,245,245,1);
+    height:100%;
+    z-index:99;
+}
+
+#guide>ul{
+    margin-left:0.5rem;
+    padding-left:0.5rem;
+    margin-top:1.5rem;
 }
 
 #guide button{
@@ -118,6 +146,7 @@ a{
     width:auto;
     align-self: baseline;
     display:inline-block;
+    margin-left:1rem;
 }
 
 .contents h4{
@@ -138,9 +167,11 @@ a{
 }
 
 .contents{
-    margin-left:2rem;
-    margin-right:2rem;
+    margin-left:auto;
+    margin-right:auto;
     margin-bottom:5rem;
+    max-width:85%;
+    min-width:65%;
 }
 
 .dashTable tr:nth-child(odd){
@@ -184,4 +215,11 @@ td >ul{
 
 .fileserver{
     color:lightseagreen;
+}
+
+.tableInstruct{
+    background:rgba(155,194,230);
+    color:white;
+    font-size:0.8rem;
+    font-weight:bold;
 }

@@ -4,10 +4,14 @@
     <p>各视频、音频数据流的编解码器是我司的核心技术业务，大部分的衍生解决方案都是基于该技术而衍生，其支持的产品多种多样。</p>
     <p>本文档中将先后介绍<a href="#codecProcess">编解码的流程</a>、公司的<a href="#parsers">解析支持的流数据类型</a>,<a href="#decoders">主要解码支持格式</a>等等。</p>
 
+    <h3>&nbsp注意事项&nbsp</h3>
+    <p>① 注意，每一种解码器都有可能使用特有的公司发放的许可，这其中有些许可可能会涉及版权问题，每种解码器都要针对这种版权问题进行相关的调查。详细的版权问题可以参阅下方解码器中的表格</p>
+
     <h3>&nbsp编解码的简单流程&nbsp</h3>
     <p>一个流数据的解析过程简单地分为如下几步：</p>
 
     <h3>&nbsp流解析(stream parser)的支持格式&nbsp</h3>
+    <p>我司支持解析的音视频流均罗列如下。</p>
     <div style="margin-left:1.5rem;">
         <table>
             <tr>
@@ -40,30 +44,29 @@
         </table>
     </div>
 
-    <h3>&nbsp主要解码器类型&nbsp</h3>
+    <h2>主流解码器类型</h2>
+    <h3>&nbspVideo Decoder&nbsp</h3>
     <div style="margin-left:1.5rem;">
         <table>
-            <tr>
-                <td>video decoder</td>
-                <td>
-                    <table>
-                        <tr><td>解码器名称</td><td>特性</td><td>资料</td></tr>
-                        <tr><td>AV1</td><td>可自动根据带宽弹性拉伸压缩比率，大大减少流传输的带宽一种编解码方式</td><td></td></tr>
-                        <tr><td>H.263</td><td></td><td></td></tr>
-                        <tr><td>H.264</td><td>本司也可支持到High profile</td><td></td></tr>
-                        <tr><td>H.265</td><td><ul><li>需要硬件支持10bit流的读取播放</li></ul></td><td></td></tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td>Audio decoder</td>
-                <td>RM</td>
-            </tr>
-            <tr>
-                <td>Speech decoder</td>
-                <td>MP3</td>
-            </tr>
+            <tr><td>解码器名称</td><td>特性</td><td>资料</td><td>技术许可</td></tr>
+            <tr><td>AV1</td><td>可自动根据带宽弹性拉伸压缩比率，大大减少流传输的带宽一种编解码方式</td><td></td></tr>
+            <tr><td>H.263</td><td></td><td></td></tr>
+            <tr><td>H.264</td><td>本司也可支持到High profile</td><td></td></tr>
+            <tr><td>H.265</td><td><ul><li>需要硬件支持10bit流的读取播放</li></ul></td><td></td></tr>
         </table>
     </div>
 
+    <h3>&nbspAudio Decoder&nbsp</h3>
+    <div style="margin-left:1.5rem;">
+        <table>
+            <tr><td>解码器名称</td><td>特性</td><td>资料</td></tr>
+        </table>
+    </div>
+
+    <h3>&nbspSpeech Decoder&nbsp</h3>
+    <div style="margin-left:1.5rem;">
+        <table>
+            <tr><td>解码器名称</td><td>特性</td><td>资料</td></tr>
+        </table>
+    </div>
 </div>

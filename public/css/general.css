@@ -1,0 +1,254 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+
+body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    color:rgba(85,85,85,1);
+    background:rgba(230,230,230,1);
+}
+
+#header{
+    width:100%;
+    color:white;
+    font-size:1.2rem;
+    display:flex;
+    flex-direction:row;
+    font-weight:bold;
+    border-bottom:solid 1.5rem rgba(152,75,67,0.8);
+    background:#18121E;
+    min-height:3rem;
+}
+
+#main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    background:white;
+    box-shadow: 0 5px 5px 1px rgba(208,208,208,0.8);
+}
+
+.addDocBtn{
+    background:rgba(197,60,46,1);
+    color:white;
+    font-weight:bold;
+    border:1px solid rgba(185,185,185,0.6);
+    font-size:1rem;
+    padding:0.5rem;
+    padding-right:0.6rem;
+    padding-left:0.6rem;
+    letter-spacing:1px;
+    border-radius:0.5rem;
+    margin-bottom:0.5rem;
+    transition:box-shadow 0.2s , background 0.2s;
+    box-shadow:inset 0 -1rem 1rem 0.2rem rgba(152,75,67,0.6);
+}
+
+.addDocBtn:hover{
+    cursor:pointer;
+    background:#ee5647;
+    box-shadow:inset 0 -1rem 1rem 0.2rem rgba(152,75,67,0.4);
+}
+
+#header a{
+    color:white;
+    text-decoration:none;
+}
+
+#header a:hover{
+    text-decoration:underline;
+}
+
+#main a{
+    color:#984B43;
+    text-decoration:none;
+    background:rgba(0,0,0,0);
+    border:none;
+    font-size:1rem;
+    padding:0.5rem;
+}
+
+#main a:hover{
+    text-decoration:underline;
+    color:#233237;
+    cursor:pointer;
+}
+
+
+
+.addDoc{
+    margin:auto;
+    height:0;
+    overflow:hidden;
+    width:24rem;
+    border-radius:0.5rem;
+    box-shadow:inset 0 0 1px 1px rgba(185,185,185,0.8);
+    background:white;
+    transition: height 0.2s ease-out;
+    -moz-transition: height 0.2s ease-out;
+    -webkit-transition: height 0.2s ease-out;
+    -o-transition: height 0.2s ease-out;
+}
+
+.addDoc textarea{
+    resize:none;
+    margin-top:0.2rem;
+    min-height:3rem;
+    width:15rem;
+    padding-left:2px;
+}
+
+.addDoc input{
+    width:15rem;
+}
+
+
+
+.listTable{
+    margin-left:auto;
+    margin-right:auto;
+    border-collapse:collapse;
+}
+
+.listTable,.listTable td{
+    border: solid 1px rgba(185,185,158,1);
+}
+
+.listTable td{
+    padding:5px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.listTable tr:nth-child(1){
+    background:rgba(30,22,36,1);
+    color:white;
+    font-family:  "Microsoft YaHei UI";
+}
+
+.listTable button{
+    transition:background 0.4s, color 0.4s;
+    color:white;
+    border:none;
+    border-radius:3px;
+    padding:0.3rem;
+    padding-left:1rem;
+    padding-right:1rem;
+    background:rgba(35,50,55,0.6);
+    letter-spacing:1px;
+}
+
+.listTable button:hover{
+    background:#233237;
+    cursor:pointer;
+}
+
+
+.displayTable td{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    padding-top:0.2rem;
+    vertical-align:top;
+}
+
+.warning{
+    background:#daf1f8;
+    border: solid 1px #6fb5ca;
+    border-radius: 0.3rem;
+    padding:0.5rem;
+    padding-left:1rem;
+    padding-right:1rem;
+}
+
+.pageCount{
+    display:flex;
+    flex-direction:row;
+    margin-top:auto;
+    margin-bottom:2rem;
+    height:1.5rem;
+}
+
+.pageCount >button{
+    margin-right:1rem;
+}
+
+.pageCount >button:first-child{
+    margin-left:auto;
+}
+
+.pageCount>button:last-child{
+    margin-right:auto;
+}
+
+.pageCount >div:first-child{
+    margin-left:auto;
+}
+
+
+.pageCount >div:last-child{
+    margin-right:auto;
+}
+
+.pageCount button{
+    background:#984B43;
+    border:solid 1px #984B43;
+    border-radius:0.3rem;
+    width:1.5rem;
+    height:1.5rem;
+    font-weight:bold;
+    font-family:"Microsoft YaHei UI";
+    color:white;
+}
+
+.pageCount button:hover{
+    border:solid 1px #984B43;
+    background:white;
+    color:#984B43;
+}
+
+.pageCount button:disabled{
+    border:solid 1px #984B43;
+    background:white;
+    color:#984B43;
+}
+
+.footer{
+    margin-top:auto;
+    margin-bottom:0;
+    min-height:1.5rem;
+}
+
+.coverLayer{
+    position:absolute;
+    left:0;
+    top:0;
+    pointer-events:auto;
+    width:100%;
+    height:100%;
+    display:none;
+}
+
+.docEntries td{
+    max-width:18rem;
+    overflow:auto;
+}
+
+
+.docEntries tr>td:nth-child(2){
+    max-width:5rem;
+    text-align:center;
+}
+
+.docEntries tr>td:nth-child(4){
+    max-width:10rem;
+}
+
+
+.docEntries tr>td:nth-child(3){
+    max-width:6rem;
+    word-break:break-all;
+}

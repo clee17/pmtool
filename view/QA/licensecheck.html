@@ -1,0 +1,40 @@
+<h1 style="letter-spacing:0.2rem;">License check选项</h1>
+<div></div>
+<div class="contents" style="min-width:25rem;">
+    <p>本工具主要用于使用了Cidana Server来分发许可(license)的产品，提供对License的测试指标。</p>
+    <p>该指标参考如下（日后更改为自动工具）</p>
+
+
+    <h3>&nbsp测试指标&nbsp</h3>
+    <table style="border-collapse:collapse;border:2px solid rgba(105,105,105,0.8);font-size:0.85rem;">
+        <tr style="background:rgba(255,230,153,1);color:rgba(55,55,55,1);font-size:1.1rem;font-weight:bold;"><td>Test Items</td> <td>Expect</td><td>Result</td></tr>
+        <tr><td class="tableInstruct">Turn off internet connections, like airplane mode</td><td></td><td></td></tr>
+        <tr><td>1. set time to current time</td><td>Play</td><td></td></tr>
+        <tr><td>2. set time to next year</td><td>Not Play</td><td></td></tr>
+        <tr><td>&nbsp</td><td></td><td></td></tr>
+        <tr><td class="tableInstruct">Turn on the internet connection</td><td></td><td></td></tr>
+        <tr><td>3. set time to current time</td><td>Not Play</td><td></td></tr>
+        <tr><td>4. puarchase one device in server</td><td>Not Play</td><td></td></tr>
+        <tr><td>5. set validity to "No Limit"</td><td>Play</td><td></td></tr>
+        <tr><td>6. set validity to "by end of" "Today"</td><td>Play</td><td></td></tr>
+        <tr><td>7. set validity to "by end of" "Yesterday"</td><td>Not Paly</td><td></td></tr>
+        <tr><td>8. set validity to "bNo Limit"</td><td>Play</td><td></td></tr>
+        <tr><td>&nbsp</td><td></td><td></td></tr>
+        <tr><td class="tableInstruct">Turn off all internet connections, like airplane mode</td><td></td><td></td></tr>
+        <tr><td>9. set time to current time</td><td>Play</td><td></td></tr>
+        <tr><td>10. set time to next year</td><td>Not Play</td><td></td></tr>
+        <tr><td>&nbsp</td><td></td><td></td></tr>
+        <tr><td class="tableInstruct">Turn on the internet connection</td><td></td><td></td></tr>
+        <tr><td>11. keep the time to next year</td><td>Play</td><td></td></tr>
+        <tr><td>12. set validity to "Denied"</td><td>Not Play</td><td></td></tr>
+        <tr><td>&nbsp</td><td></td><td></td></tr>
+        <tr><td class="tableInstruct">Turn off all internet connections, like airplane mode</td><td></td><td></td></tr>
+        <tr><td>13. set time to next year</td><td>Not Play</td><td></td></tr>
+        <tr><td>14. set time to today</td><td>Not Play</td><td></td></tr>
+        <tr><td>&nbsp</td><td></td><td></td></tr>
+        <tr><td class="tableInstruct">Turn on the Internet connection</td><td></td><td></td></tr>
+        <tr><td>15. set validity to "No Limit"</td><td>Play</td><td></td></tr>
+        <tr><td>16. use another device to test</td><td>Not Play</td><td></td></tr>
+        <tr><td>17. set PO quantity to 2 in server</td><td>Play</td><td></td></tr>
+    </table>
+</div>

@@ -5,18 +5,18 @@
     <link href="/css/root.css" rel="stylesheet" type="text/css"/>
     <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
     <script src="/js/doc.js"></script>
-    <title>Delivery Index</title>
+    <title>PM文档</title>
 </head>
 <body>
 <div id="blog">
-    <div id="guide">
-        <ul style="margin-left:0.5rem;padding-left:0;">
+    <div id="guide" style="width:0;">
+        <ul>
             <li class="noBtn"><a href="/tutorial">索引</a></li>
-            <li class="noBtn">1. 概述</li>
+            <li class="noBtn"><a href="/tutorial/intro">1. PM工作概述</a></li>
             <ul>
-                <li class="noBtn"><a href="/tutorial/introMeeting">1.1 会议一览</a></li>
+                <li class="noBtn"><a href="/tutorial/introTool">1.1 PM相关工具</a></li>
+                <li class="noBtn"><a href="/tutorial/introMeeting">1.2 PM参加会议一览</a></li>
             </ul>
-            <li><button>+</button> 2. PM相关工具</li>
             <li><button>+</button> 3. 报告书写</li>
             <ul>
                 <li class="noBtn"><a href="/tutorial/ReportEfforts">3.1 Efforts Report</a></li>
@@ -47,6 +47,9 @@
             </ul>
             <li><button>+</button> 6. 项目维护</li>
         </ul>
+    </div>
+    <div id="guideExpand" onclick="switchGuidePanel()">
+        <i class="fas fa-caret-right fa-3x" style="margin:auto;"></i>
     </div>
     <div id="main">
         <%- contents %>

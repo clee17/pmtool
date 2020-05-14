@@ -11,6 +11,7 @@ var saveDoc = function(result){
             let received = JSON.parse(LZString.decompressFromBase64(xmlhttp.responseText));
             searchDocDetail(false);
             if(received.success){
+                resetDocForm();
                 cancelAddDoc();
             }else
                 alert(received.message);
@@ -22,9 +23,9 @@ var saveDoc = function(result){
 };
 
 var searchDocDetail = function(ifSearch){
-    let element = document.getElementById('addDocCover');
-    if(element)
-        element.style.display = ifSearch? 'flex':'none';
+    let element = document.getElementsByClassName('addDocCover');
+    if(element.length>0)
+        element[0].style.display = ifSearch? 'flex':'none';
 }
 
 var addDoc = function(){
@@ -32,9 +33,9 @@ var addDoc = function(){
     if(topLayer)
         topLayer.style.display = 'flex';
     setTimeout(function(){
-        let element = document.getElementById('addDoc');
-        if(element)
-            element.style.height = '22rem';
+        let element = document.getElementsByClassName('addDoc');
+        if(element.length>0)
+            element[0].style.height = '22rem';
     },10);
 }
 
@@ -76,15 +77,47 @@ var submitDoc = function(){
     element = document.getElementById('referenceInput');
         result.reference = element.value;
 
-    console.log(result);
     saveDoc(result);
 };
 
+var resetDocForm = function(){
+    let element = document.getElementById('nameInput');
+    if(element)
+        element.value = "";
+
+    element = document.getElementById('customerSelect');
+    if(element)
+       element.value = "0";
+
+    element = document.getElementById('projectSelect');
+    if(element)
+        element.value = "0";
+
+    element = document.getElementById('descriptionInput');
+    if(element)
+       element.value = "";
+
+    element = document.getElementById('sourceSelect');
+    if(element)
+        element.value = "0";
+
+    element = document.getElementById('typeSelect');
+        if(element)
+            element.value = "0";
+
+    element = document.getElementById('linkInput');
+        if(element)
+            element.value = "";
+
+    element = document.getElementById('referenceInput');
+        if(element)
+            element.value = "";
+}
 
 var cancelAddDoc = function(){
-    let element = document.getElementById('addDoc');
-    if(element)
-        element.style.height = '0';
+    let element = document.getElementsByClassName('addDoc');
+    if(element.length>0)
+        element[0].style.height = '0';
     setTimeout(function(){
         let topLayer = document.getElementById('pageCover');
         topLayer.style.display = 'none';
@@ -95,8 +128,6 @@ var changeAccount = function(target){
     target.size = 0;
     if(target.value === '0' || target.value === '1')
         return;
-
-
     searchDocDetail(true);
     var xmlhttp;
     if (window.XMLHttpRequest)
@@ -126,6 +157,49 @@ var changeAccount = function(target){
     }
     xmlhttp.open("POST","/search/project");
     xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-    xmlhttp.send("account="+target.value);
-
+    let data = {
+        account:target.value
+    }
+    xmlhttp.send("data="+LZString.compressToBase64(JSON.stringify(data)));
 }
+
+var setButtons = function(){
+    let pc = document.getElementById('pageCount');
+    if(!pc)
+        return;
+    let buttons = pc.children;
+    for(let i=0;i<buttons.length;++i){
+        if(buttons[i].innerHTML === PAGE_ID)
+            buttons[i].disabled = true;
+        else
+            buttons[i].disabled =null;
+    }
+};
+
+var loaded = function(){
+    setButtons();
+};
+
+var gotoPage = function(index){
+    let href = window.location.href;
+    if(href.indexOf('?')>0)
+        href=  href.substring(0,href.indexOf('?'));
+    href+='?pid='+index;
+    window.location.href = href;
+};
+
+var copyLocal = function(ref){
+    if(ref.parentNode)
+        ref = ref.parentNode;
+    let prevSibling = ref.previousElementSibling;
+    let text = prevSibling? prevSibling.innerText: '';
+    let prefix =  SETTING.DocLocalPath || "";
+    text = prefix+text;
+    copyText(text);
+}
+
+window.addEventListener('paste',systemPasteListener);
+
+var systemPasteListener = function(event){
+    console.log(event.clipboardData.getData('text/plain'));
+};

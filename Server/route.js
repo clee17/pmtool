@@ -2,12 +2,16 @@ var express = require('express'),
     path = require('path'),
     fs = require('fs'),
     ejs = require('ejs'),
+    mongoose= require('mongoose'),
     LZString = require('lz-string');
 
 var efforts = require('./../data/model/efforts'),
     accountModel = require('../data/model/accounts'),
+    ECMModel = require('../data/model/accounts2'),
     productModel = require('./../data/model/product'),
-    project = require('./../data/model/project'),
+    deliveryModel = require('./../data/model/delivery'),
+    projectModel = require('./../data/model/project'),
+    projectCommentModel = require('./../data/model/projectComment'),
     userModel = require('./../data/model/user'),
     docModel = require('./../data/model/doc'),
     contacts = require('./../data/model/contacts');
@@ -15,8 +19,10 @@ var efforts = require('./../data/model/efforts'),
 let tableList = {
     "efforts":efforts,
     "account":accountModel,
+    "ECM":ECMModel,
     "product":productModel,
-    "project":project,
+    "project":projectModel,
+    "projectComment":projectCommentModel,
     "user":userModel,
     "contacts":contacts,
     "docs":docModel
@@ -25,6 +31,7 @@ let tableList = {
 let router = express.Router();
 
 let basedir = path.join(path.resolve(__dirname),'../');
+let dataDir = path.join(basedir,'data/');
 
 let handler = {
     renderError:function(res,message){
@@ -38,6 +45,76 @@ let handler = {
             return;
         data.sent = true;
         res.send(LZString.compressToBase64(JSON.stringify(data)));
+    },
+
+    pm:function(req,res){
+        let pageId = req.query.pageId;
+        if(!pageId)
+            pageId = 1;
+        pageId--;
+        let render = {};
+        render.contents = {};
+        projectModel.find({},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account contacts delivery suppliers').exec()
+            .then(function(entries){
+                render.contents.entries = entries;
+                return projectModel.estimatedDocumentCount({}).exec();
+            })
+            .then(function(count){
+                render.contents.maxCount = count;
+                return accountModel.find({}).exec();
+            })
+            .then(function(accounts){
+                render.accounts = accounts;
+                return ECMModel.find({}).exec();
+
+            })
+            .then(function(ECMs){
+                render.ECMs = ECMs;
+                render.title = 'PM';
+                res.render('projectManager.html',render);
+            });
+    },
+
+    pmInfo:function(req,res){
+        let id = req.query.id;
+        if(!id || !id.match(/^[0-9a-fA-F]{24}$/)){
+            res.render('projectInfo.html',{title:'未知的项目',header:'请输入有效的项目id'});
+            return;
+        }
+
+        let render = {};
+        projectModel.aggregate([
+            {$match:{_id:mongoose.Types.ObjectId(id)}},
+            {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}},
+            {$unwind:"$account"},
+            {$lookup:{from:'delivery',localField:'delivery',foreignField:"_id",as:"delivery"}},
+        ])
+            .then(function(docs){
+                if(docs.length === 0)
+                    throw '数据库中没有该项目';
+                else{
+                    if(docs[0].delivery.length === 0)
+                        docs[0].delivery.push({name:"尚未定义产品"});
+                    else
+                        docs[0].delivery = docs[0].delivery[0];
+                    let header = '<a target="_blank" href="/account/info?id="'+docs[0]._id.toString()+'>'+docs[0].account.name + '</a>&nbsp&nbsp-&nbsp&nbsp'
+                        +docs[0].name+ '&nbsp&nbsp-&nbsp&nbsp'
+                        +docs[0].delivery.name;
+                    render.contents = docs[0];
+                    render.title = docs[0].name;
+                    render.header = header;
+                }
+                return userModel.find({"title":"Program Manager"}).exec();
+            })
+            .then(function(users){
+                render.users = users;
+                res.render('projectInfo.html',render);
+            })
+            .catch(function(err){
+                res.render('projectInfo.html',{title:'未知的项目',header:err});
+            })
+
+        
     },
 
     index:function(req,res){
@@ -64,8 +141,6 @@ let handler = {
                 handler.renderError(res,JSON.stringify(e));
             }
         });
-
-
     },
 
     table:function(req,res,next){
@@ -124,6 +199,19 @@ let handler = {
             });
     },
 
+    QA:function(req,res){
+        let contentId = req.params.contentId;
+        if(!contentId || contentId === '')
+            contentId = 'preface';
+        contentId = contentId.toLowerCase();
+        try{
+            let contents =  fs.readFileSync(path.join(basedir,'/view/QA/'+contentId+'.html'),'utf-8');
+            res.render('QACheck.html',{title:"PM教程",contents:contents});
+        }catch(err){
+            res.render('QACheck.html',{title:"PM教程",contents:err});
+        }
+    },
+
     docManager:function(req,res,next) {
         let pageId = req.query.pid;
         let render = {};
@@ -131,6 +219,7 @@ let handler = {
             pageId = 1;
         pageId--;
         render.pageId=  pageId;
+        render.setting ={};
         docModel.find({},null,{limit:20,skip:pageId*20,  sort:{
                 date: -1
             }}).populate('account project').exec()
@@ -144,9 +233,12 @@ let handler = {
             })
             .then(function(accounts){
                 render.accounts = accounts;
+                let settings =  fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
+                render.setting = settings;
                 res.render('docManager.html',render);
             })
             .catch(function (err) {
+                render.err = err;
                 res.render('docManager.html',render);
             });
     },
@@ -225,12 +317,20 @@ let handler = {
     },
 
     search:function(req,res){
-        let received = req.body;
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let tableId = req.params.tableId;
         if(!tableList[tableId]){
             handler.renderError(res,'no valid tableId received');
             return;
         }
+        let search = {};
+        let cond = null;
+        search = received.search? received.search : received;
+        if(received.cond)
+            cond = received.cond;
+        let populate = '';
+        if(received.populate)
+            populate = received.populate;
         let response = {
             sent:false,
             index:tableId,
@@ -238,16 +338,20 @@ let handler = {
             message:"unknown failure"
         };
 
-        tableList[tableId].find(received,function(err,docs){
-            if(err){
-                handler.renderError(res,JSON.stringify(err));
-            }else{
+        tableList[tableId].estimatedDocumentCount().exec()
+            .then(function(count){
+                response.count = count;
+                return tableList[tableId].find(search,null,cond).populate(populate).exec();
+            })
+            .then(function(docs){
                 response.result = JSON.parse(JSON.stringify(docs));
                 response.message = "";
                 response.success = true;
                 handler.sendResult(res,response);
-            }
-        })
+            })
+            .catch(function(err){
+                handler.renderError(res,JSON.stringify(err));
+            })
     },
 
     save:function(req,res){
@@ -266,14 +370,13 @@ let handler = {
             message:"unknown failure"
         };
 
-        let searchCriteria = {};
-        if(received._id)
-            searchCriteria._id = received._id;
-        else
-            searchCriteria = received;
-
-        tableList[tableId].findOneAndUpdate(searchCriteria,received,{upsert:true,setDefaultsOnInsert:true},function(err,result){
+        let search = received._id? {_id:received._id} : received;
+        let update = received;
+        if(update._id)
+            delete update._id;
+        tableList[tableId].findOneAndUpdate(search,update,{upsert:true,setDefaultsOnInsert:true,new:true},function(err,result){
             if(err){
+                response.message = typeof err != 'string' ? JSON.stringify(err):err;
                 handler.sendResult(res,response);
             }else{
                 response.result = JSON.parse(JSON.stringify(result));
@@ -329,10 +432,13 @@ let handler = {
 
 };
 
-router.get('/',handler.index);
+router.get('/',handler.pm);
+router.get('/project/info',handler.pmInfo);
 router.get('/:tableId',handler.table);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
+router.get('/QATool',handler.QA);
+router.get('/QATool/:contentId',handler.QA);
 router.get('/doc',handler.docManager);
 router.get('/doc/:projectId/:docId',handler.doc);
 

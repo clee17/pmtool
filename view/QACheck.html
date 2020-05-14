@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/root.css" rel="stylesheet" type="text/css"/>
+    <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <script src="/js/doc.js"></script>
+    <title>QA检查指标</title>
+</head>
+<body>
+<div id="blog">
+    <div id="guide" style="width:0;padding:0;">
+        <ul style="margin-left:0.5rem;padding-left:0;">
+            <li class="noBtn"><a href="/QATool">索引</a></li>
+            <li class="noBtn"><a href="/QATool/introduction">1. 概述</a></li>
+            <li class="noBtn"><a href="/QATool/LicenseCheck">2. License Check List</a></li>
+        </ul>
+    </div>
+    <div id="guideExpand" onclick="switchGuidePanel()">
+        <i class="fas fa-caret-right fa-3x" style="margin:auto;"></i>
+    </div>
+    <div id="main">
+        <%- contents %>
+    </div>
+</div>
+</body>
+</html>

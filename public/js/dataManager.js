@@ -24,6 +24,11 @@ app.service("dataManager",function($http,$rootScope){
         manager.request('/search/'+tableName,symbol,data);
     }
 
+    manager.requestAggregateData = function(tableName,symbol,data){
+        manager.request('/aggregate/'+tableName,symbol,data);
+
+    }
+
     manager.saveData = function(tableName,symbol,data){
         manager.request('/save/'+tableName,symbol,data);
     }

@@ -7,25 +7,32 @@ var express = require('express'),
 
 var efforts = require('./../data/model/efforts'),
     accountModel = require('../data/model/accounts'),
-    ECMModel = require('../data/model/accounts2'),
+    paymentModel = require('../data/model/payment'),
     productModel = require('./../data/model/product'),
     deliveryModel = require('./../data/model/delivery'),
     projectModel = require('./../data/model/project'),
     projectCommentModel = require('./../data/model/projectComment'),
+    projectTaskModel = require('./../data/model/projectTask'),
     userModel = require('./../data/model/user'),
     docModel = require('./../data/model/doc'),
-    contacts = require('./../data/model/contacts');
+    versionModel = require('./../data/model/version'),
+    versionTaskModel = require('./../data/model/versionTask'),
+    contactsModel = require('./../data/model/contacts');
 
 let tableList = {
     "efforts":efforts,
     "account":accountModel,
-    "ECM":ECMModel,
     "product":productModel,
     "project":projectModel,
+    "projectTask":projectTaskModel,
     "projectComment":projectCommentModel,
     "user":userModel,
-    "contacts":contacts,
-    "docs":docModel
+    "contacts":contactsModel,
+    "version":versionModel,
+    "versionTask":versionTaskModel,
+    "docs":docModel,
+    "payment":paymentModel,
+
 };
 
 let router = express.Router();
@@ -48,25 +55,24 @@ let handler = {
     },
 
     pm:function(req,res){
-        let pageId = req.query.pageId;
+        let pageId = req.query.pid;
         if(!pageId)
             pageId = 1;
         pageId--;
         let render = {};
         render.contents = {};
-        projectModel.find({},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account contacts delivery suppliers').exec()
+        projectModel.find({},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers').exec()
             .then(function(entries){
                 render.contents.entries = entries;
                 return projectModel.estimatedDocumentCount({}).exec();
             })
             .then(function(count){
                 render.contents.maxCount = count;
-                return accountModel.find({}).exec();
+                return accountModel.find({},null,{sort:{name:1}}).exec();
             })
             .then(function(accounts){
                 render.accounts = accounts;
-                return ECMModel.find({}).exec();
-
+                return accountModel.find({type:1},null,{sort:{name:1}}).exec();
             })
             .then(function(ECMs){
                 render.ECMs = ECMs;
@@ -86,25 +92,32 @@ let handler = {
         projectModel.aggregate([
             {$match:{_id:mongoose.Types.ObjectId(id)}},
             {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}},
-            {$unwind:"$account"},
             {$lookup:{from:'delivery',localField:'delivery',foreignField:"_id",as:"delivery"}},
         ])
             .then(function(docs){
                 if(docs.length === 0)
                     throw '数据库中没有该项目';
                 else{
-                    if(docs[0].delivery.length === 0)
-                        docs[0].delivery.push({name:"尚未定义产品"});
+                    let contents = JSON.parse(JSON.stringify(docs[0]));
+                    if(contents.account.length >0)
+                        contents.account = docs[0].account[0];
                     else
-                        docs[0].delivery = docs[0].delivery[0];
-                    let header = '<a target="_blank" href="/account/info?id="'+docs[0]._id.toString()+'>'+docs[0].account.name + '</a>&nbsp&nbsp-&nbsp&nbsp'
-                        +docs[0].name+ '&nbsp&nbsp-&nbsp&nbsp'
-                        +docs[0].delivery.name;
-                    render.contents = docs[0];
-                    render.title = docs[0].name;
+                        contents.account = null;
+                    if(contents.delivery.length === 0)
+                        contents.delivery.push({name:"尚未定义产品"});
+                    else
+                        contents.delivery = contents.delivery[0];
+
+                    let accountLink = contents.account? '<a target="_blank" href="/account/info?id="'+contents._id.toString()+'>'+contents.account.name + '</a>' : '';
+                    let header = accountLink+'&nbsp&nbsp-&nbsp&nbsp'
+                        +contents.name+ '&nbsp&nbsp-&nbsp&nbsp'
+                        +contents.delivery.name;
+
+                    render.contents = contents;
+                    render.title = contents.name;
                     render.header = header;
                 }
-                return userModel.find({"title":"Program Manager"}).exec();
+                return userModel.find({}).exec();
             })
             .then(function(users){
                 render.users = users;
@@ -316,9 +329,59 @@ let handler = {
         })
     },
 
+    aggregate:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let tableId = req.params.tableId;
+
+        let response = {
+            sent:false,
+            index:tableId,
+            result:[],
+            message:""
+        };
+
+        if(!tableList[tableId]){
+           response.message = 'no valid tableId received';
+            return;
+        }else if(!received || !Array.isArray(received)){
+            response.message = 'no valid aggregate list received';
+            return;
+        }
+
+        if(response.message !== ""){
+            handler.sendResult(res,response);
+            return;
+        }
+
+        for(let i=0;i<received.length;++i){
+            for(let attr in received[i]){
+                for(let index in received[i][attr]){
+                    let content = received[i][attr][index];
+                    if(typeof content === 'object' && content.type === 'ObjectId'){
+                        received[i][attr][index] = mongoose.Types.ObjectId(content.value);
+                    }
+                }
+            }
+        }
+
+        tableList[tableId].aggregate(received)
+            .then(function(docs){
+                response.result = docs;
+                response.success = true;
+                handler.sendResult(res,response);
+            })
+            .catch(function(err){
+                if(typeof err != 'string')
+                    err = JSON.stringify(err);
+                response.message = err;
+                handler.sendResult(res,response);
+            });
+    },
+
     search:function(req,res){
         let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let tableId = req.params.tableId;
+
         if(!tableList[tableId]){
             handler.renderError(res,'no valid tableId received');
             return;
@@ -338,6 +401,17 @@ let handler = {
             message:"unknown failure"
         };
 
+        for(let attr in search){
+            if(!(typeof search[attr] == 'object'))
+                continue;
+            for(let index in search[attr]){
+                if(index == "$regex"){
+                    search[attr][index] = new RegExp(search[attr][index].value, search[attr][index].cond);
+                }
+
+            }
+        }
+
         tableList[tableId].estimatedDocumentCount().exec()
             .then(function(count){
                 response.count = count;
@@ -350,7 +424,9 @@ let handler = {
                 handler.sendResult(res,response);
             })
             .catch(function(err){
-                handler.renderError(res,JSON.stringify(err));
+                console.log(err);
+                response.message = JSON.stringify(err);
+                handler.sendResult(res,response);
             })
     },
 
@@ -370,10 +446,16 @@ let handler = {
             message:"unknown failure"
         };
 
+        let populate = '';
         let search = received._id? {_id:received._id} : received;
         let update = received;
         if(update._id)
             delete update._id;
+        if(update.populate){
+            populate = update.populate;
+            delete update.populate;
+        }
+
         tableList[tableId].findOneAndUpdate(search,update,{upsert:true,setDefaultsOnInsert:true,new:true},function(err,result){
             if(err){
                 response.message = typeof err != 'string' ? JSON.stringify(err):err;
@@ -384,8 +466,10 @@ let handler = {
                 response.success = true;
                 handler.sendResult(res,response);
             }
-        })
+        }).populate(populate);
     },
+
+
 
     developers:function(req,res){
         let data = {
@@ -445,6 +529,7 @@ router.get('/doc/:projectId/:docId',handler.doc);
 router.post('/countInfo/',handler.count);
 router.post('/vagueSearch/',handler.vague);
 router.post('/search/:tableId',handler.search);
+router.post('/aggregate/:tableId',handler.aggregate);
 router.post('/save/:tableId',handler.save);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);

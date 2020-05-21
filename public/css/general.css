@@ -176,6 +176,10 @@ body{
     margin-right:1rem;
 }
 
+.pageCount >div{
+    margin-right:1rem;
+}
+
 .pageCount >button:first-child{
     margin-left:auto;
 }
@@ -251,4 +255,62 @@ body{
 .docEntries tr>td:nth-child(3){
     max-width:6rem;
     word-break:break-all;
+}
+
+.simpleBtn {
+    color:rgba(152,75,67,0.8);
+    font-size:1rem;
+    background:none;
+    border:none;
+}
+
+.simpleBtn:hover{
+    color:red;
+}
+
+.pageCoverTable{
+    border-collapse:collapse;
+}
+
+.pageCoverTable tr{
+    height:1.8rem;
+}
+
+.dataListTable td{
+    padding-right:0.5rem;
+    padding-left:0.5rem;
+    padding-bottom:0.2rem;
+}
+
+.singleLine{
+    margin-left:2rem;
+    width:26rem;
+    text-overflow:ellipsis;
+    height:1rem;
+    word-break:break-word;
+    overflow:hidden;
+    -webkit-line-clamp: 1;  /* 设置超出多少行隐藏 */
+    -webkit-box-orient: vertical;
+    display: -webkit-box;  /* 设置 display 为 -webkit-box 或者 -webkit-inline-box 时为隐藏状态 */
+}
+
+.inlineBtn{
+    color:inherit;
+    background:none;
+    border:none;
+}
+
+.inlineBtn:hover{
+    color:lightgray;
+}
+
+.linkBtn{
+    color:royalblue;
+    background:none;
+    border:none;
+    font-size:1rem;
+}
+
+.linkBtn:hover{
+    color:deepskyblue;
 }

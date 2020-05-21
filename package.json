@@ -20,9 +20,9 @@
     "jszip": "^3.2.2",
     "lz-string": "^1.4.4",
     "mongod": "^2.0.0",
-    "mongoose": "^5.4.11",
+    "mongoose": "^5.9.15",
     "nodejs": "0.0.0",
-    "nodemon": "^2.0.2",
+    "nodemon": "^2.0.4",
     "path": "^0.12.7"
   }
 }

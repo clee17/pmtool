@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title><%- title %></title>
+    <base href="/">
     <link href="/css/general.css" rel="stylesheet" type="text/css"/>
     <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
     <script src="/lib/lz-string.min.js"></script>
     <script src="/lib/angular.min.js"></script>
     <script>
         var app = angular.module("dashboard",[]);
+        app.config(function($locationProvider){
+            $locationProvider.html5Mode(true);
+        });
     </script>
+    <script src="/js/general.js"></script>
+    <script src="/js/doc.js"></script>
     <script src="/js/dataManager.js"></script>
     <script src="/js/projectFilter.js"></script>
     <script src="/js/projectInfo.js"></script>
@@ -39,6 +45,7 @@
         background:white;
         flex-wrap:wrap;
         width:56rem;
+        overflow:hidden;
     }
     #projectInfo>div{
         width:50%;
@@ -70,6 +77,7 @@
         padding:2rem;
         border-radius:0.5rem;
         margin-bottom:2rem;
+        overflow:hidden;
     }
 
     #submitButton{
@@ -92,60 +100,201 @@
         margin-left:auto;
         margin-right:auto;
     }
+
+    #activeSelect{
+        background:none;
+        border:none;
+        width:4rem;
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+        color:royalblue;
+        font-size:0.9rem;
+    }
+
+    #activeSelect::-ms-expand { display: none; }
+
+    #activeSelect:hover{
+        text-decoration:underline;
+    }
+
 </style>
 
 <body ng-app="dashboard"
-      ng-controller="infoCon">
+      ng-controller="rootCon">
 <info-receiver  ng-init="project = '<%= encodeURIComponent(JSON.stringify(contents)) %>';
                          users = '<%= encodeURIComponent(JSON.stringify(users)) %>'"></info-receiver>
 <div id="header">
     <div style="margin-top:auto;margin-bottom:auto;margin-left:1.5rem;"><%- header %></div>
 </div>
-<div id="statusBar"><a href="/">返回</a> > 当前状态 > <span >{{project.status | status}}</span></div>
-<div class="mainContents">
-<div id="projectInfo" >
-    <div><div>platform:</div><div delivery-info info="platform"></div></div>
-    <div><div>OS:</div><div delivery-info info="OS"></div></div>
-    <div><div>current release:</div></div>
-</div>
+<div id="statusBar"><a href="/" target="_self">首页</a> > 当前状态 > <span >{{project.status | status}}</span></div>
+<div class="mainContents" ng-controller="infoCon">
+    <div id="projectInfo">
+        <div><div>platform:</div><div delivery-info info="platform"></div></div>
+        <div><div>OS:</div><div delivery-info info="OS"></div></div>
+        <div><div>current release:</div><div>{{currentRelease.title}}</div></div>
+        <div><div>Active:</div>
+            <select id="activeSelect" ng-model="projectDetail.active" ng-options="activeOption.value as activeOption.name for activeOption in activeOptions"></select>
+        </div>
+    </div>
 </div>
 <div style="display:flex;flex-direction:row;margin-left:2.5rem;" id="tabParent">
     <div tab-button>comments</div>
     <div tab-button>release history</div>
     <div tab-button>bugfix</div>
-    <div tab-button>documents</div>
+    <div tab-button>contracts</div>
+    <div tab-button>payment</div>
 </div>
 
 <div  class="mainContents">
-    <div ng-show=" currentPage=='comments'" style="display:flex;flex-direction:column;" id="commentPanel">
+    <div ng-show="currentPage==='comments'" style="display:flex;flex-direction:column;" id="commentPanel" ng-controller="commentCon">
         <div ng-repeat="comment in comments" style="padding-top:1rem;padding-bottom:1rem;border-bottom:1px solid lightgray">
             <div style="display:flex;flex-direction:row;" class="subRow">
                 <div>提交人：{{comment.user.name}}</div>
-                <div>提交日期：{{comment.date}}</div>
+                <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
+                <div>status：{{comment.status | status}}</div>
             </div>
             <div style="padding-left:2rem;padding-right:2rem;padding-top:0.5rem;" content-format contents="{{comment.comment}}">{{comment.comment}}</div>
         </div>
         <div style="display:flex;flex-direction:row;margin-top:2rem;">
             <div style="margin-left:1rem;">提交人：</div>
-            <select ng-options="user._id as user.name for user in users" ng-model="commentSubmit.user"></select>
+            <select ng-disabled="!updatable()"
+                    ng-options="user._id as user.name for user in managers"
+                    ng-model="commentSubmit.user">
+            </select>
             <div style="margin-left:4rem;">schedule：</div>
-            <input type="date" id="commentTime">
+            <input ng-disabled="!updatable()" type="date" id="commentTime">
             <div style="margin-left:4rem;">status：</div>
-            <select ng-model="projectUpdate.status">
+            <select ng-disabled="!updatable()" ng-model="projectUpdate.status">
                 <option value="0">opportunities</option>
                 <option value="1">business</option>
                 <option value="2">development</option>
                 <option value="3">delivery </option>
                 <option value="4">maintenance</option>
-                <option value="5">closed</option>
-                <option value="6">re-open</option>
+                <option value="7">mass production</option>
             </select>
         </div>
-        <textarea ng-model="commentSubmit.contents" ng-disabled="commentSubmit.saving || !updatable()"></textarea>
+        <textarea ng-model="commentSubmit.contents" ng-disabled="!updatable()"></textarea>
         <div style="display:flex;flex-direction:row;">
-            <button id="submitButton" ng-click="submitComment()" ng-disabled="commentSubmit.saving || !updatable()">提交</button>
+            <button id="submitButton" ng-click="submitComment()" ng-disabled="!updatable()">提交</button>
+        </div>
+    </div>
+
+    <div ng-show="currentPage==='release history'" style="display:flex;flex-direction:column;" ng-controller="releaseCon">
+        <button style="margin-left:auto;margin-right:2rem;margin-bottom:1.5rem;" class="simpleBtn" ng-click="showCover('release')">ADD RELEASE</button>
+        <div style="padding-left:4rem;margin-bottom:1rem;">
+            <div style="display:flex;flex-direction:row;">
+                <div style="width:6rem;">VERSION</div>
+                <div class="singleLine">DESCRIPTION</div>
+                <div style="margin-left:3rem;width:10rem;">UPLOADED</div>
+                <div style="margin-left:2rem;width:5rem;">LINK</div>
+                <div style="margin-left:2rem;width:12rem;">QA REPORT</div>
+            </div>
+        </div>
+        <div ng-show="versions.length === 0" style="text-align:center;width:100%;margin-top:1rem;font-size:1rem;">
+            <b>No record of versions under this project</b>
+        </div>
+        <div ng-repeat="release in versions" style="display:flex;flex-direction:column;padding-left:4rem;">
+            <div style="display:flex;flex-direction:row;" class="entry">
+                <div style="width:6rem;">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</div>
+                <div class="singleLine" style="width:26rem;">{{release.description}}</div>
+                <div style="margin-left:3rem;width:10rem;">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</div>
+                <div style="display:flex;flex-direction:row;margin-left:2rem;width:5rem;"><div style="opacity:0;width:1px;height:1rem;overflow:hidden;"><span>{{release.position}}</span></div>
+                    <div><button ng-disabled="release.position.length==0" class="simpleBtn" onclick="copyPrev(this)">COPY</button></div>
+                </div>
+                <div style="margin-left:2rem;width:12rem;"></div>
+                <div style="margin-left:2rem;"><button class="inlineBtn" style="transform:scale(1.5);" ng-click="expandData($event)"><i class="fa fa-angle-down"></button></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="currentPage=='contracts'" style="display:flex;flex-direction:column;" ng-controller="docCon">
+        <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('contracts')">ADD DOCUMENT</button>
+        <table style="margin-left:auto;margin-right:auto;margin-top:2rem;" class="dataListTable">
+            <tr>
+                <td>NAME</td>
+                <td>DATE</td>
+                <td>Description</td>
+                <td>TYPE</td>
+                <td>LINK</td>
+                <td>REFERENCE</td>
+                <td>SOURCE</td>
+            </tr>
+            <tr ng-show="docs.length === 0"><td colspan="6" style="text-align:center;">
+                <b>No record of bugs under this project</b>
+            </td></tr>
+            <tr ng-repeat="doc in docs">
+                <td>{{doc.name}}</td>
+                <td>{{doc.date | date:'&y-&m-&d &h:&i:&s'}}</td>
+                <td content-format contents="{{doc.description}}" style="width:20rem;"></td>
+                <td><b>{{doc.type | docType}}</b></td>
+                <td>
+                    <div style="width:1px;height:0;opacity:0;pointer-events:none;"><span>{{doc.link}}</span></div>
+                    <div><button class="simpleBtn" onclick="copyPrev(this)">COPY</button></div></td>
+                <td content-format contents="{{doc.reference}}" style="width:15rem;"></td>
+                <td content-format contents="{{doc.source | docSource}}" style="text-align:center;"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div ng-show="currentPage=='bugfix'" style="display:flex;flex-direction:column;" ng-controller="bugCon">
+        <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('bugfix')">ADD BUGFIX</button>
+        <table style="margin-left:auto;margin-right:auto;margin-top:2rem;" class="dataListTable">
+            <tr>
+                <td>TITLE</td>
+                <td>DATE</td>
+                <td>VERSION</td>
+                <td>COMMENT</td>
+                <td>STATUS</td>
+            </tr>
+            <tr ng-show="bugs.length === 0" style="text-align:center;margin-top:1rem;font-size:1rem;">
+                <td colspan="4"><b>No record of bugs under this project</b></td></tr>
+            <tr ng-repeat="bug in bugs">
+                <td>{{bug.title}}</td>
+                <td>{{bug.date | date:'&y/&m/&d'}}</td>
+                <td>{{bug.version|version}}</td>
+                <td>{{bug.comment}}</td>
+                <td style="text-align:center;">{{bug.status | bugStatus}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div ng-show="currentPage=='payment'" style="display:flex;flex-direction:column;" ng-controller="paymentCon">
+        <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('payment')">ADD PAYMENT</button>
+        <table class="dataListTable" style="margin-left:auto;margin-right:auto;margin-top:2rem;">
+            <tr><td>PAYER</td><td>PO</td><td>DATE</td></td><td>PAYMENT</td><td>STATUS</td><td>COMMENT</td><td>INVOICE</td><td>DOC</td><td></td></tr>
+            <tr ng-show="payments.length ===0"><td colspan="8" style="text-align:center;">
+                <b>No Payments Record for this project</b>
+            </td></tr>
+            <tr><td colspan="4">&nbsp</td></tr>
+            <tr ng-repeat="payment in payments">
+                <td>{{payment.account.name}}</td>
+                <td>{{payment.PO}}</td>
+                <td>{{payment.date | date:'&y/&m/&d &h:&i:&s'}}</td>
+                <td>{{payment.amount}} {{payment.currency | currency}}</td>
+                <td>{{payment.status | payStatus}}</td>
+                <td>{{payment.comment}}</td>
+                <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:center;"></td>
+                <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:center;"></td>
+                <td><button ng-click="edit(payment)" style="margin-right:1rem;margin-left:5rem;" class="linkBtn">EDIT</button>
+                    <button ng-click="delete(payment)" class="linkBtn">DELETE</button></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;">
+    <div class="addDoc" style="position:relative;">
+        <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);" ng-show="saving">
+            <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
+        </div>
+        <div style="margin:1rem;display:flex;flex-direction:column;" id="coverDetail"></div>
+        <div style="display:flex;flex-direction:row;margin-top:1rem;">
+            <button style="margin-left:6rem;margin-right:auto;" ng-click="submitDoc()">提交</button>
+            <button style="margin-left:auto;margin-right:6rem;" ng-click="cancelDoc()">取消</button>
         </div>
     </div>
 </div>
+
 </body>
 </html>

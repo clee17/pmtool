@@ -17,34 +17,41 @@ app.directive('projectStatus',function(){
         },
         link:function(scope,element, attr){
             let schedule  = new Date(scope.schedule);
-            let dateNow = Date.now();
+            let dateNow = new Date(Date.now());
             scope.passed = schedule < dateNow;
+            scope.today = schedule.getFullYear()==dateNow.getFullYear() && schedule.getMonth() == dateNow.getMonth() && schedule.getDate() == dateNow.getDate();
             if(scope.passed)
                 element.css('color','rgba(233,51,32,1)');
+            else if(scope.today)
+                element.css('color','rgba(53,42,131,1)');
             if(scope.status === '5')
-                element.css('color','lightgray');
+                element.css('color','rgba(185,185,185,1)');
             element
                 .on('mouseover',function(){
                     if(scope.status === '5'){
-                        element.css('color','rgba(185,185,185,1)');
+                        element.css('color','rgba(145,145,145,1)');
                         element.css('cursor','pointer');
                         return;
                     }
-
                     if(scope.passed)
                        element.css('color','rgba(152,75,67,1)');
+                    else if(scope.today){
+                        element.css('color','rgba(99,80,242,1)');
+                    }
                     else
                         element.css('color','rgba(185,185,185,1)')
                     element.css('cursor','pointer');
                 })
                 .on('mouseleave',function(){
                     if(scope.status === '5'){
-                        element.css('color','lightgray');
+                        element.css('color','rgba(185,185,185,1)');
                         element.css('cursor','auto');
                         return;
                     }
                     if(scope.passed)
                         element.css('color','rgba(233,51,32,1)');
+                    else if(scope.today)
+                        element.css('color','rgba(53,42,131,1)');
                     else
                         element.css('color','rgba(65,65,65,1)');
                     element.css('cursor','default');
@@ -59,8 +66,12 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         pageId:1,
         pageMax:1,
         goToPage:function(index){
-            $location.search('pid',index.toString());
-            $window.location.href = $location.absUrl();
+            let href = window.location.href;
+            if(href.indexOf('?')>0)
+                href=  href.substring(0,href.indexOf('?'));
+            href+='?pid='+index;
+            window.location.href = href;
+
         }
     }
 
@@ -111,11 +122,12 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             alert('请选择一个终端客户');
             return;
         }
-        if(np.account.value === '0')
+        if(np.account === '0')
             updateQuery.account = null;
-        else if(np.endCustomer.value === '0')
-            updateQuery.endCustomemr = null;
+        if(np.endCustomer === '0')
+            updateQuery.endCustomer = null;
         updateQuery.status = Number(updateQuery.status);
+        updateQuery.populate = 'account';
         dataManager.saveData('project','project added',updateQuery);
     }
 
@@ -123,18 +135,40 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         if(!data.success){
             alert(data.message);
         }else{
+            let commentUpdate= {};
+            commentUpdate.project = data.result._id;
+            commentUpdate.date = Date.now();
+            commentUpdate.schedule = data.result.schedule;
+            commentUpdate.comment = data.result.description;
+            commentUpdate.user = "5e797da1b8859cb0fa0d29bd"; //CLEE To Be Updated.
+            dataManager.saveData('projectComment','project comment finished',commentUpdate);
             $scope.newProject.name = '';
             $scope.newProject.account = '1';
             $scope.newProject.endCustomer = '1';
             $scope.newProject.description = '';
             $scope.contents.entries.push(data.result);
-            cancelAddDoc();
+            $scope.cancelAddDoc();
         }
-    })
+    });
+
+    $scope.$on("project comment finished",function(event,data){
+        if(!data.success){
+            alert(data.message);
+        }
+    });
 
     $scope.initialize = function(){
         $scope.pageIndex.pageMax = Math.ceil($scope.contents.maxCount/25);
-        $scope.pageIndex.pageId = $location.search().pid||1;
+        let pageId = 1;
+        let index = window.location.search.indexOf('pid=');
+        if(index >=0){
+            let substr = window.location.search.substring(index+4);
+            let endIndex = substr.indexOf('&');
+            if(endIndex >=0)
+                substr = substr.substring(0,endIndex);
+            pageId = Number(substr);
+        }
+        $scope.pageIndex.pageId = pageId;
         $scope.pageIndex.startIndex = $scope.pageIndex.pageId - 7;
         if($scope.pageIndex.startIndex<1)
             $scope.pageIndex.startIndex = 1;

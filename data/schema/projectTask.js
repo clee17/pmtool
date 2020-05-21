@@ -2,13 +2,11 @@ var mongoose = require('mongoose');
 
 module.exports = new mongoose.Schema({
     project: {type:mongoose.Schema.ObjectId,ref:'project',default:null},
-    version:{
-        main:{type:Number,default:1},
-        update:{type:Number,default:0},
-        fix:{type:Number,default:0}},
-    priority:{type:Number,default:1},
     date:{type:Date,default:Date.now()},
     developers:[{type:mongoose.Schema.ObjectId,ref:'user',default:null}],
-    description:{type:String,default:""},
-    position:{type:String,default:""}
+    status:{type:Number,default:0},//0 open, 1 investigation 2 delivery 3 closed
+    priority:{type:Number,default:1},
+    title:{type:String,default:""},
+    comment:{type:String,default:""},
+    type:{type:Number,default:0} // 0 bugfix 1 task
 });

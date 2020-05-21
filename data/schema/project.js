@@ -4,7 +4,7 @@ module.exports = new mongoose.Schema({
     name:{type:String,default:""},
     description:{type:String,default:""},
     account: {type:mongoose.Schema.ObjectId,ref:'account',default:null},
-    endCustomer: {type:String,default:""},
+    endCustomer: {type:mongoose.Schema.ObjectId,ref:'account',default:null},
     priority:{type:Number,default:0},
     date:{type:Date,default:Date.now()},
     schedule:{type:Date,default:Date.now()},

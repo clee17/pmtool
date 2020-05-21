@@ -48,31 +48,36 @@
 <div id="main">
     <div class="topBtnRow"><button ng-click="addProject()" class="addDocBtn">添加项目</button></div>
     <table id="projectTable">
-        <tr><td>Project name</td><td>Account</td><td>priority</td><td>schedule</td><td>product</td><td>status</td></tr>
+        <tr><td>Account</td><td>End Customer</td><td>Project name</td>
+            <td>priority</td><td>schedule</td><td>product</td><td>status</td><td>established</td></tr>
         <tr ng-repeat="entry in contents.entries"
             ng-mouseover="hoverPlink($event,true)"
             ng-mouseleave="hoverPlink($event,false)"
             ng-click="goToProject(entry._id)"
             project-status schedule="{{entry.schedule}}" status="{{entry.status}}">
             <a href="{{'/pm/info?id='+entry._id}}">
+                <td>{{entry.account | account}}</td>
+                <td>{{entry.endCustomer | account}}</td>
                 <td>{{entry.name}}</td>
-                <td>{{entry.account.name}}</td>
                 <td>{{entry.priority}}</td>
                 <td>{{entry.schedule | date:"&y/&m/&d"}}</td>
                 <td>{{entry.delivery.description}}</td>
                 <td> {{entry.status | status }} </td>
+                <td>{{entry.date | date:'&y/&m/&d'}}</td>
             </a>
         </tr>
     </table>
-    <div class="pageCount" style="margin-top:auto;margin-bottom:1.5rem;display:flex;flex-direction:row;">
-        <div ng-if="pageIndex.startIndex>1"><button ng-click="pageIndex.gotoPage(1)">1</button></div>
+    <div class="pageCount" style="margin-top:auto;margin-bottom:1.5rem;display:flex;flex-direction:row;padding-top:3rem;">
+        <div ng-if="pageIndex.startIndex>1"><button ng-click="pageIndex.goToPage(1)">1</button></div>
         <div ng-if="pageIndex.startIndex>2">…</div>
         <div ng-repeat="x in [].constructor(7) track by $index">
             <button ng-if="$index+pageIndex.startIndex <= pageIndex.pageMax"
-                    ng-click="pageIndex.gotoPage($index+pageIndex.startIndex)"
+                    ng-click="pageIndex.goToPage($index+pageIndex.startIndex)"
                     ng-disabled="pageIndex.pageId-pageIndex.startIndex === $index">{{$index+pageIndex.startIndex}}</button></div>
         <div ng-if="pageIndex.startIndex+7 < pageIndex.pageMax">…</div>
-        <div ng-if="pageIndex.startIndex+7 <= pageIndex.pageMax">{{pageIndex.pageMax}}</div>
+        <div ng-if="pageIndex.startIndex+7 <= pageIndex.pageMax">
+            <button ng-click="pageIndex.goToPage(pageIndex.pageMax)">{{pageIndex.pageMax}}</button>
+        </div>
     </div>
 </div>
 <div class="footer" style="padding-top:1rem;padding-bottom:1rem;display:flex;height:2rem;">
@@ -116,7 +121,7 @@
                 <tr><td>状态</td><td>
                     <select ng-model="newProject.status">
                         <option value="0">opportunities</option>
-                        <option value="1">evaluation</option>
+                        <option value="1">business</option>
                         <option value="2">development</option>
                         <option value="3">delivery</option>
                         <option value="4">maintenance</option>

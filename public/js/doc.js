@@ -17,6 +17,17 @@ var copyPrev = function(target){
     copyText(text);
 }
 
+var newLink = function(target){
+    if(target.parentNode)
+        target = target.parentNode;
+    let prevSibling = target.previousElementSibling;
+    let text = prevSibling? prevSibling.innerText: '';
+    if(text != '')
+        window.open(text);
+    else
+        return;
+}
+
 var showAlert = function(txt){
 
 };

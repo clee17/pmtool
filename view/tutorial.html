@@ -7,45 +7,65 @@
     <script src="/js/doc.js"></script>
     <title>PM文档</title>
 </head>
+<script>
+    var expandLayer = function(target){
+        if(!target)
+            return;
+        let layer = target.parentNode.nextElementSibling;
+        let visible = target.innerHTML === '+';
+        if(visible){
+            target.innerHTML = '-';
+            if(layer)
+                layer.style.display = 'none';
+        }else{
+            target.innerHTML = '+';
+            if(layer)
+               layer.style.display = 'block';
+        }
+    }
+
+</script>
 <body>
 <div id="blog">
     <div id="guide" style="width:0;">
         <ul>
-            <li class="noBtn"><a href="/tutorial">索引</a></li>
             <li class="noBtn"><a href="/tutorial/intro">1. PM工作概述</a></li>
             <ul>
                 <li class="noBtn"><a href="/tutorial/introTool">1.1 PM相关工具</a></li>
-                <li class="noBtn"><a href="/tutorial/introMeeting">1.2 PM参加会议一览</a></li>
+                <li class="noBtn"><a href="/tutorial/introAccount">1.2 PM常用账号工具一栏</a></li>
+                <li class="noBtn"><a href="/tutorial/introMeeting">1.3 PM参加会议一览</a></li>
             </ul>
-            <li><button>+</button> 3. 报告书写</li>
+            <li><button onclick="expandLayer(this)">+</button> 2. 报告书写</li>
             <ul>
-                <li class="noBtn"><a href="/tutorial/ReportEfforts">3.1 Efforts Report</a></li>
-                <li class="noBtn"><a href="/tutorial/ReportRoyalty">3.2 Royalty Report</a></li>
-                <li class="noBtn"><a href="/tutorial/ReportPriority">3.3 Priority Report</a></li>
-                <li class="noBtn"><a href="/tutorial/ReportBRP">3.4 Business Review Presentation</a></li>
+                <li class="noBtn"><a href="/tutorial/ReportEfforts">2.1 Efforts Report</a></li>
+                <li class="noBtn"><a href="/tutorial/ReportRoyalty">2.2 Royalty Report</a></li>
+                <li class="noBtn"><a href="/tutorial/ReportPriority">2.3 Priority Report</a></li>
+                <li class="noBtn"><a href="/tutorial/ReportBRP">2.4 Business Review Presentation</a></li>
             </ul>
-            <li><button>+</button> 4. 产品概览</li>
+            <li><button onclick="expandLayer(this)">+</button><a href="/tutorial/product">3. 产品概览</a></li>
             <ul>
-                <li class="noBtn"><a href="/tutorial/productCodec">4.1 音视频解码器</a></li>
-                <li class="noBtn"><a href="/tutorial/productDTV">4.2 DTV Player</a></li>
+                <li class="noBtn"><a href="/tutorial/productCodec">3.1 音视频解码器</a></li>
+                <li class="noBtn"><a href="/tutorial/productDTV">3.2 DTV Player</a></li>
+                <li class="noBtn"><a href="/tutorial/productDTV">3.3 Mirror&Sync</a></li>
+                <li class="noBtn"><a href="/tutorial/productDTV">3.4 Uni Tests for codec developers</a></li>
             </ul>
-            <li><button>+</button> 5. 产品交付 </li>
+            <li><button onclick="expandLayer(this)">+</button> 4. 产品交付 </li>
             <ul>
-                <li class="noBtn">5.1 FTP账户的使用</li>
-                <li class="noBtn">5.2 应用市场上传</li>
+                <li class="noBtn">4.1 FTP账户的使用</li>
+                <li class="noBtn">4.2 应用市场上传</li>
                 <ul>
-                    <li>5.2.1 中国应用宝上传</li>
-                    <li>5.2.2 Google Play上传</li>
-                    <li>5.2.3 ios上传</li>
+                    <li>4.2.1 中国应用宝上传</li>
+                    <li>4.2.2 Google Play上传</li>
+                    <li>4.2.3 ios上传</li>
                 </ul>
-                <li class="noBtn"><a href="/tutorial/deliveryshipment">5.3 产品的寄送</a></li>
-                <li><button>+</button> <a href="/tutorial/deliveryLicense">5.4 license的分发</a></li>
+                <li class="noBtn"><a href="/tutorial/deliveryshipment">4.3 产品的寄送</a></li>
+                <li><button onclick="expandLayer(this)">+</button> <a href="/tutorial/deliveryLicense">4.4 license的分发</a></li>
                 <ul>
-                    <li><a href="/tutorial/deliveryuuid">5.4.1 通过UUID生成许可</a></li>
-                    <li><a href="/tutorial/deliveryLicenseServer">5.4.2 Cidana server生成许可</a></li>
+                    <li><a href="/tutorial/deliveryuuid">4.4.1 通过UUID生成许可</a></li>
+                    <li><a href="/tutorial/deliveryLicenseServer">4.4.2 Cidana server生成许可</a></li>
                 </ul>
             </ul>
-            <li><button>+</button> 6. 项目维护</li>
+            <li><button onclick="expandLayer(this)">+</button> 5. 项目维护</li>
         </ul>
     </div>
     <div id="guideExpand" onclick="switchGuidePanel()">

@@ -19,6 +19,10 @@
     <script src="/js/dataManager.js"></script>
     <script src="/js/projectFilter.js"></script>
     <script src="/js/projectInfo.js"></script>
+    <script src="/js/projectInfoInfoCon.js"></script>
+    <script src="/js/projectInfoCommentCon.js"></script>
+    <script src="/js/projectInfoPaymentCon.js"></script>
+    <script src="/js/projectInfoReleaseCon.js"></script>
 </head>
 <style>
     body{
@@ -37,6 +41,16 @@
         padding-left:1.5rem;
         font-weight:bold;
     }
+
+    #statusBar>a{
+        color:inherit;
+        text-decoration:none;
+    }
+
+    #statusBar >a:hover {
+        color:rgba(151,151,151,1);
+    }
+
     #projectInfo{
         display:flex;
         flex-direction:row;
@@ -44,20 +58,31 @@
         margin-right:auto;
         background:white;
         flex-wrap:wrap;
-        width:56rem;
+        width:76rem;
         overflow:hidden;
     }
+
     #projectInfo>div{
         width:50%;
         margin-bottom:1rem;
         display:flex;
         flex-direction:row;
+        overflow: hidden;
     }
 
     #projectInfo>div>div:nth-child(1){
         width:8rem;
         text-align:right;
         margin-right:1rem;
+    }
+
+    #projectInfo a{
+        color:royalblue;
+        text-decoration:none;
+    }
+
+    #projectInfo a:hover{
+        text-decoration:underline;
     }
 
     #tabParent>div{
@@ -118,12 +143,62 @@
         text-decoration:underline;
     }
 
+    #btnPayment{
+        color:white;background:rgba(152,75,67,0.8);
+        margin-top:0.5rem;
+        margin-left:1.5rem;
+    }
+
+    #btnPayment:enabled:hover {
+        background:indianred;
+        cursor:pointer;
+        opacity:0.85;
+    }
+
+    #contactWindow{
+        display:flex;
+        flex-direction:column;
+
+    }
+
+    #contactWindow>div{
+        display:flex;
+        flex-direction:row;
+
+    }
+
+    #contactWindow>div >div:first-child{
+        min-width:8rem;
+        text-align:right;
+        margin-right:0.8rem;
+    }
+
+    #contactWindow>div >div:nth-child(2){
+        min-width:20rem;
+        width:20rem;
+        max-width:20rem;
+        display:flex;
+        flex-direction:column;
+    }
+
+    #contactWindow button{
+        border:none;
+        background:none;
+        color:royalblue;
+    }
+
+    #contactWindow button:hover{
+        color:deepskyblue;
+    }
+
+
 </style>
 
 <body ng-app="dashboard"
       ng-controller="rootCon">
 <info-receiver  ng-init="project = '<%= encodeURIComponent(JSON.stringify(contents)) %>';
-                         users = '<%= encodeURIComponent(JSON.stringify(users)) %>'"></info-receiver>
+                         users = '<%= encodeURIComponent(JSON.stringify(users)) %>';
+                         setting = '<%= encodeURIComponent(JSON.stringify(setting)) %>';"></info-receiver>
 <div id="header">
     <div style="margin-top:auto;margin-bottom:auto;margin-left:1.5rem;"><%- header %></div>
 </div>
@@ -136,8 +211,62 @@
         <div><div>Active:</div>
             <select id="activeSelect" ng-model="projectDetail.active" ng-options="activeOption.value as activeOption.name for activeOption in activeOptions"></select>
         </div>
+        <div><div>Account:</div><div info="{{project.account}}" type="name" account-info></div></div>
+        <div>
+        <div>Contacts:</div>
+        <div>
+           <div ng-repeat="contact in project.projectContacts">
+               <button  ng-if="$index < 1" ng-click="showProjectContacts()" class="inlineBtn" style="padding:0;height:1rem;margin-right:0.5rem;">{{contact.name}}<{{contact.mail}}></button><button ng-click="mailTo(contact)" class="linkBtn" style="font-size:0.8rem;">MAIL</button>
+           </div>
+        </div>
+        </div>
+        <div><div>FTP:</div><div></div></div>
     </div>
 </div>
+
+<div class="mainContents" ng-controller="alertCon">
+    <div style="width:100%;display:flex;flex-direction:row;font-size:1.1rem;margin-top:-1rem;">
+        <div style="font-weight:bold;margin-left:1rem;">ALERT</div>
+        <div style="margin-left:auto;">
+            <button class="inlineBtn" style="transform:scale(2);padding:0;margin-right:2rem;"><i class="fa fa-angle-down"></i></button>
+        </div>
+    </div>
+    <div style="width:100%;border-bottom:solid 1px lightgray;padding-bottom:0.5rem;"></div>
+    <div ng-show="alerts.length>0" style="display:flex;flex-direction:column;">
+        <div><button class="inlineBtn" id="btnPayment" ng-click="gotoPage(5)" ng-disabled="currentPageIndex() === 5">PAYMENT</button></div>
+        <div>
+            <table style="margin-left:1rem;margin-top:1rem;">
+                <tr ng-repeat="alert in alerts">
+                    <td style="padding-left:2rem;"><div style="border-radius:0.3rem;text-align:center;line-height:1.3rem;width:1.3rem;height:1.3rem;padding:0;color:white;background:rgba(152,75,67,0.8);" class="inlineBtn">P</div></td>
+                    <td style="padding-left:2rem;">Unpaid payments</td>
+                    <td style="padding-left:2rem;">{{alert.PO}}&nbsp&nbsp&nbsp{{alert.status | payStatus}}
+                        &nbsp&nbsp&nbsp{{alert.amount}} {{alert.currency | currency}}</td>
+                    <td style="padding-left:2rem;">{{alert.date | date:'&y/&m/&d'}}</td>
+                    <td style="padding-left:2rem;">Due By:</td>
+                    <td style="padding-left:2rem;">Repeat By:</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div ng-show="TaskAlerts.length>0" style="display:flex;flex-direction:column;">
+        <div><button class="inlineBtn" id="btnTask">TASK</button></div>
+        <div>
+            <table style="margin-left:1rem;margin-top:1rem;">
+                <tr ng-repeat="alert in paymentAlerts">
+                    <td style="padding-left:2rem;">Unpaid payments</td>
+                    <td style="padding-left:2rem;">{{alert.PO}}</td>
+                    <td style="padding-left:2rem;">{{alert.date | date:'&y/&m/&d &h:&i:&s'}}</td>
+                    <td style="padding-left:2rem;">Due By:</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div style="min-height:3.5rem;display:flex;flex-direction:column;margin-bottom:-1.5rem;" ng-show="noAlert()">
+        <div style="margin:auto;font-weight:bold;height:1rem;">NO&nbsp&nbsp&nbsp&nbspUPDATES</div>
+    </div>
+</div>
+
 <div style="display:flex;flex-direction:row;margin-left:2.5rem;" id="tabParent">
     <div tab-button>comments</div>
     <div tab-button>release history</div>
@@ -155,6 +284,18 @@
                 <div>status：{{comment.status | status}}</div>
             </div>
             <div style="padding-left:2rem;padding-right:2rem;padding-top:0.5rem;" content-format contents="{{comment.comment}}">{{comment.comment}}</div>
+        </div>
+        <div class="pageCount" style="margin-top:1rem;margin-bottom:0.5rem;">
+            <div ng-if="startIndex>1"><button ng-click="goToPage(1)">1</button></div>
+            <div ng-if="startIndex>2">…</div>
+            <div ng-repeat="x in [].constructor(7) track by $index">
+                <button ng-if="$index+startIndex <= page"
+                        ng-click="goToPage($index+startIndex)"
+                        ng-disabled="pageId - startIndex === $index">{{$index+startIndex}}</button></div>
+            <div ng-if="startIndex+7 < pageMax">…</div>
+            <div ng-if="startIndex+7 <= page">
+                <button ng-click="goToPage(pageMax)">{{pageMax}}</button>
+            </div>
         </div>
         <div style="display:flex;flex-direction:row;margin-top:2rem;">
             <div style="margin-left:1rem;">提交人：</div>
@@ -182,30 +323,29 @@
 
     <div ng-show="currentPage==='release history'" style="display:flex;flex-direction:column;" ng-controller="releaseCon">
         <button style="margin-left:auto;margin-right:2rem;margin-bottom:1.5rem;" class="simpleBtn" ng-click="showCover('release')">ADD RELEASE</button>
-        <div style="padding-left:4rem;margin-bottom:1rem;">
-            <div style="display:flex;flex-direction:row;">
-                <div style="width:6rem;">VERSION</div>
-                <div class="singleLine">DESCRIPTION</div>
-                <div style="margin-left:3rem;width:10rem;">UPLOADED</div>
-                <div style="margin-left:2rem;width:5rem;">LINK</div>
-                <div style="margin-left:2rem;width:12rem;">QA REPORT</div>
-            </div>
-        </div>
-        <div ng-show="versions.length === 0" style="text-align:center;width:100%;margin-top:1rem;font-size:1rem;">
-            <b>No record of versions under this project</b>
-        </div>
-        <div ng-repeat="release in versions" style="display:flex;flex-direction:column;padding-left:4rem;">
-            <div style="display:flex;flex-direction:row;" class="entry">
-                <div style="width:6rem;">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</div>
-                <div class="singleLine" style="width:26rem;">{{release.description}}</div>
-                <div style="margin-left:3rem;width:10rem;">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</div>
-                <div style="display:flex;flex-direction:row;margin-left:2rem;width:5rem;"><div style="opacity:0;width:1px;height:1rem;overflow:hidden;"><span>{{release.position}}</span></div>
+        <table style="margin-left:auto;margin-right:auto;" class="dataListTable">
+            <tr>
+                <td>VERSION</td>
+                <td>DESCRIPTION</td>
+                <td>UPLOADED</td>
+                <td>LINK</td>
+                <td>QA REPORT</td>
+            </tr>
+        <tr ng-show="versions.length === 0">
+           <td colspan="5" style="text-align:center;"><b>No record of versions under this project</b></td>
+        </tr>
+        <tr ng-repeat="release in versions" class="entry">
+                <td valign="top">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</td>
+                <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;">{{release.description}}</div></td>
+                <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
+                <td valign="top" style="display:flex;flex-direction:row;">
+                    <div style="opacity:0;width:1px;height:1rem;overflow:hidden;"><span>{{release.position}}</span></div>
                     <div><button ng-disabled="release.position.length==0" class="simpleBtn" onclick="copyPrev(this)">COPY</button></div>
-                </div>
-                <div style="margin-left:2rem;width:12rem;"></div>
-                <div style="margin-left:2rem;"><button class="inlineBtn" style="transform:scale(1.5);" ng-click="expandData($event)"><i class="fa fa-angle-down"></button></i></div>
-            </div>
-        </div>
+                </td>
+                <td></td>
+                <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event)"><i class="fa fa-angle-down"></i></button></td>
+        </tr>
+        </table>
     </div>
 
     <div ng-show="currentPage=='contracts'" style="display:flex;flex-direction:column;" ng-controller="docCon">
@@ -229,8 +369,9 @@
                 <td content-format contents="{{doc.description}}" style="width:20rem;"></td>
                 <td><b>{{doc.type | docType}}</b></td>
                 <td>
-                    <div style="width:1px;height:0;opacity:0;pointer-events:none;"><span>{{doc.link}}</span></div>
-                    <div><button class="simpleBtn" onclick="copyPrev(this)">COPY</button></div></td>
+                    <div style="width:1px;height:0;opacity:0;pointer-events:none;"><span>{{doc | docLink}}</span></div>
+                    <div ng-if="doc.link !== ''"><button class="simpleBtn" onclick="copyPrev(this)">COPY</button></div>
+                    <div ng-if="doc.link == ''"><button class="simpleBtnRight" ng-click="edit(doc)">ADD</button></div></td>
                 <td content-format contents="{{doc.reference}}" style="width:15rem;"></td>
                 <td content-format contents="{{doc.source | docSource}}" style="text-align:center;"></td>
             </tr>
@@ -239,21 +380,25 @@
 
     <div ng-show="currentPage=='bugfix'" style="display:flex;flex-direction:column;" ng-controller="bugCon">
         <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('bugfix')">ADD BUGFIX</button>
-        <table style="margin-left:auto;margin-right:auto;margin-top:2rem;" class="dataListTable">
+        <table style="margin-left:auto;margin-right:auto;margin-top:2rem;border-collapse:collapse;" class="dataListTable">
             <tr>
                 <td>TITLE</td>
                 <td>DATE</td>
                 <td>VERSION</td>
+                <td>DEVELOPER</td>
                 <td>COMMENT</td>
                 <td>STATUS</td>
             </tr>
             <tr ng-show="bugs.length === 0" style="text-align:center;margin-top:1rem;font-size:1rem;">
-                <td colspan="4"><b>No record of bugs under this project</b></td></tr>
-            <tr ng-repeat="bug in bugs">
+                <td colspan="6"><b>No record of bugs under this project</b></td></tr>
+            <tr ng-repeat="bug in bugs" style="border-bottom:solid 1px lightgray;">
                 <td>{{bug.title}}</td>
                 <td>{{bug.date | date:'&y/&m/&d'}}</td>
                 <td>{{bug.version|version}}</td>
-                <td>{{bug.comment}}</td>
+                <td style="display:flex;flex-direction:column;padding-top:1.2rem;">
+                    <div ng-repeat="developer in bug.developers">◉ {{developer.name}}</div>
+                </td>
+                <td style="max-width:35rem;padding-bottom:1.2rem;padding-top:1.2rem;" content-format contents="{{bug.comment}}">{{bug.comment}}</td>
                 <td style="text-align:center;">{{bug.status | bugStatus}}</td>
             </tr>
         </table>
@@ -262,7 +407,7 @@
     <div ng-show="currentPage=='payment'" style="display:flex;flex-direction:column;" ng-controller="paymentCon">
         <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('payment')">ADD PAYMENT</button>
         <table class="dataListTable" style="margin-left:auto;margin-right:auto;margin-top:2rem;">
-            <tr><td>PAYER</td><td>PO</td><td>DATE</td></td><td>PAYMENT</td><td>STATUS</td><td>COMMENT</td><td>INVOICE</td><td>DOC</td><td></td></tr>
+            <tr><td>PAYER</td><td>PO</td><td>DATE</td></td><td>PAYMENT</td><td style="text-align:center;">STATUS</td><td>COMMENT</td><td>INVOICE</td><td>DOC</td><td></td></tr>
             <tr ng-show="payments.length ===0"><td colspan="8" style="text-align:center;">
                 <b>No Payments Record for this project</b>
             </td></tr>
@@ -272,12 +417,13 @@
                 <td>{{payment.PO}}</td>
                 <td>{{payment.date | date:'&y/&m/&d &h:&i:&s'}}</td>
                 <td>{{payment.amount}} {{payment.currency | currency}}</td>
-                <td>{{payment.status | payStatus}}</td>
+                <td payment-status status="{{payment.status}}" style="text-align:center;">{{payment.status | payStatus}}</td>
                 <td>{{payment.comment}}</td>
-                <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:center;"></td>
+                <td doc-link  contents="{{payment.invoice}}" type="invoice" style="text-align:center;"></td>
                 <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:center;"></td>
-                <td><button ng-click="edit(payment)" style="margin-right:1rem;margin-left:5rem;" class="linkBtn">EDIT</button>
-                    <button ng-click="delete(payment)" class="linkBtn">DELETE</button></td>
+                <td style="display:flex;flex-direction:row;">
+                    <button ng-click="edit(payment)" style="margin-left:2rem;" class="linkBtn">EDIT</button>
+                    <button ng-click="delete(payment)" class="linkBtn" style="margin-left:1rem;">DELETE</button></td>
             </tr>
         </table>
     </div>

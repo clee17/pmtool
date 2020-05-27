@@ -1,0 +1,177 @@
+<style>
+    #accountTable{
+        border-collapse:collapse;
+    }
+
+    #accountTable td>table{
+        border-collapse:collapse;
+        border:none;
+    }
+
+    #accountTable td>table td{
+        border:none;
+    }
+
+    #accountTable td>table td>button{
+       background:none;
+        border:none;
+        color:rgba(152,75,67,0.8);
+        font-size:1rem;
+        font-weight:bold;
+    }
+
+    #accountTable td>table td>button:hover{
+        color:red;
+    }
+    #accountTable td>table tr{
+        border:none;
+    }
+    #accountTable td>table tr>td:first-child{
+        font-weight:bold;
+    }
+    #accountTable td>table tr>td:nth-child(2){
+        background:beige;
+        width:12rem;
+        overflow:auto;
+    }
+
+    #accountTable tr>td:nth-child(4){
+        max-width:15rem;
+    }
+
+    .dashLine{
+        width:100%;
+        min-height:0.8rem;
+        margin-bottom:0.8rem;
+        border-bottom:4px double lightgray;
+    }
+
+</style>
+<h1>PM常用账户</h1>
+
+<div class="contents">
+    <p>本篇对本公司PM工作者历史上曾经使用过的的种种账号进行记录存储，以便后来者查询，</p>
+    <p>Excel版本存储在\\fileserver\S&M\Account中，可以前往更新查看。</p>
+    <p>具体的Google Chrome网站用Ever Sync插件来管理，可以跨浏览器同步所有收藏的书签。</p>
+
+    <h2>账号列表</h2>
+    <table id="accountTable">
+        <tr><td>账号类型</td><td>网站地址</td><td>账号</td><td>备注</td></tr>
+        <tr><td>项目特供</td><td><a href="175.98.100.75/redmine/login">redmine</a></td><td>
+            <table>
+                <tr><td>username:</td><td><span>emma.lu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+                <tr><td colspan="4"></td></tr>
+                <tr><td>password:</td><td><span>n49hp6oq2Z</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            </table>
+            <div class="dashLine"></div>
+            <table>
+                <tr><td>username:</td><td><span>ryan.zhao@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+                <tr><td colspan="4"></td></tr>
+                <tr><td>password:</td><td><span>12345678</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            </table>
+            <div class="dashLine"></div>
+            <table>
+                <tr><td>username:</td><td><span>sophie.jiang@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+                <tr><td colspan="4"></td></tr>
+                <tr><td>password:</td><td><span>12345678</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            </table>
+        </td><td>panasonic 项目专用查看bug更新进度的平台</td></tr>
+
+        <tr><td>内部系统</td><td><a href="jenkins.cidanash.com:8082">Jenkins</a></td><td><table>
+            <tr><td>username:</td><td><span>cidana</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>cidana</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>codec developer 在unitests的时候可以使用的平台</td></tr>
+
+        <tr><td>外部供应</td><td><a href="apkpure.com">apkpure</a></td><td><table>
+            <tr><td>username:</td><td><span>Cidana</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>EM@ma2019</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>等待更新</td></tr>
+
+        <tr><td>外部供应</td><td><a href="catappult.io">catapult</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu191@gmail.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>EM@ma2019</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>等待更新</td></tr>
+
+        <tr><td>外部工具</td><td><a href="id.docker.com">docker</a></td><td><table>
+            <tr><td>username:</td><td><span>fochqu</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>qufeixiong1993</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>等待更新</td></tr>
+
+        <tr><td>项目特供</td><td><a href="https://www.escrowlive.trust/">ESCROW</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>Ccidana[0]</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table>
+            <div class="dashLine"></div>
+            <table>
+                <tr><td>username:</td><td><span>shaolin.wu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+                <tr><td colspan="4"></td></tr>
+                <tr><td>password:</td><td><span>Ccidana[0]</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            </table>
+        </td><td>ST项目用来存放代码包的平台,上传教程<a target="_blank" href="/doc/5ea634d03cd2c21212130dd3/escrowUpload">+click+</a></td></tr>
+
+        <tr><td>外部工具</td><td><a href="esol.com">ESOL</a></td><td><table>
+            <tr><td>username:</td><td><span>BD0563-01</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>Az5n300415</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>等待更新</td></tr>
+
+        <tr><td>外部工具</td><td><a href="ftp://ftp.iis.fraunhofer.de/">iisFTP</a></td><td><table>
+            <tr><td>username:</td><td><span>Cidana</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>Cidana2020</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>等待更新</td></tr>
+
+        <tr><td>重要账号</td><td><a href="google.com">Google Service</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu191@gmail.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>lu191795</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>Google Service</td></tr>
+
+        <tr><td>外部工具</td><td><a href="user.mockplus.cn">mockPlus</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>EM@ma2019</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>绘制思维和产品原型图的网站</td></tr>
+
+        <tr><td>外部工具</td><td><a href="https://register.mwcshanghai.com/register">MWC Shanghai</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>EM@ma2019</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>一年一度的shanghai展会</td></tr>
+
+        <tr><td>项目专供</td><td><a href="https://meechum.netflix.com/as/authorization.oauth2">Netflix</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>EM@ma2019</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>netflix的某个网站，不知道具体有什么用处。</td></tr>
+
+        <tr><td>项目专供</td><td><a href="https://www.sacinfo.cn/u/register">中国标准信息服务网</a></td><td><table>
+            <tr><td>username:</td><td><span>Cidana</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>Cidana2020</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>netflix的某个网站，不知道具体有什么用处。</td></tr>
+
+        <tr><td>内部工具</td><td><a href="http://svn-server:81/">svn server</a></td><td><table>
+            <tr><td>username:</td><td><span>Emma.Lu</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>lu191795</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>内部的svn server。</td></tr>
+
+        <tr><td>内部工具</td><td><a href="trello.com">Trello</a></td><td><table>
+            <tr><td>username:</td><td><span>Emma.Lu</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>EM@ma2019</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>等待更新。</td></tr>
+
+        <tr><td>内部工具</td><td><a href="https://mediatek-sg.webex.com">Webex</a></td><td><table>
+            <tr><td>username:</td><td><span>emma.lu@cidana.com</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+            <tr><td colspan="4"></td></tr>
+            <tr><td>password:</td><td><span>uBehUMiT</span></td><td><button onclick="copyPrev(this)">COPY</button></td></tr>
+        </table></td><td>看起来像是meeting使用的某个网站，不知道具体用途</td></tr>
+    </table>
+</div>

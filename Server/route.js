@@ -8,6 +8,7 @@ var express = require('express'),
 var efforts = require('./../data/model/efforts'),
     accountModel = require('../data/model/accounts'),
     paymentModel = require('../data/model/payment'),
+    paymentDocModel = require('../data/model/paymentDocs'),
     productModel = require('./../data/model/product'),
     deliveryModel = require('./../data/model/delivery'),
     projectModel = require('./../data/model/project'),
@@ -32,6 +33,7 @@ let tableList = {
     "versionTask":versionTaskModel,
     "docs":docModel,
     "payment":paymentModel,
+    "paymentDocs":paymentDocModel
 
 };
 
@@ -92,27 +94,32 @@ let handler = {
         projectModel.aggregate([
             {$match:{_id:mongoose.Types.ObjectId(id)}},
             {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}},
+            {$unwind:{path: "$account", preserveNullAndEmptyArrays: true }},
+            {$lookup:{from:'contacts',localField:'account._id',foreignField:"company",as:"contacts"}},
+            {$lookup:{  from: "projectContact",
+                    let: {projectId: "$_id"},
+                    pipeline: [
+                        {$match:{$expr:{$eq:["$$projectId","$project"]}}},
+                        {$sort:{priority:-1}},
+                        {$lookup:{from:'contacts',localField:'contact',foreignField:"_id",as:"contact"}},
+                        {$unwind:"$contact"},
+                        {$replaceRoot:{newRoot:"$contact"}},
+                    ],
+                    as: "projectContacts"}},
             {$lookup:{from:'delivery',localField:'delivery',foreignField:"_id",as:"delivery"}},
+            {$unwind:{path: "$delivery", preserveNullAndEmptyArrays: true }},
         ])
             .then(function(docs){
                 if(docs.length === 0)
                     throw '数据库中没有该项目';
                 else{
                     let contents = JSON.parse(JSON.stringify(docs[0]));
-                    if(contents.account.length >0)
-                        contents.account = docs[0].account[0];
-                    else
-                        contents.account = null;
-                    if(contents.delivery.length === 0)
-                        contents.delivery.push({name:"尚未定义产品"});
-                    else
-                        contents.delivery = contents.delivery[0];
-
-                    let accountLink = contents.account? '<a target="_blank" href="/account/info?id="'+contents._id.toString()+'>'+contents.account.name + '</a>' : '';
-                    let header = accountLink+'&nbsp&nbsp-&nbsp&nbsp'
-                        +contents.name+ '&nbsp&nbsp-&nbsp&nbsp'
-                        +contents.delivery.name;
-
+                    let accountLink = contents.account? '<a target="_blank" href="/account/info?id='+contents.account._id+'">'+contents.account.name + '</a>' : 'CIDANA';
+                    accountLink += '&nbsp&nbsp-&nbsp&nbsp';
+                    let deliveryLink = contents.delivery? contents.delivery.name: 'Product Not Defined';
+                    let header = accountLink+ contents.name+ '&nbsp&nbsp-&nbsp&nbsp' + deliveryLink;
+                    console.log(contents._id);
+                    console.log(contents.projectContacts);
                     render.contents = contents;
                     render.title = contents.name;
                     render.header = header;
@@ -121,79 +128,15 @@ let handler = {
             })
             .then(function(users){
                 render.users = users;
+                let settings =  fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
+                render.setting = settings;
                 res.render('projectInfo.html',render);
             })
             .catch(function(err){
-                res.render('projectInfo.html',{title:'未知的项目',header:err});
+                res.render('error.html',{title:'未知的项目',message:err});
             })
 
         
-    },
-
-    index:function(req,res){
-        let pageId = req.query.pid || 1;
-        pageId--;
-        if(pageId<0)
-            handler.renderError(res,"错误页码");
-        project.find({},null,{skip:30*pageId,limit:30},function(err,docs){
-            try{
-                let header =  fs.readFileSync(path.join(basedir,'/template/project.html'));
-                let contentTemplate = fs.readFileSync(path.join(basedir,'/template/projectInfo.html'));
-                let addTemplate = "";
-                let contents = [];
-                if(err)
-                    throw new Error(JSON.stringify(err));
-                else{
-                    contents = JSON.parse(JSON.stringify(docs));
-                    for(let i=0; i<contents.length;++i){
-                        delete contents[i]._id;
-                    }
-                }
-                res.render('dashboard.html',{headline:header,contents:contents});
-            }catch(e){
-                handler.renderError(res,JSON.stringify(e));
-            }
-        });
-    },
-
-    table:function(req,res,next){
-        let tableId = req.params.tableId;
-        let pageId = req.query.pid || 1;
-        pageId--;
-        if(pageId<0)
-            handler.renderError(res,"错误页码");
-        if(!tableId)
-            handler.renderError(res,"请输入正确的网址");
-        if(!tableList[tableId]){
-            next();
-            return;
-        }
-
-        tableList[tableId].find({},null,{skip:30*pageId,limit:30},function(err,docs){
-            try{
-                let contents = [];
-                if(err)
-                    throw new Error(JSON.stringify(err));
-                else{
-                    contents = JSON.parse(JSON.stringify(docs));
-                    for(let i=0; i<contents.length;++i){
-                        delete contents[i]._id;
-                    }
-                }
-                let headLink = fs.readFileSync(path.join(basedir,'/template/'+tableId+'.html'));
-                let addTemplate = fs.readFileSync(path.join(basedir,'/template/'+tableId+'Add.html'));
-                let contentTemplate = fs.readFileSync(path.join(basedir,'/template/'+tableId+'Info.html'));
-                res.render('index.html',
-                    {title:tableId,
-                        headline:headLink,
-                        add:addTemplate,
-                        contents:contents,
-                        tableId:tableId,
-                        contentTemplate:contentTemplate});
-            }catch(e){
-                handler.renderError(res,JSON.stringify(e));
-            }
-        }).populate('company');
     },
 
     tutorial:function(req,res){
@@ -408,11 +351,10 @@ let handler = {
                 if(index == "$regex"){
                     search[attr][index] = new RegExp(search[attr][index].value, search[attr][index].cond);
                 }
-
             }
         }
 
-        tableList[tableId].estimatedDocumentCount().exec()
+        tableList[tableId].countDocuments(search).exec()
             .then(function(count){
                 response.count = count;
                 return tableList[tableId].find(search,null,cond).populate(populate).exec();
@@ -518,7 +460,6 @@ let handler = {
 
 router.get('/',handler.pm);
 router.get('/project/info',handler.pmInfo);
-router.get('/:tableId',handler.table);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
 router.get('/QATool',handler.QA);

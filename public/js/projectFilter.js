@@ -84,7 +84,7 @@ app.filter('payStatus',function(){
     return function(status){
         if(typeof status !== 'number')
             status = Number(status);
-        let statusList = ['PO received', 'invoice issued', 'paid','partly paid'];
+        let statusList = ['PO', 'INVOICE', 'PAID','PART'];
         let result = statusList[status];
         if(!result)
             return statusList[0];
@@ -166,3 +166,25 @@ app.filter('bugStatus',function(){
         return statusList[status];
     }
 });
+
+app.filter('docLink',function($rootScope){
+    return function(doc){
+        let assetLink =  $rootScope.setting.DocLocalPath || "";
+        if(typeof doc !== 'object'){
+            doc = JSON.parse(doc);
+        }
+        if(!doc.source)
+            return assetLink+doc.link;
+        else
+            return doc.link;
+    }
+})
+
+app.filter('trim',function($rootScope){
+    return function(contents){
+        while(contents[0] === " "|| contents[0] === ' '){
+            contents = contents.substring(1);
+        }
+        return contents;
+    }
+})

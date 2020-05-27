@@ -146,7 +146,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             $scope.newProject.account = '1';
             $scope.newProject.endCustomer = '1';
             $scope.newProject.description = '';
-            $scope.contents.entries.push(data.result);
+            $scope.contents.entries.unshift(data.result);
             $scope.cancelAddDoc();
         }
     });

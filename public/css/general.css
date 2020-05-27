@@ -268,6 +268,18 @@ body{
     color:red;
 }
 
+.simpleBtnRight{
+    background:none;
+    border:none;
+    font-size:1rem;
+    color:darkslateblue;
+    font-weight:bold;
+}
+
+.simpleBtnRight:hover{
+    color:slateblue;
+}
+
 .pageCoverTable{
     border-collapse:collapse;
 }
@@ -284,7 +296,6 @@ body{
 
 .singleLine{
     margin-left:2rem;
-    width:26rem;
     text-overflow:ellipsis;
     height:1rem;
     word-break:break-word;
@@ -313,4 +324,65 @@ body{
 
 .linkBtn:hover{
     color:deepskyblue;
+}
+
+.row {
+    display:flex;
+    flex-direction:row;
+    color:inherit;
+    text-decoration:underline;
+}
+
+.indent{
+    margin-left:1.5rem;
+}
+
+.copyBtn{
+    margin-left:1.5rem;
+    color:rgba(152,75,67,0.8);
+    font-size:1rem;
+    font-weight:bold;
+    background:none;
+    border:none;
+}
+
+.copyBtn:hover{
+    color:red;
+}
+
+.inlineBtn{
+    display:inline-block;
+    font-weight:bold;
+    padding:0.3rem;
+    padding-left:0.6rem;
+    padding-right:0.6rem;
+    border-radius:0.5rem;
+}
+
+.requirements{
+    border-collapse:collapse;
+    margin-left:2rem;
+    margin-top:0.5rem;
+}
+
+.requirements td{
+    max-width:25rem;
+    padding-left:1.5rem;
+    padding-right:1rem;
+}
+
+.requirements tr:first-child{
+    background:rgba(152,75,67,0.8);
+    color:white;
+    font-weight:bold;
+}
+
+.requirements tr:first-child>td{
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left:0.6rem;
+}
+
+.requirements td{
+    border: solid 1px rgba(181,181,181,0.8);
 }

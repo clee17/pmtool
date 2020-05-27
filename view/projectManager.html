@@ -40,11 +40,35 @@
         margin-right:8rem;
         margin-top:1rem;
     }
+
+    #headerButtons{
+        margin:auto;
+        margin-right:2rem;
+        font-family:'Microsoft YaHei UI Light';
+        font-size:0.8rem;
+        display:flex;
+        flex-direction:row;
+        min-height:3rem;
+    }
+
+    #headerButtons >a{
+        margin-left:0.8rem;
+        margin-top:auto;
+        margin-bottom:0.2rem;
+
+    }
 </style>
 <body ng-app="dashboard"
       ng-controller="projectDashboard">
 <info-receiver  ng-init="contents = '<%= encodeURIComponent(JSON.stringify(contents)) %>'"></info-receiver>
-<div id="header"><div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">Cidana项目管理工具</div></div>
+<div id="header">
+    <div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">Cidana项目管理工具</div>
+    <div id="headerButtons">
+        <a href="http://127.0.0.1:4000/doc" target="_blank">ASSET</a>
+        <a href="http://127.0.0.1:4000/accountManager" target="_blank">ACCOUNT</a>
+        <a href="http://127.0.0.1:4000/tutorial" target="_blank">REFERENCE</a>
+    </div>
+</div>
 <div id="main">
     <div class="topBtnRow"><button ng-click="addProject()" class="addDocBtn">添加项目</button></div>
     <table id="projectTable">

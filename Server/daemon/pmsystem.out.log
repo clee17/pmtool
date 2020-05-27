@@ -1,0 +1,31 @@
+database successfully connected
+<a target="_blank" href="/account/info?id=5ebd02960e81c19693326b92">i-mobile</a>
+<a target="_blank" href="/account/info?id=5e80313f3e694c7b571d388a">Panasonic TW</a>
+<a target="_blank" href="/account/info?id=5e797f22b8859cb0fa0d2a3f">Netflix</a>
+
+
+
+database successfully connected
+database successfully connected
+database successfully connected
+database successfully connected
+database successfully connected
+database successfully connected
+5ea7e563dac3b5fd5dce7ba9
+[
+  {
+    _id: '5e8030db3e694c7b571d385c',
+    company: '5e80313f3e694c7b571d388a',
+    title: 'Panasonic Taiwan Q&A',
+    name: 'Xu Qingguo',
+    alias: '徐慶國',
+    number: 0,
+    mail: 'hsu.chingkuo@tw.panasonic.com',
+    location: 'Taiwan',
+    preferredlanguage: 0
+  }
+]
+5ebd2a1f7309924d68332ad4
+[]
+5ebd21ef5f68e6519cff70bd
+[]

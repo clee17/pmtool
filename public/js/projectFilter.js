@@ -188,3 +188,92 @@ app.filter('trim',function($rootScope){
         return contents;
     }
 })
+
+app.filter('countryCode',function($rootScope){
+    return function(code){
+        if(typeof code !== 'string')
+            code =code.toString();
+        for(let i=0;i <countryCodes.length;++i){
+            if(countryCodes[i].code === code)
+                return countryCodes[i].country;
+        }
+        return "unknown";
+    }
+})
+
+app.directive('uploadAccount',function($compile,$rootScope){
+    return{
+        restrict:"A",
+        scope:{
+            account:'@'
+        },
+        link:function(scope,element,attr){
+            let account = scope.account;
+            if(account === "")
+                element.html('<b>No Account</b>')
+            else {
+                account = JSON.parse(account);
+                let innerHTML = '<table><tr><td><b>user:</b></td><td><span>-username-</span></td><td style="padding-left:1rem;"><button onclick="copyPrev(this)" class="simpleBtn" style="font-size:0.85rem;font-weight:bold;">COPY</button></td></tr>' +
+                    '<tr><td><b>pwd:</b></td><td><span>-password-</span></td><td style="padding-left:1rem;"><button onclick="copyPrev(this)" class="simpleBtn" style="font-size:0.85rem;font-weight:bold;">COPY</button></td></tr></table>';
+                innerHTML = innerHTML.replace(/-username-/,account.username);
+                innerHTML = innerHTML.replace(/-password-/,account.password);
+                element.html(innerHTML);
+            }
+        }}
+});
+
+app.directive('addressFormat',function($compile,$rootScope){
+    return{
+        restrict:"A",
+        scope:{
+            account:'@'
+        },
+        link:function(scope,element,attr){
+            let account = scope.account;
+            if(account === "")
+                element.html('<b>No Address Info</b>')
+            else {
+                account = JSON.parse(account);
+                let innerHTML = account.address;
+                innerHTML = innerHTML.replace(/\n/g,'<br>');
+                element.html(innerHTML);
+            }
+        }}
+});
+
+app.directive('accountParent',function(){
+    return{
+        restrict:"A",
+        scope:{
+            account:'@'
+        },
+        link:function(scope,element,attr){
+            if(scope.account && scope.account !== "")
+                scope.account = JSON.parse(scope.account);
+            if(!scope.account)
+                element.css('');
+            if(typeof scope.account !== "string"){
+                let parentLink = "/account/info?id="+account._id;
+                let accountName = account.name;
+                let innerHTML = '<a href="'+parentLink+'">'+accountName+'</a>';
+                element.css(innerHTML);
+            }else
+                element.css('');
+        }}
+});
+
+
+app.directive('contentFormat',function(){
+    return{
+        restrict:"EA",
+        scope:{
+            contents:'@'
+        },
+        link:function(scope,element,attr){
+            let result = scope.contents.replace(/\n/g,'<br>');
+            if(result.length === 0)
+                result = 'no info';
+            element.html(result);
+        }
+    }
+});

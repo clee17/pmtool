@@ -8,5 +8,7 @@ module.exports = new mongoose.Schema({
     priority:{type:Number,default:1},
     title:{type:String,default:""},
     comment:{type:String,default:""},
-    type:{type:Number,default:0} // 0 bugfix 1 task
+    type:{type:Number,default:0},// 0 bugfix 1 task
+    parent: {type:mongoose.Schema.ObjectId,ref:'projectTask',default:null},
+    level:{type:Number,default:0}, // 0 意味着没有paprent:
 });

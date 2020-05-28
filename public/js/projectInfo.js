@@ -104,21 +104,6 @@ app.directive('infoReceiver',function($rootScope){
 });
 
 
-app.directive('contentFormat',function(){
-    return{
-        restrict:"EA",
-        scope:{
-            contents:'@'
-        },
-        link:function(scope,element,attr){
-            let result = scope.contents.replace(/\n/g,'<br>');
-            if(result.length === 0)
-                result = 'no info';
-            element.html(result);
-        }
-    }
-});
-
 
 
 app.directive('tabButton',function($rootScope,$location){
@@ -415,23 +400,44 @@ app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,da
 
     $scope.initialize = function(){
         let data = [
-            {$match:{project:{value:$rootScope.project._id,type:'ObjectId'}}},
-            {$lookup:{from:"versionTask",localField:"_id",foreignField:"version",as:"task"}},
-            {$unwind:"$task"},
+            { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]}]}}},
+            { $lookup:{from:"versionTask",localField:"_id",foreignField:"version",as:"task"}},
+            { $unwind:"$task"},
             { $set: { "task.version": "$version" } },
-            {$replaceRoot: { newRoot: "$task" } },
-            {$lookup:{  from: "projectTask",localField:"task",foreignField:"_id",as:"info"}},
-            {$unwind:"$info"},
+            { $replaceRoot: { newRoot: "$task" } },
+            { $lookup:{  from: "projectTask",localField:"task",foreignField:"_id",as:"info"}},
+            { $unwind:"$info"},
             { $set: { "info.version": "$version" } },
-            {$replaceRoot: { newRoot: "$info" } },
-            {$sort:{date:-1}},
-            {$lookup:{  from: "user",localField:"developers",foreignField:"_id",as:"developers"}},
+            { $replaceRoot: { newRoot: "$info" } },
+            { $sort:{date:-1}},
+            { $lookup:{  from: "user",localField:"developers",foreignField:"_id",as:"developers"}},
            ];
         dataManager.requestAggregateData('version','bugs requested', data);
     };
 
     $scope.initialize();
+});
 
+
+
+app.directive('historyDocList',function($compile){
+    return{
+        restrict:"A",
+        scope:{
+            draft:'@'
+        },
+        link:function(scope,element,attr){
+            scope.drafts = JSON.parse(scope.draft);
+            if(scope.drafts.length  === 0)
+                element.html('<button class="simpleBtnRight">ADD</button>')
+            else {
+                scope.drafts = JSON.parse(scope.draft);
+                let innerHTML = "<div ng-repeat='draft in drafts'>{{draft.name}} {{draft.date | date:'&y/&m/&d'}}</div>"
+                let node = $compile(innerHTML)(scope);
+                element.html('');
+                element.append(node);
+            }
+        }}
 });
 
 
@@ -450,6 +456,13 @@ app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
         {value:"0",name:"assets"},
         {value:"1",name:"online"},
         {value:"2",name:"fileserver"},
+    ];
+
+
+    $scope.types =[
+        {value:"0",name:"NDA"},
+        {value:"1",name:"SOW"},
+        {value:"2",name:"SLA"}
     ];
 
     $scope.saveDoc = null;
@@ -560,7 +573,12 @@ app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
     };
 
     $scope.initialize = function(){
-        dataManager.requestData('docs','contracts requested', {project:$rootScope.project._id, type: {$lte:2}});
+
+        let data = [
+            { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]},{$lte:["$type",2]}]}}},
+            { $lookup:{from:"doc",localField:"_id",foreignField:"parent",as:"draft"}},
+        ];
+        dataManager.requestAggregateData('docs','contracts requested', data);
     }
 
     $scope.initialize();

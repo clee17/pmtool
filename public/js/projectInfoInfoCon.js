@@ -53,6 +53,10 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
         node.click();
     };
 
+    $scope.detail = function(contact){
+
+    };
+
     $scope.showProjectContacts = function(){
         if($scope.statusReset){
             $scope.statusReset = false;
@@ -61,7 +65,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
         $rootScope.submitType = 'projectContacts';
         let innerHTML = '<div style="display:flex;flex-direction:column;padding:1.5rem;" id="contactWindow">' +
             '<div style="margin-left:auto;margin-bottom:1rem;" ng-if="accountLink"><a href="{{accountLink}}" target="_blank">Check Account</a></div>'+
-            '<div><div>Primary Contact:</div><div style="display:flex;flex-direction:row;" ng-repeat="contact in project.projectContacts" ng-if="$index<1"><div class="singleLine" style="padding:0;height:1.2rem;min-width:22rem;">{{contact.name}} <{{contact.mail}}></div><button ng-click="mailTo(contact)">MAIL</button></div></div>' +
+            '<div><div>Primary Contact:</div><div style="display:flex;flex-direction:row;" ng-repeat="contact in project.projectContacts" ng-if="$index<1"><div class="singleLine" style="padding:0;height:1.2rem;min-width:22rem;">{{contact.name}} <{{contact.mail}}></div><button ng-click="detail(contact)">DETAIL</button></div></div>' +
             '<div><div>Secondary Contact:</div>' +
             '<div><div class="singleLine" style="display:flex;flex-direction:row;" ng-repeat="contact in project.projectContacts" ng-if="$index===1"><div class="singleLine">{{contact.name}} <{{contact.mail}}></div><button ng-click="mailTo(contact)">MAIL</button></div></div>' +
             '</div><div>' +
@@ -80,7 +84,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
         count -=3;
         if(count<0)
             count = 0;
-        showPageCover(14 + count*2, 40);
+        showPageCover(14 + count*2, 42);
     }
 
     $scope.$watch('projectDetail.active',function(newVal,oldVal){

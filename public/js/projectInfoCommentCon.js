@@ -91,7 +91,7 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
 
 
     $scope.submitComment = function(){
-        if($scope.commentSubmit.contents === "" || $scope.commentSubmit.contents.length < 10){
+        if($scope.commentSubmit.contents.length < 10){
             alert('评论内容不得少于10个字符');
             return;
         }

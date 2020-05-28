@@ -82,3 +82,35 @@ Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInte
 2020-05-26 13:37:21 - Finished pmsystem.exe
 2020-05-26 17:25:55 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2020-05-26 17:25:55 - Started 26712
+2020-05-27 10:04:19 - Stopping pmsystem.exe
+2020-05-27 10:04:19 - ProcessKill 26712
+2020-05-27 10:04:19 - Found child process: 20432 Name: conhost.exe
+2020-05-27 10:04:19 - Found child process: 24512 Name: node.exe
+2020-05-27 10:04:19 - Stopping process 20432
+2020-05-27 10:04:19 - Send SIGINT 20432
+2020-05-27 10:04:19 - SIGINT to 20432 failed - Killing as fallback
+2020-05-27 10:04:20 - Stopping process 24512
+2020-05-27 10:04:20 - Send SIGINT 24512
+2020-05-27 10:04:20 - SIGINT to 24512 failed - Killing as fallback
+2020-05-27 10:04:20 - Stopping process 26712
+2020-05-27 10:04:20 - Send SIGINT 26712
+2020-05-27 10:04:20 - SIGINT to 26712 failed - Killing as fallback
+2020-05-27 10:04:20 - Finished pmsystem.exe
+2020-05-27 17:51:15 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-05-27 17:51:15 - Started 30472
+2020-05-28 11:56:57 - Stopping pmsystem.exe
+2020-05-28 11:56:57 - ProcessKill 30472
+2020-05-28 11:56:57 - Shutdown exception
+Message:系统正在关机。
+
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementScope.InitializeGuts(Object o)
+   在 System.Management.ManagementScope.Initialize()
+   在 System.Management.ManagementObjectSearcher.Initialize()
+   在 System.Management.ManagementObjectSearcher.Get()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2020-05-28 11:57:25 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-05-28 11:57:25 - Started 6684

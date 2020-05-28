@@ -71,7 +71,6 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
                 href=  href.substring(0,href.indexOf('?'));
             href+='?pid='+index;
             window.location.href = href;
-
         }
     }
 

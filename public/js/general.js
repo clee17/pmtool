@@ -33,3 +33,14 @@ var getCurrentStatus = function(status){
     let statusList = ['opportunities', 'business','development','delivery','maintenance','closed','re-open','mass production'];
     return statusList[status];
 };
+
+var countryCodes = [
+    {code:"54", country:"Argentina"},
+    {code:"86", country:"China"},
+    {code:"852", country:"Hongkong,China"},
+    {code:"886", country:"Taiwan,China"},
+    {code:"39", country:"Italy"},
+    {code:"81", country:"Japan"},
+    {code:"31", country:"Netherlands"},
+    {code:"1", country:"united States"}
+    ];

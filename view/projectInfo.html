@@ -220,7 +220,8 @@
            </div>
         </div>
         </div>
-        <div><div>FTP:</div><div></div></div>
+        <div style="width:100%;"><div>FTP:</div><div upload-account account="{{project.FTP}}"></div></div>
+        <div style="width:100%;"><div>Address:</div><div address-format account="{{project.address}}"></div></div>
     </div>
 </div>
 
@@ -357,6 +358,7 @@
                 <td>Description</td>
                 <td>TYPE</td>
                 <td>LINK</td>
+                <td>HISTORY</td>
                 <td>REFERENCE</td>
                 <td>SOURCE</td>
             </tr>
@@ -372,6 +374,7 @@
                     <div style="width:1px;height:0;opacity:0;pointer-events:none;"><span>{{doc | docLink}}</span></div>
                     <div ng-if="doc.link !== ''"><button class="simpleBtn" onclick="copyPrev(this)">COPY</button></div>
                     <div ng-if="doc.link == ''"><button class="simpleBtnRight" ng-click="edit(doc)">ADD</button></div></td>
+                <td history-doc-list draft="{{doc.draft}}"></td>
                 <td content-format contents="{{doc.reference}}" style="width:15rem;"></td>
                 <td content-format contents="{{doc.source | docSource}}" style="text-align:center;"></td>
             </tr>

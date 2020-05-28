@@ -13,7 +13,7 @@ var efforts = require('./../data/model/efforts'),
     deliveryModel = require('./../data/model/delivery'),
     projectModel = require('./../data/model/project'),
     projectCommentModel = require('./../data/model/projectComment'),
-    projectTaskModel = require('./../data/model/projectTask'),
+    projectTaskModel = require('../data/model/developerTask'),
     userModel = require('./../data/model/user'),
     docModel = require('./../data/model/doc'),
     versionModel = require('./../data/model/version'),
@@ -93,6 +93,10 @@ let handler = {
         let render = {};
         projectModel.aggregate([
             {$match:{_id:mongoose.Types.ObjectId(id)}},
+            {$lookup:{from:'accountFTP',localField:'account',foreignField:'account',as:"FTP"}},
+            {$unwind:{path: "$FTP", preserveNullAndEmptyArrays: true }},
+            {$lookup:{from:'accountAddress',localField:'account',foreignField:'account',as:"address"}},
+            {$unwind:{path: "$address", preserveNullAndEmptyArrays: true }},
             {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}},
             {$unwind:{path: "$account", preserveNullAndEmptyArrays: true }},
             {$lookup:{from:'contacts',localField:'account._id',foreignField:"company",as:"contacts"}},
@@ -118,8 +122,6 @@ let handler = {
                     accountLink += '&nbsp&nbsp-&nbsp&nbsp';
                     let deliveryLink = contents.delivery? contents.delivery.name: 'Product Not Defined';
                     let header = accountLink+ contents.name+ '&nbsp&nbsp-&nbsp&nbsp' + deliveryLink;
-                    console.log(contents._id);
-                    console.log(contents.projectContacts);
                     render.contents = contents;
                     render.title = contents.name;
                     render.header = header;
@@ -137,6 +139,45 @@ let handler = {
             })
 
         
+    },
+
+    developer:function(){
+        userModel.aggregate([
+            {$match:{_id:mongoose.Types.ObjectId(id)}},
+            {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}},
+            {$unwind:{path: "$account", preserveNullAndEmptyArrays: true }},
+            {$lookup:{from:'contacts',localField:'account._id',foreignField:"company",as:"contacts"}},
+            {$lookup:{  from: "projectContact",
+                    let: {projectId: "$_id"},
+                    pipeline: [
+                        {$match:{$expr:{$eq:["$$projectId","$project"]}}},
+                        {$sort:{priority:-1}},
+                        {$lookup:{from:'contacts',localField:'contact',foreignField:"_id",as:"contact"}},
+                        {$unwind:"$contact"},
+                        {$replaceRoot:{newRoot:"$contact"}},
+                    ],
+                    as: "projectContacts"}},
+            {$lookup:{from:'delivery',localField:'delivery',foreignField:"_id",as:"delivery"}},
+            {$unwind:{path: "$delivery", preserveNullAndEmptyArrays: true }},
+        ])
+    },
+
+    account:function(req,res){
+        let pageId = req.query.pid;
+        if(!pageId)
+            pageId = 1;
+        pageId--;
+        let render = {};
+        render.contents = {};
+        accountModel.estimatedDocumentCount().exec()
+            .then(function(count){
+                render.contents.maxCount = count;
+                return accountModel.find({},null,{sort:{name:1},limit:25,skip:pageId*25}).populate('').exec();
+            })
+            .then(function(entries){
+                render.contents.entries = entries;
+                res.render('accountManager.html',render);
+            });
     },
 
     tutorial:function(req,res){
@@ -296,17 +337,6 @@ let handler = {
             return;
         }
 
-        for(let i=0;i<received.length;++i){
-            for(let attr in received[i]){
-                for(let index in received[i][attr]){
-                    let content = received[i][attr][index];
-                    if(typeof content === 'object' && content.type === 'ObjectId'){
-                        received[i][attr][index] = mongoose.Types.ObjectId(content.value);
-                    }
-                }
-            }
-        }
-
         tableList[tableId].aggregate(received)
             .then(function(docs){
                 response.result = docs;
@@ -460,6 +490,8 @@ let handler = {
 
 router.get('/',handler.pm);
 router.get('/project/info',handler.pmInfo);
+router.get('/developer',handler.developer);
+router.get('/account',handler.account);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
 router.get('/QATool',handler.QA);

@@ -229,7 +229,7 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
 
     $scope.initialize = function(){
         let data = [
-            {$match:{project:{value:$rootScope.project._id,type:'ObjectId'}}},
+            { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]}]}}},
             {$sort:{date:-1}},
             {$lookup:{from:"account",localField:"account",foreignField:"_id",as:"account"}},
             {$unwind:"$account"},

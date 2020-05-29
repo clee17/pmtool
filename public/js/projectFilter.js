@@ -167,16 +167,94 @@ app.filter('bugStatus',function(){
     }
 });
 
-app.filter('docLink',function($rootScope){
-    return function(doc){
-        let assetLink =  $rootScope.setting.DocLocalPath || "";
+app.filter('linkDocument',function($rootScope){
+    return function(link,source){
+        if(typeof source !== 'number')
+            source = Number(source);
+        let assetLink =   "";
+
+        if(source === 0)
+            assetLink = '/assets/'
+        else if(source <=2)
+            assetLink = "";
+        else
+            assetLink =  $rootScope.setting.DocLocalPath || "";
+
+        return assetLink+link;
+    }
+});
+
+app.filter('linkIcon',function(){
+    return function(link){
+        let fileTypes = [
+            {type:'excel',link:['csv','xlsl','xls']},
+            {type:'pdf',link:['pdf']},
+            {type:'word',link:['doc']},
+            {type:'ppt',link:['ppt']},
+            {type:'apk',link:['apk']},
+            {type:'zip',link:['zip']},
+        ];
+        let index = link.lastIndexOf('.');
+        if(index >=0){
+            let type = link.substring(index+1);
+            for(let i=0; i<fileTypes.length;++i){
+                if(fileTypes[i].link.indexOf(type) >=0){
+                    return '/img/icon/'+fileTypes[i].type+'.png';
+                }
+            }
+            return '/img/icon/unknown.png';
+        }else
+            return '/img/icon/unknown.png'
+
+    }
+});
+
+app.filter('docLink',function($filter){
+    return function(doc, type){
         if(typeof doc !== 'object'){
             doc = JSON.parse(doc);
         }
+        if(type === '1')
+            doc.source = null;
         if(!doc.source)
-            return assetLink+doc.link;
+            return $filter('linkDocument')(doc.link,doc.source);
         else
             return doc.link;
+    }
+})
+
+app.filter('positionLink',function($filter){
+    return function(position){
+        if(typeof position !== 'object'){
+            position = JSON.parse(position);
+        }
+        if(!position)
+            return ""
+        else
+            return $filter('linkDocument')(position.link,position.source);
+    }
+})
+
+app.filter('positionIcon',function($filter){
+    return function(position){
+        if(typeof position !== 'object'){
+            position = JSON.parse(position);
+        }
+        if(!position)
+            return "/img/icon/error.png";
+        else
+            return $filter('linkIcon')(position.link);
+    }
+})
+
+app.filter('docIcon',function($filter){
+    return function(doc){
+        if(typeof doc !== 'object'){
+            doc = JSON.parse(doc);
+        }
+
+        let link = doc.link || "";
+        return $filter('linkIcon')(link);
     }
 })
 

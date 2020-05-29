@@ -12,6 +12,7 @@ var efforts = require('./../data/model/efforts'),
     productModel = require('./../data/model/product'),
     deliveryModel = require('./../data/model/delivery'),
     projectModel = require('./../data/model/project'),
+    positionModel = require('./../data/model/position'),
     projectCommentModel = require('./../data/model/projectComment'),
     projectTaskModel = require('../data/model/developerTask'),
     userModel = require('./../data/model/user'),
@@ -34,13 +35,13 @@ let tableList = {
     "docs":docModel,
     "payment":paymentModel,
     "paymentDocs":paymentDocModel
-
 };
 
 let router = express.Router();
 
 let basedir = path.join(path.resolve(__dirname),'../');
 let dataDir = path.join(basedir,'data/');
+let SETTING = fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
 
 let handler = {
     renderError:function(res,message){
@@ -130,8 +131,7 @@ let handler = {
             })
             .then(function(users){
                 render.users = users;
-                let settings =  fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
-                render.setting = settings;
+                render.setting = SETTING;
                 res.render('projectInfo.html',render);
             })
             .catch(function(err){
@@ -216,7 +216,7 @@ let handler = {
             pageId = 1;
         pageId--;
         render.pageId=  pageId;
-        render.setting ={};
+        render.setting = {};
         docModel.find({},null,{limit:20,skip:pageId*20,  sort:{
                 date: -1
             }}).populate('account project').exec()
@@ -230,8 +230,7 @@ let handler = {
             })
             .then(function(accounts){
                 render.accounts = accounts;
-                let settings =  fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
-                render.setting = settings;
+                render.setting = SETTING;
                 res.render('docManager.html',render);
             })
             .catch(function (err) {
@@ -367,6 +366,7 @@ let handler = {
         let populate = '';
         if(received.populate)
             populate = received.populate;
+
         let response = {
             sent:false,
             index:tableId,
@@ -396,7 +396,6 @@ let handler = {
                 handler.sendResult(res,response);
             })
             .catch(function(err){
-                console.log(err);
                 response.message = JSON.stringify(err);
                 handler.sendResult(res,response);
             })
@@ -441,8 +440,6 @@ let handler = {
         }).populate(populate);
     },
 
-
-
     developers:function(req,res){
         let data = {
             sent:false,
@@ -484,8 +481,19 @@ let handler = {
                 handler.sendResult(res,response);
             }
         });
-    }
+    },
 
+    fileserver:function(req,res){
+        let url = req.originalUrl.replace(/\//g,"\\");
+        url = "\\"+url;
+        fs.access(url,(err)=>{
+            if(err){
+                handler.renderError(res,err);
+            }else{
+                res.sendFile(url);
+            }
+        });
+    }
 };
 
 router.get('/',handler.pm);
@@ -498,6 +506,7 @@ router.get('/QATool',handler.QA);
 router.get('/QATool/:contentId',handler.QA);
 router.get('/doc',handler.docManager);
 router.get('/doc/:projectId/:docId',handler.doc);
+router.get('/fileserver/*',handler.fileserver)
 
 router.post('/countInfo/',handler.count);
 router.post('/vagueSearch/',handler.vague);
@@ -509,12 +518,15 @@ router.post('/getInfo/products',handler.products);
 
 
 module.exports = function(app){
+    let systemSetting = JSON.parse(SETTING);
     app.use('/lib',express.static(path.join(basedir,"/public/lib")));
     app.use('/js',express.static(path.join(basedir,"/public/js")));
     app.use('/css',express.static(path.join(basedir,"/public/css")));
     app.use('/img',express.static(path.join(basedir,"/public/img")));
+    app.use('/assets',express.static(systemSetting.DocLocalPath));
     app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
     app.use('/',router);
+
 
     app.get('*', function(req, res){
         res.render('error.html', {

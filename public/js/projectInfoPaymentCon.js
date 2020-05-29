@@ -27,7 +27,9 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
         $scope.newPayment._id = payment._id;
         let status = $scope.newPayment.status.toString();
         $scope.newPayment.currency = $scope.newPayment.currency.toString();
-        $scope.newPayment.status = status? status: "0";
+        $scope.newPayment.status = payment.status ? payment.status.toString(): "0";
+        $scope.newPayment.invoice = payment.invoice.length>0 ? payment.invoice[0]._id : '0';
+        $scope.newPayment.doc = payment.doc.length >0 ? payment.doc[0]._id : '0';
         $scope.showCoverContents('editPayment');
     };
 
@@ -63,7 +65,18 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
     * */
 
     $scope.$on('editPayment',function(event,data){
-        //TO BE ADDED
+        let updateQuery = {};
+        updateQuery._id = $scope.newPayment._id;
+        updateQuery.PO = $scope.newPayment.PO;
+        updateQuery.account = $scope.newPayment.account? $scope.newPayment.account._id: null;
+        updateQuery.amount = $scope.newPayment.amount;
+        updateQuery.comment = $scope.newPayment.comment;
+        updateQuery.status = Number($scope.newPayment.status);
+        updateQuery.currency = Number($scope.newPayment.currency);
+        updateQuery.populate = 'account';
+        delete updateQuery.invoice;
+        delete updateQuery.doc;
+        dataManager.updateData('payment','payment added', updateQuery);
     });
 
     $scope.$on('editPaymentCancelDoc',function(event,data){
@@ -120,27 +133,29 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
         }else{
             data.result.invoice = [];
             data.result.doc = [];
-            $scope.payments.push(data.result);
-            if($scope.newPayment.doc !== '0'){
-                let doc = {
-                    project: $rootScope.project._id,
-                    payment: data.result._id,
-                    doc: $scope.newPayment.doc,
-                    type:1
+            let insert = true;
+            for(let i= 0 ; i<$scope.payments.length;++i) {
+                if($scope.payments[i]._id === data.result._id){
+                    $scope.payments[i] = JSON.parse(JSON.stringify(data.result));
+                    insert = false;
                 }
-                dataManager.saveData('paymentDocs','payment doc added', doc);
             }
-
-            if($scope.newPayment.invoice !== '0'){
-                let invoice = {
-                    project: $rootScope.project._id,
-                    payment: data.result._id,
-                    doc: $scope.newPayment.invoice,
-                    type: 0
-                }
-                dataManager.saveData('paymentDocs','payment doc added', invoice);
+            if(insert)
+                $scope.payments.push(data.result);
+            let doc = {
+                project: $rootScope.project._id,
+                payment: data.result._id,
+                doc: $scope.newPayment.doc,
+                type:1
             }
-
+            dataManager.saveData('paymentDocs','payment doc added', doc);
+            let invoice = {
+                project: $rootScope.project._id,
+                payment: data.result._id,
+                doc: $scope.newPayment.invoice,
+                type: 0
+            }
+            dataManager.saveData('paymentDocs','payment doc added', invoice);
             $scope.resetPayment();
             cancelDoc();
         }

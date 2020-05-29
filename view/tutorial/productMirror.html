@@ -1,0 +1,111 @@
+<style>
+    #solution{
+        margin-left:4rem;
+    }
+    #solution tr>td:last-child{
+        max-width:20rem;
+    }
+
+    #solution tr:first-child{
+        background:rgba(41,41,41,1);
+        color:white;
+        font-weight:bold;
+    }
+</style>
+<h1 style="letter-spacing:0.2rem;">Cidana Mirror solution概述</h1>
+
+<div class="contents">
+    <p>Cidana Mirror solution， 是Cidana自研发的投影、投屏软件、协议层解决方案。</p>
+    <p>该文档将会对Cidana Mirror当前自拥有的协议进行一个梳理，以便于客户咨询时候查阅使用。</p>
+
+    <h3 id="DTVType">&nbsp当前Mirror使用的协议&nbsp</h3>
+    <p>在本系统中将可以方便地查阅我们当前拥有的协议以及相应的连接方式:</p>
+    <table id="solution">
+        <tr>
+            <td>SOLUTION</td>
+            <td>Operating System</td>
+            <td>Connection</td>
+            <td>Reverse Control</td>
+            <td>Additional Requirements</td>
+        </tr>
+        <tr><td>Airplay</td>
+            <td><ul>
+                <li>IOS</li>
+            </ul></td>
+            <td><ul><li>usb connection</li><li>WIFI</li></ul></td>
+            <td>Implementable</td>
+            <td>1. Airplay理论上只能连接Apple设备，因此有一定的<b>Legal方面的隐患</b>。</td>
+        </tr>
+        <tr><td>Android ADB <br>(with USB connection)</td>
+            <td><ul>
+                <li>android</li>
+            </ul></td>
+            <td><ul><li>usb connection</li></ul></td>
+            <td>Implementable</td>
+            <td>1. ADB作为Android的开发者模式，可能会使很多用户对此感到十分敏感。</td>
+        </tr>
+        <tr><td>Miracast</td>
+            <td><ul>
+                <li>Android</li>
+            </ul></td>
+            <td><ul><li>WIFI</li></ul></td>
+            <td>Implementable</td>
+            <td>1. Miracast 是基于Wifi 实现的传输协议，必须发送和接受设备都在硬件层面提供支持，<b>该方案不具备普及性。</b></td>
+        </tr>
+        <tr><td>SDL</td>
+            <td><ul>
+                <li>IOS</li>
+                <li>Android</li>
+            </ul></td>
+            <td><ul><li>usb connection</li><li>WIFI</li></ul></td>
+            <td>Implementable</td>
+            <td>1. SDL是基于应用层实现的传输协议，在手机端的应用必须进行SDL定制,<b>无法对全屏幕内容进行投射。</b></td>
+        </tr>
+        <tr><td>DLNA</td>
+            <td><ul>
+                <li>Android</li>
+                <li>IOS</li>
+            </ul></td>
+            <td><ul><li>WIFI</li></ul></td>
+            <td>N/A</td>
+            <td>1. DLNA是针对文件进行传输的协议，因此这种屏幕投射<b>不是实时同步的</b>，它将视频、流文件等传输到目标设备后进行播放。</td>
+        </tr>
+        <tr><td>CIDANA</td>
+            <td><ul>
+                <li>IOS</li>
+                <li>Android</li>
+            </ul></td>
+            <td>
+                <ul><li>usb connection</li><li>WIFI</li></ul></td>
+            <td>Implementable</td>
+            <td>1. 需要在手机端安装CIDANA的应用。<br>
+                2. CIDANA Mirror应用由CIDANA方进行维护</td>
+        </tr>
+    </table>
+
+    <h3 id="DTVDecoders">&nbspMirror的投屏支持设备&nbsp</h3>
+    <p>下表中列举了当前Mirror Solution拥有的各屏幕间的开发映射状况以及完成情况:</p>
+    <table style="margin-left:3rem;">
+        <tr>
+            <td>投射设备</td>
+            <td>目标屏幕</td>
+            <td>连接方式</td>
+            <td>开发进度</td>
+        </tr>
+        <tr><td>IOS</td><td>Android</td><td><ul><li>usb connection</li><li>WIFI</li></ul></td><td>可实现</td></tr>
+        <tr><td>IOS</td><td>linux</td><td><ul><li>usb connection</li><li>WIFI</li></ul></td><td>可实现</td></tr>
+        <tr><td>IOS</td><td>IOS</td><td>???</td><td>???</td></tr>
+        <tr><td>Android</td><td>IOS</td><td>???</td><td>???</td></tr>
+        <tr><td>Android</td><td>Android</td><td><ul><li>usb connection</li><li>WIFI</li></ul></td><td>可实现</td></tr>
+        <tr><td>Android</td><td>linux</td><td><ul><li>usb connection</li><li>WIFI</li></ul></td><td>可实现</td></tr>
+    </table>
+
+    <h3>&nbspCidana Mirror的反向控制&nbsp</h3>
+    <p>Cidana方的反向控制主要通过Bluetooth实现，通过模拟Bluetooth外接设备的点击、移动等，对手机、手持设备等进行控制。</p>
+    <p>因此能够进行反向控制的设备必须满足如下几点要求：</p>
+    <ul style="margin-left:2rem;font-weight:bold;">
+        <li>目标设备与本机设备之间能够完成蓝牙连接</li>
+        <li>该设备能够接受外置蓝牙设备对其进行操控。</li>
+    </ul>
+
+</div>

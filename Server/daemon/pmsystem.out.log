@@ -33,3 +33,284 @@ database successfully connected
 []
 database successfully connected
 database successfully connected
+database successfully connected
+{
+  date: '2020-05-29T02:22:20.863Z',
+  comment: 'Customer has requested a demo version which includes the full features of premium plans, Chinn has agreed to issue the version, with time bomb implemented and UI might need to be updated.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ebd2da2b87c0a133c6ccd15',
+  schedule: '2020-05-29T02:22:20.000Z',
+  status: 6
+}
+{
+  date: '2020-05-29T02:22:20.863Z',
+  comment: 'Customer has requested a demo version which includes the full features of premium plans, Chinn has agreed to issue the version, with time bomb implemented and UI might need to be updated.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ebd2da2b87c0a133c6ccd15',
+  schedule: '2020-05-29T02:22:20.000Z',
+  status: 6
+}
+{ _id: '5ebd2da2b87c0a133c6ccd15' }
+{
+  account: {
+    _id: '5e8064bc3e694c7b571d45dc',
+    name: 'EACHN',
+    alias: '浥晨',
+    country: 86,
+    official: '',
+    priority: 1,
+    type: 0
+  },
+  description: 'customer has purchased this product from us in the year 2016, recently they requested to add a new language support(JP)',
+  endCustomer: '5ebcb9490e81c196933244eb',
+  name: 'ISDBT-player Google Play',
+  priority: 2,
+  status: 6,
+  __v: 0,
+  contacts: [
+    {
+      _id: '5e8065253e694c7b571d461a',
+      company: '5e8064bc3e694c7b571d45dc',
+      title: 'Engineering',
+      name: '黄中华',
+      alias: '',
+      number: '13825281642',
+      mail: 'huangzhonghua7@163.com',
+      location: 'shenzhen',
+      preferredlanguage: 0
+    },
+    {
+      _id: '5e8065703e694c7b571d4647',
+      company: '5e8064bc3e694c7b571d45dc',
+      title: 'Sales Director',
+      name: '沈茜',
+      alias: '沈总',
+      number: '',
+      mail: 'hnaysx2012@163.com',
+      location: 'shenzhen',
+      preferredlanguage: 1
+    }
+  ],
+  date: '2020-05-14T11:33:06.766Z',
+  schedule: '2020-05-29T02:22:20.000Z',
+  suppliers: [],
+  FTP: {
+    _id: '5eccd13eecb4d912e05846cf',
+    account: '5e8064bc3e694c7b571d45dc',
+    username: 'Eachn',
+    password: '572F45kG'
+  },
+  projectContacts: []
+}
+{
+  date: '2020-05-29T02:23:02.727Z',
+  comment: 'We have arranged a meeting next Tuesday regarding with their requirements. \n' +
+    '\n' +
+    'Will needs to wait for their exact time next Monday.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ecb29690a30342fb455d9b2',
+  schedule: '2020-06-01T02:23:02.000Z',
+  status: 0
+}
+{
+  date: '2020-05-29T02:23:02.727Z',
+  comment: 'We have arranged a meeting next Tuesday regarding with their requirements. \n' +
+    '\n' +
+    'Will needs to wait for their exact time next Monday.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ecb29690a30342fb455d9b2',
+  schedule: '2020-06-01T02:23:02.000Z',
+  status: 0
+}
+{ _id: '5ecb29690a30342fb455d9b2' }
+{
+  account: {
+    _id: '5e802e493e694c7b571d3716',
+    name: 'Asuka',
+    country: 886,
+    official: null,
+    priority: 1,
+    alias: '',
+    type: 0
+  },
+  description: 'Customer wants to install Mirror on their own pads. \n' +
+    '1. They hope we do not need to install any apks on androids and IOS.\n' +
+    '2. They wish to use airplay and Miracast on their device.',
+  endCustomer: '5ebcb9490e81c196933244eb',
+  name: 'Mirror',
+  priority: 3,
+  status: 0,
+  __v: 0,
+  contacts: [
+    {
+      _id: '5e802ece3e694c7b571d3755',
+      company: '5e802e493e694c7b571d3716',
+      title: 'PM',
+      name: 'Tsai-Wen Cheng',
+      alias: '郑採文',
+      number: 0,
+      mail: 'wencheng@asuka-autotronics.com',
+      location: 'taiwan',
+      preferredlanguage: 0
+    },
+    {
+      _id: '5e802f253e694c7b571d377c',
+      company: '5e802e493e694c7b571d3716',
+      title: 'Senior Manager',
+      name: 'Ling Chiu',
+      alias: '邱陵',
+      number: 0,
+      mail: 'LingChiu@asuka-mobile-tv.com',
+      location: 'taiwan',
+      preferredlanguage: 0
+    },
+    {
+      _id: '5e802f643e694c7b571d379a',
+      company: '5e802e493e694c7b571d3716',
+      title: 'President',
+      name: 'Ron HU',
+      alias: '胡龙融',
+      number: 0,
+      mail: 'ronhu@asuka-autotronics.com',
+      location: 'taiwan',
+      preferredlanguage: 0
+    },
+    {
+      _id: '5e802fb93e694c7b571d37d3',
+      company: '5e802e493e694c7b571d3716',
+      title: 'CEO',
+      name: 'Samuel Gutierrez',
+      alias: '',
+      number: 0,
+      mail: 'support@schokgear.com',
+      location: 'America',
+      preferredlanguage: 0
+    }
+  ],
+  date: '2020-05-22T04:12:46.234Z',
+  schedule: '2020-06-01T02:23:02.000Z',
+  suppliers: [],
+  FTP: {
+    _id: '5eccd048ecb4d912e0584622',
+    account: '5e802e493e694c7b571d3716',
+    username: 'Asuka',
+    password: 'G267m67T'
+  },
+  address: {
+    _id: '5eccbc8fecb4d912e0583239',
+    priority: 5,
+    account: '5e802e493e694c7b571d3716',
+    address: '楊欣哲 Sin Che Yang \n' +
+      ' 飛鳥車用電子ASUKA Autotronics \n' +
+      ' 新竹市展業二路12號2樓 \n' +
+      ' Tel: (03) 6667117 #303 \n' +
+      ' 统编码：12671411'
+  },
+  projectContacts: []
+}
+{
+  date: '2020-05-29T02:36:55.823Z',
+  comment: 'to Complete the demo version we need to :\n' +
+    '1. create a new PO which includes only 1 payment order for demo use, we could control its time bomb accordingly. \n' +
+    '2. get the screenshot of Subscription page and update UI accordingly. (This screen shot will be provided by Elodie )\n' +
+    '3. will wait until Sailor completes the UI improvement.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ebd2da2b87c0a133c6ccd15',
+  schedule: '2020-06-01T02:36:55.000Z',
+  status: 6
+}
+{
+  date: '2020-05-29T02:36:55.823Z',
+  comment: 'to Complete the demo version we need to :\n' +
+    '1. create a new PO which includes only 1 payment order for demo use, we could control its time bomb accordingly. \n' +
+    '2. get the screenshot of Subscription page and update UI accordingly. (This screen shot will be provided by Elodie )\n' +
+    '3. will wait until Sailor completes the UI improvement.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ebd2da2b87c0a133c6ccd15',
+  schedule: '2020-06-01T02:36:55.000Z',
+  status: 6
+}
+{ _id: '5ebd2da2b87c0a133c6ccd15' }
+{
+  account: {
+    _id: '5e8064bc3e694c7b571d45dc',
+    name: 'EACHN',
+    alias: '浥晨',
+    country: 86,
+    official: '',
+    priority: 1,
+    type: 0
+  },
+  description: 'customer has purchased this product from us in the year 2016, recently they requested to add a new language support(JP)',
+  endCustomer: '5ebcb9490e81c196933244eb',
+  name: 'ISDBT-player Google Play',
+  priority: 2,
+  status: 6,
+  __v: 0,
+  contacts: [
+    {
+      _id: '5e8065253e694c7b571d461a',
+      company: '5e8064bc3e694c7b571d45dc',
+      title: 'Engineering',
+      name: '黄中华',
+      alias: '',
+      number: '13825281642',
+      mail: 'huangzhonghua7@163.com',
+      location: 'shenzhen',
+      preferredlanguage: 0
+    },
+    {
+      _id: '5e8065703e694c7b571d4647',
+      company: '5e8064bc3e694c7b571d45dc',
+      title: 'Sales Director',
+      name: '沈茜',
+      alias: '沈总',
+      number: '',
+      mail: 'hnaysx2012@163.com',
+      location: 'shenzhen',
+      preferredlanguage: 1
+    }
+  ],
+  date: '2020-05-14T11:33:06.766Z',
+  schedule: '2020-06-01T02:36:55.000Z',
+  suppliers: [],
+  FTP: {
+    _id: '5eccd13eecb4d912e05846cf',
+    account: '5e8064bc3e694c7b571d45dc',
+    username: 'Eachn',
+    password: '572F45kG'
+  },
+  projectContacts: []
+}
+{
+  date: '2020-05-29T06:15:24.780Z',
+  comment: 'The current stage is under development, will review again next Monday.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ebcfa1a29385c31d8a05b7f',
+  schedule: '2020-06-01T06:15:24.000Z',
+  status: 2
+}
+{
+  date: '2020-05-29T06:15:24.780Z',
+  comment: 'The current stage is under development, will review again next Monday.',
+  user: '5e797da1b8859cb0fa0d29bd',
+  project: '5ebcfa1a29385c31d8a05b7f',
+  schedule: '2020-06-01T06:15:24.000Z',
+  status: 2
+}
+{ _id: '5ebcfa1a29385c31d8a05b7f' }
+{
+  description: 'A website platform which could provide all-in-one unitest service for codec developers. \n' +
+    '\n' +
+    'It is a Cidana self developing project.',
+  endCustomer: null,
+  name: 'Test Frame',
+  priority: 5,
+  status: 2,
+  __v: 0,
+  contacts: [],
+  date: '2019-09-14T07:58:05.548Z',
+  schedule: '2020-06-01T06:15:24.000Z',
+  suppliers: [],
+  projectContacts: []
+}

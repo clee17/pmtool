@@ -114,3 +114,33 @@ Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInte
    在 winsw.WrapperService.OnShutdown()
 2020-05-28 11:57:25 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2020-05-28 11:57:25 - Started 6684
+2020-05-28 18:38:38 - Stopping pmsystem.exe
+2020-05-28 18:38:38 - ProcessKill 6684
+2020-05-28 18:38:38 - Found child process: 6752 Name: conhost.exe
+2020-05-28 18:38:38 - Found child process: 7864 Name: node.exe
+2020-05-28 18:38:38 - Stopping process 6752
+2020-05-28 18:38:38 - Send SIGINT 6752
+2020-05-28 18:38:38 - SIGINT to 6752 failed - Killing as fallback
+2020-05-28 18:38:38 - Stopping process 7864
+2020-05-28 18:38:38 - Send SIGINT 7864
+2020-05-28 18:38:38 - SIGINT to 7864 failed - Killing as fallback
+2020-05-28 18:38:38 - Stopping process 6684
+2020-05-28 18:38:38 - Send SIGINT 6684
+2020-05-28 18:38:38 - SIGINT to 6684 failed - Killing as fallback
+2020-05-28 18:38:38 - Finished pmsystem.exe
+2020-05-29 10:11:18 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-05-29 10:11:18 - Started 5328
+2020-05-29 16:08:35 - Stopping pmsystem.exe
+2020-05-29 16:08:35 - ProcessKill 5328
+2020-05-29 16:08:35 - Found child process: 9248 Name: conhost.exe
+2020-05-29 16:08:35 - Found child process: 27484 Name: node.exe
+2020-05-29 16:08:35 - Stopping process 9248
+2020-05-29 16:08:35 - Send SIGINT 9248
+2020-05-29 16:08:35 - SIGINT to 9248 failed - Killing as fallback
+2020-05-29 16:08:36 - Stopping process 27484
+2020-05-29 16:08:36 - Send SIGINT 27484
+2020-05-29 16:08:36 - SIGINT to 27484 failed - Killing as fallback
+2020-05-29 16:08:36 - Stopping process 5328
+2020-05-29 16:08:36 - Send SIGINT 5328
+2020-05-29 16:08:36 - SIGINT to 5328 failed - Killing as fallback
+2020-05-29 16:08:36 - Finished pmsystem.exe

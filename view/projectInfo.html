@@ -329,7 +329,7 @@
                 <td>VERSION</td>
                 <td>DESCRIPTION</td>
                 <td>UPLOADED</td>
-                <td>LINK</td>
+                <td>DOWNLOAD</td>
                 <td>QA REPORT</td>
             </tr>
         <tr ng-show="versions.length === 0">
@@ -339,9 +339,8 @@
                 <td valign="top">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</td>
                 <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;">{{release.description}}</div></td>
                 <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
-                <td valign="top" style="display:flex;flex-direction:row;">
-                    <div style="opacity:0;width:1px;height:1rem;overflow:hidden;"><span>{{release.position}}</span></div>
-                    <div><button ng-disabled="release.position.length==0" class="simpleBtn" onclick="copyPrev(this)">COPY</button></div>
+                <td valign="top" style="text-align:center">
+                    <a href="{{release.position | positionLink}}" target="_blank"><img src="{{release.position | positionIcon}}" style="width:1.2rem;"></a>
                 </td>
                 <td></td>
                 <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event)"><i class="fa fa-angle-down"></i></button></td>
@@ -357,7 +356,7 @@
                 <td>DATE</td>
                 <td>Description</td>
                 <td>TYPE</td>
-                <td>LINK</td>
+                <td>DOWNLOAD</td>
                 <td>HISTORY</td>
                 <td>REFERENCE</td>
                 <td>SOURCE</td>
@@ -371,8 +370,7 @@
                 <td content-format contents="{{doc.description}}" style="width:20rem;"></td>
                 <td><b>{{doc.type | docType}}</b></td>
                 <td>
-                    <div style="width:1px;height:0;opacity:0;pointer-events:none;"><span>{{doc | docLink}}</span></div>
-                    <div ng-if="doc.link !== ''"><button class="simpleBtn" onclick="copyPrev(this)">COPY</button></div>
+                    <div style="text-align:center;"><a href="{{doc | docLink:'1'}}" target="_blank"><img src="{{doc | docIcon}}" style="width:1.2rem;"></a></div>
                     <div ng-if="doc.link == ''"><button class="simpleBtnRight" ng-click="edit(doc)">ADD</button></div></td>
                 <td history-doc-list draft="{{doc.draft}}"></td>
                 <td content-format contents="{{doc.reference}}" style="width:15rem;"></td>

@@ -118,8 +118,8 @@ a{
 }
 
 #guide>ul{
-    margin-left:0.5rem;
-    padding-left:0.5rem;
+    margin-left:0;
+    padding-left:0;
     margin-top:1.5rem;
 }
 
@@ -131,6 +131,8 @@ a{
 
 #guide ul{
     list-style:none;
+    margin-left:1.5rem;
+    padding-left:0;
 }
 
 #footer {

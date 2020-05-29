@@ -32,4 +32,8 @@ app.service("dataManager",function($http,$rootScope){
     manager.saveData = function(tableName,symbol,data){
         manager.request('/save/'+tableName,symbol,data);
     }
+
+    manager.updateData = function(tableName,symbol,data){
+        manager.request('/save/'+tableName,symbol,data);
+    }
 });

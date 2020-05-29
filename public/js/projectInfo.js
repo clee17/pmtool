@@ -418,8 +418,6 @@ app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,da
     $scope.initialize();
 });
 
-
-
 app.directive('historyDocList',function($compile){
     return{
         restrict:"A",
@@ -439,7 +437,6 @@ app.directive('historyDocList',function($compile){
             }
         }}
 });
-
 
 app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
     $scope.docs = [];

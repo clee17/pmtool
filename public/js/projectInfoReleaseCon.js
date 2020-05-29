@@ -160,6 +160,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         }else if(!data.success){
             alert(data.message);
         }else {
+            console.log(data.result);
             $rootScope.versions = data.result;
             $rootScope.$broadcast('versions updated',null);
         }
@@ -187,7 +188,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         data.search = {department:{$regex: {value:"R&D",cond:"i"}}};
         data.cond = {sort:{name:1}};
         dataManager.requestData('user','developers received',data);
-        dataManager.requestData('version','versions received',{project:$rootScope.project._id});
+        dataManager.requestData('version','versions received',{search:{project:$rootScope.project._id},populate:'position'});
     }
 
     $scope.initialize();

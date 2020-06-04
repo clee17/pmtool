@@ -5,6 +5,7 @@
     <title><%- title %></title>
     <base href="/">
     <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/projectInfo.css" rel="stylesheet" type="text/css"/>
     <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
     <script src="/lib/lz-string.min.js"></script>
     <script src="/lib/angular.min.js"></script>
@@ -20,179 +21,12 @@
     <script src="/js/projectFilter.js"></script>
     <script src="/js/projectInfo.js"></script>
     <script src="/js/projectInfoInfoCon.js"></script>
+    <script src="/js/projectInfoAlertCon.js"></script>
+    <script src="/js/projectInfoBugCon.js"></script>
     <script src="/js/projectInfoCommentCon.js"></script>
     <script src="/js/projectInfoPaymentCon.js"></script>
     <script src="/js/projectInfoReleaseCon.js"></script>
 </head>
-<style>
-    body{
-        background:rgba(218,218,218,1);
-    }
-
-    .subRow >div{
-        margin-left:2rem;
-    }
-
-    #statusBar{
-        margin:1.5rem;
-        margin-top:0;
-        margin-bottom:0;
-        padding:0.5rem;
-        padding-left:1.5rem;
-        font-weight:bold;
-    }
-
-    #statusBar>a{
-        color:inherit;
-        text-decoration:none;
-    }
-
-    #statusBar >a:hover {
-        color:rgba(151,151,151,1);
-    }
-
-    #projectInfo{
-        display:flex;
-        flex-direction:row;
-        margin-left:auto;
-        margin-right:auto;
-        background:white;
-        flex-wrap:wrap;
-        width:76rem;
-        overflow:hidden;
-    }
-
-    #projectInfo>div{
-        width:50%;
-        margin-bottom:1rem;
-        display:flex;
-        flex-direction:row;
-        overflow: hidden;
-    }
-
-    #projectInfo>div>div:nth-child(1){
-        width:8rem;
-        text-align:right;
-        margin-right:1rem;
-    }
-
-    #projectInfo a{
-        color:royalblue;
-        text-decoration:none;
-    }
-
-    #projectInfo a:hover{
-        text-decoration:underline;
-    }
-
-    #tabParent>div{
-        border:1px solid rgba(185,185,185,1);
-        padding:5px;
-        padding-left:0.5rem;
-        padding-right:0.5rem;
-        border-top-left-radius:0.65rem;
-        border-top-right-radius:3px;
-        background:lightgray;
-    }
-
-    .mainContents{
-        background:white;
-        margin-left:2rem;
-        margin-right:2rem;
-        padding:2rem;
-        border-radius:0.5rem;
-        margin-bottom:2rem;
-        overflow:hidden;
-    }
-
-    #submitButton{
-        margin-left:auto;
-        margin-top:0.8rem;
-        margin-right:2rem;
-        padding:5px;
-        padding-left:0.5rem;
-        padding-right:0.5rem;
-        border-radius:5px;
-    }
-
-    #commentPanel >textarea {
-        resize:none;
-        margin-top:1rem;
-        width:calc(100% - 4rem);
-        height:6rem;
-        overflow:auto;
-        padding:0.5rem;
-        margin-left:auto;
-        margin-right:auto;
-    }
-
-    #activeSelect{
-        background:none;
-        border:none;
-        width:4rem;
-        appearance:none;
-        -moz-appearance:none;
-        -webkit-appearance:none;
-        color:royalblue;
-        font-size:0.9rem;
-    }
-
-    #activeSelect::-ms-expand { display: none; }
-
-    #activeSelect:hover{
-        text-decoration:underline;
-    }
-
-    #btnPayment{
-        color:white;background:rgba(152,75,67,0.8);
-        margin-top:0.5rem;
-        margin-left:1.5rem;
-    }
-
-    #btnPayment:enabled:hover {
-        background:indianred;
-        cursor:pointer;
-        opacity:0.85;
-    }
-
-    #contactWindow{
-        display:flex;
-        flex-direction:column;
-
-    }
-
-    #contactWindow>div{
-        display:flex;
-        flex-direction:row;
-
-    }
-
-    #contactWindow>div >div:first-child{
-        min-width:8rem;
-        text-align:right;
-        margin-right:0.8rem;
-    }
-
-    #contactWindow>div >div:nth-child(2){
-        min-width:20rem;
-        width:20rem;
-        max-width:20rem;
-        display:flex;
-        flex-direction:column;
-    }
-
-    #contactWindow button{
-        border:none;
-        background:none;
-        color:royalblue;
-    }
-
-    #contactWindow button:hover{
-        color:deepskyblue;
-    }
-
-
-</style>
 
 <body ng-app="dashboard"
       ng-controller="rootCon">
@@ -201,6 +35,11 @@
                          setting = '<%= encodeURIComponent(JSON.stringify(setting)) %>';"></info-receiver>
 <div id="header">
     <div style="margin-top:auto;margin-bottom:auto;margin-left:1.5rem;"><%- header %></div>
+    <div id="headerButtons">
+        <a href="http://127.0.0.1:4000/doc" target="_blank">ASSET</a>
+        <a href="http://127.0.0.1:4000/account" target="_blank">ACCOUNT</a>
+        <a href="http://127.0.0.1:4000/tutorial" target="_blank">REFERENCE</a>
+    </div>
 </div>
 <div id="statusBar"><a href="/" target="_self">首页</a> > 当前状态 > <span >{{project.status | status}}</span></div>
 <div class="mainContents" ng-controller="infoCon">
@@ -222,6 +61,19 @@
         </div>
         <div style="width:100%;"><div>FTP:</div><div upload-account account="{{project.FTP}}"></div></div>
         <div style="width:100%;"><div>Address:</div><div address-format account="{{project.address}}"></div></div>
+        <div style="width:100%;"><div>Reference:</div><button class="simpleBtn" style="font-weight:bold;margin-left:4rem;" ng-click="addReferenceDoc()">ADD</button></div>
+        <div style="width:100%">
+            <table class="dataListTable" style="margin-left:8rem;">
+                <tr ng-if="referenceDocs.length === 0"><td colspan="4"><b>No Reference Docs added</b></td></tr>
+                <tr ng-repeat="reference in referenceDocs">
+                    <td style="min-width:12rem;">{{reference.name}}</td>
+                    <td>{{reference.date | date:'&y-&m-&d'}}</td>
+                    <td content-format contents="{{reference.description}}" style="padding-left:1.5rem;"></td>
+                    <td content-format contents="{{reference.reference}}" style="padding-left:1.5rem;"></td>
+                    <td><div doc-source doc="reference"></div></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -233,11 +85,14 @@
         </div>
     </div>
     <div style="width:100%;border-bottom:solid 1px lightgray;padding-bottom:0.5rem;"></div>
-    <div ng-show="alerts.length>0" style="display:flex;flex-direction:column;">
-        <div><button class="inlineBtn" id="btnPayment" ng-click="gotoPage(5)" ng-disabled="currentPageIndex() === 5">PAYMENT</button></div>
+    <div ng-show="!noAlert()" style="display:flex;flex-direction:column;">
         <div>
+            <button class="inlineBtn" id="btnPayment" ng-click="gotoAlertPage(1)" ng-disabled="alertPageIndex() === 1" ng-show="paymentAlerts.length >0">PAYMENT</button>
+            <button class="inlineBtn" id="btnBugAlert" ng-click="gotoAlertPage(2)" ng-disabled="alertPageIndex() ===2" ng-show="taskAlerts.length >0">Bugfix</button>
+        </div>
+        <div ng-show="alertPageIndex() === 1">
             <table style="margin-left:1rem;margin-top:1rem;">
-                <tr ng-repeat="alert in alerts">
+                <tr ng-repeat="alert in paymentAlerts">
                     <td style="padding-left:2rem;"><div style="border-radius:0.3rem;text-align:center;line-height:1.3rem;width:1.3rem;height:1.3rem;padding:0;color:white;background:rgba(152,75,67,0.8);" class="inlineBtn">P</div></td>
                     <td style="padding-left:2rem;">Unpaid payments</td>
                     <td style="padding-left:2rem;">{{alert.PO}}&nbsp&nbsp&nbsp{{alert.status | payStatus}}
@@ -248,16 +103,17 @@
                 </tr>
             </table>
         </div>
-    </div>
-    <div ng-show="TaskAlerts.length>0" style="display:flex;flex-direction:column;">
-        <div><button class="inlineBtn" id="btnTask">TASK</button></div>
-        <div>
+        <div ng-show="alertPageIndex() === 2" style="display:flex;flex-direction:column;">
             <table style="margin-left:1rem;margin-top:1rem;">
-                <tr ng-repeat="alert in paymentAlerts">
-                    <td style="padding-left:2rem;">Unpaid payments</td>
-                    <td style="padding-left:2rem;">{{alert.PO}}</td>
-                    <td style="padding-left:2rem;">{{alert.date | date:'&y/&m/&d &h:&i:&s'}}</td>
-                    <td style="padding-left:2rem;">Due By:</td>
+                <tr ng-repeat="task in taskAlerts">
+                    <td style="padding-left:2rem;"><div style="border-radius:0.3rem;text-align:center;line-height:1.3rem;width:1.3rem;height:1.3rem;padding:0;color:white;background:rgba(189,160,82,1);" class="inlineBtn">T</div></td>
+                    <td style="padding-left:0.5rem;">{{task.title}}</td>
+                    <td style="padding-left:0.5rem;">{{task.date | date:'&y/&m/&d'}}</td>
+                    <td style="padding-left:0.5rem;max-width:17rem;"><div class="singleLine">{{task.comment}}</div></td>
+                    <td style="padding-left:0.5rem;max-width:17rem;">
+                        <div style="max-width:15rem;height:1rem;" ng-if="task.logs.length>0" class="singleLine">{{task.logs[0].date | date:'&y/&m/&d'}}&nbsp&nbsp{{task.logs[0].contents}}</div>
+                    </td>
+                    <td style="padding-left:0.5rem;">Due By:</td>
                 </tr>
             </table>
         </div>
@@ -336,7 +192,7 @@
            <td colspan="5" style="text-align:center;"><b>No record of versions under this project</b></td>
         </tr>
         <tr ng-repeat="release in versions" class="entry">
-                <td valign="top">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</td>
+                <td valign="top"style="line-height:1.5rem;height:1.5rem;">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</td>
                 <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;">{{release.description}}</div></td>
                 <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
                 <td valign="top" style="text-align:center">
@@ -359,7 +215,6 @@
                 <td>DOWNLOAD</td>
                 <td>HISTORY</td>
                 <td>REFERENCE</td>
-                <td>SOURCE</td>
             </tr>
             <tr ng-show="docs.length === 0"><td colspan="6" style="text-align:center;">
                 <b>No record of bugs under this project</b>
@@ -374,7 +229,6 @@
                     <div ng-if="doc.link == ''"><button class="simpleBtnRight" ng-click="edit(doc)">ADD</button></div></td>
                 <td history-doc-list draft="{{doc.draft}}"></td>
                 <td content-format contents="{{doc.reference}}" style="width:15rem;"></td>
-                <td content-format contents="{{doc.source | docSource}}" style="text-align:center;"></td>
             </tr>
         </table>
     </div>
@@ -382,25 +236,47 @@
     <div ng-show="currentPage=='bugfix'" style="display:flex;flex-direction:column;" ng-controller="bugCon">
         <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('bugfix')">ADD BUGFIX</button>
         <table style="margin-left:auto;margin-right:auto;margin-top:2rem;border-collapse:collapse;" class="dataListTable">
-            <tr>
+            <tr style="font-weight:bold;">
                 <td>TITLE</td>
                 <td>DATE</td>
                 <td>VERSION</td>
                 <td>DEVELOPER</td>
                 <td>COMMENT</td>
+                <td>LOG</td>
                 <td>STATUS</td>
             </tr>
             <tr ng-show="bugs.length === 0" style="text-align:center;margin-top:1rem;font-size:1rem;">
                 <td colspan="6"><b>No record of bugs under this project</b></td></tr>
             <tr ng-repeat="bug in bugs" style="border-bottom:solid 1px lightgray;">
-                <td>{{bug.title}}</td>
+                <td style="max-width:12rem;">{{bug.title}}</td>
                 <td>{{bug.date | date:'&y/&m/&d'}}</td>
                 <td>{{bug.version|version}}</td>
                 <td style="display:flex;flex-direction:column;padding-top:1.2rem;">
                     <div ng-repeat="developer in bug.developers">◉ {{developer.name}}</div>
                 </td>
-                <td style="max-width:35rem;padding-bottom:1.2rem;padding-top:1.2rem;" content-format contents="{{bug.comment}}">{{bug.comment}}</td>
-                <td style="text-align:center;">{{bug.status | bugStatus}}</td>
+                <td style="width:22rem;max-width:22rem;white-space:normal;word-break:break-all;max-height:12rem;overflow-y:auto;padding-bottom:1.2rem;padding-top:1.2rem;padding-right:0.5rem;padding-left:0.5rem;"
+                    content-format contents="{{bug.comment}}">{{bug.comment}}</td>
+                <td style="min-width:20rem;padding-left:1rem;padding-right:0.5rem;margin-bottom:1rem;"><div style="display:flex;flex-direction:column;height:12rem;">
+                        <div style="display:flex;flex-direction:row;padding-top:1.2rem;">
+                            <button class="simpleBtn"
+                                    style="margin-left:0.5rem;margin-right:auto;"
+                                    ng-click="addLog(bug)">add</button>
+                            <button class="simpleBtn"
+                                    ng-show="bug.logs.length>0"
+                                    style="margin-right:0.5rem;margin-bottom:0.5rem;"
+                                    ng-click="viewAllLog(bug)">view all</button>
+                        </div>
+                        <div style="flex:1;margin-top:0.8rem;">
+                            <div ng-repeat="log in bug.logs" style="display:flex;flex-direction:row;" ng-if="$index < 5">
+                                <div style="margin-right:0.5rem;padding-left:1rem;">{{log.date | date:'&y/&m/&d'}}</div>
+                                <div style="margin-right:0.5rem;">{{log.user.name}}</div>
+                                <div style="margin-right:0.5rem;">{{log.contents | shortenContents}}</div>
+                            </div>
+                            <div ng-if="bug.logs.length>5" style="text-align:center;">...</div>
+                            <div ng-if="bug.logs.length ===0" style="font-weight:bold;text-align:center;font-weight:bold;">No logs added so far</div>
+                        </div>
+                 </div></td>
+                <td style="text-align:center;"><button class="inlineBtn" ng-click="changeTaskStatus(bug)">{{bug.status | bugStatus}}</button></td>
             </tr>
         </table>
     </div>
@@ -419,8 +295,8 @@
                 <td>{{payment.date | date:'&y/&m/&d &h:&i:&s'}}</td>
                 <td>{{payment.amount}} {{payment.currency | currency}}</td>
                 <td payment-status status="{{payment.status}}" style="text-align:center;">{{payment.status | payStatus}}</td>
-                <td>{{payment.comment}}</td>
-                <td doc-link  contents="{{payment.invoice}}" type="invoice" style="text-align:center;"></td>
+                <td content-format contents="{{payment.comment}}"></td>
+                <td doc-link  contents="{{payment.invoice}}" type="invoice" style="text-align:center;min-width:5rem;"></td>
                 <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:center;"></td>
                 <td style="display:flex;flex-direction:row;">
                     <button ng-click="edit(payment)" style="margin-left:2rem;" class="linkBtn">EDIT</button>
@@ -431,12 +307,12 @@
 </div>
 
 <div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;">
-    <div class="addDoc" style="position:relative;">
+    <div class="addDoc" style="position:relative;display:flex;flex-direction:column;">
         <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);" ng-show="saving">
             <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
         </div>
-        <div style="margin:1rem;display:flex;flex-direction:column;" id="coverDetail"></div>
-        <div style="display:flex;flex-direction:row;margin-top:1rem;">
+        <div style="margin:1rem;display:flex;flex-direction:column;overflow-y:auto;" id="coverDetail"></div>
+        <div style="display:flex;flex-direction:row;margin-bottom:1.5rem;margin-top:auto;">
             <button style="margin-left:6rem;margin-right:auto;" ng-click="submitDoc()">提交</button>
             <button style="margin-left:auto;margin-right:6rem;" ng-click="cancelDoc()">取消</button>
         </div>

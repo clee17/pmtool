@@ -11,11 +11,16 @@ app.filter('contactIndex',function(){
     }
 });
 
-
-
 app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,dataManager){
     $rootScope.currentRelease = null;
     $rootScope.accountLink = $rootScope.project.account? '/account/info?id='+$rootScope.project.account._id : null;
+    $scope.referenceDocs = [];
+
+    $rootScope.sources =[
+        {value:"0",name:"assets"},
+        {value:"1",name:"online"},
+        {value:"2",name:"fileserver"},
+    ];
 
     $scope.projectDetail = {
         active:"0"
@@ -35,6 +40,18 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
             $scope.projectDetail.active = "-1";
         }
     }
+
+    $scope.resetReference = function(){
+        $scope.newReference = {
+            name:"",
+            project: false,
+            account: $rootScope.project.account? $rootScope.project.account._id : null,
+            type:5,
+            source:"0",
+            description:"",
+            link:""
+        };
+    };
 
     $scope.ifRecorded = function(_id){
         let projectContacts = $rootScope.project.projectContacts;
@@ -56,6 +73,58 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
     $scope.detail = function(contact){
 
     };
+
+    $scope.addReferenceDoc = function(){
+        $rootScope.submitType = 'referenceDoc';
+        let innerHTML = '<table>' +
+            '<tr><td>name:</td><td><input style="width:12rem" ng-model="newReference.name"></td></tr>'+
+            '<tr><td>source:</td><td><select style="width:6rem;" ng-model="newReference.source" ng-options="source.value as source.name for source in sources"></select></td></tr>'+
+            '<tr><td>link:</td><td><input style="width:12rem" ng-model="newReference.link"></td></tr>'+
+            '<tr><td  colspan="2">' +
+            '<div style="display:flex;flex-direction:row;"><div style="line-height:1.5rem;">IfGeneralFile:</div>' +
+            '<div style="height:100%;line-height:1.5rem;margin-left:1.5rem;"><input type="checkbox" ng-model="newReference.project" style="width:1rem;height:1.5rem;"></div>' +
+            '</div></td></tr>'+
+            '<tr><td>description:</td><td></td></tr>'+
+            '<tr><td colspan="2"><textarea style="margin-left:2rem;width:16rem;" ng-model="newReference.description"></textarea></td></tr>'+
+            '<table/>';
+        let element = document.getElementById('coverDetail');
+        if(element){
+            element = angular.element(element);
+            let node = $compile(innerHTML)($scope);
+            element.html('');
+            element.append(node);
+        }
+        let count = $rootScope.project.projectContacts.length;
+        count -=3;
+        if(count<0)
+            count = 0;
+        showPageCover(16);
+    }
+
+    $scope.$on('referenceDocCancelDoc',function(event,data){
+        cancelDoc();
+    });
+
+    $scope.$on('referenceDoc',function(event,data){
+        if($scope.newReference.link.match(/\\/g))
+            alert('link 中不能包含\\符号。')
+        let updateQuery = JSON.parse(JSON.stringify($scope.newReference));
+        let accountId= $rootScope.project.account? $rootScope.project.account._id : null;
+        updateQuery.project  = updateQuery.project? $rootScope.project._id :null;
+        updateQuery.source = Number(updateQuery.source);
+        dataManager.saveData('docs','new reference saved',updateQuery);
+    });
+
+
+    $scope.$on('new reference saved',function(event,data){
+        if(!data.success){
+            alert(data.message);
+        }else{
+            $scope.resetReference();
+            $scope.referenceDocs.push(data.result);
+            cancelDoc();
+        }
+    });
 
     $scope.showProjectContacts = function(){
         if($scope.statusReset){
@@ -165,10 +234,23 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
         }
     });
 
+    $scope.$on('reference requested',function(event,data){
+        if(!data.success){
+            alert(data.message);
+        }else{
+            $scope.referenceDocs  = data.result;
+        }
+    });
+
     $scope.initialize = function(){
         $scope.resetStatus();
+        $scope.resetReference();
         let search = {project:$rootScope.project._id};
         let cond = {sort:{date:-1},limit:1};
+        let accountId = $rootScope.project.account? $rootScope.project.account._id : null;
+        let project = [null];
+        project.push($rootScope.project._id);
+        dataManager.requestData('docs','reference requested',{type:5,account:accountId,project:{$in:project}});
         dataManager.requestData('version','current release received',{search:search,cond:cond});
         setTimeout(function(){
             $scope.initialized = true;

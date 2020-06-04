@@ -1,0 +1,178 @@
+body{
+    background:rgba(218,218,218,1);
+}
+
+.subRow >div{
+    margin-left:2rem;
+}
+
+#statusBar{
+    margin:1.5rem;
+    margin-top:0;
+    margin-bottom:0;
+    padding:0.5rem;
+    padding-left:1.5rem;
+    font-weight:bold;
+}
+
+#statusBar>a{
+    color:inherit;
+    text-decoration:none;
+}
+
+#statusBar >a:hover {
+    color:rgba(151,151,151,1);
+}
+
+#projectInfo{
+    display:flex;
+    flex-direction:row;
+    margin-left:auto;
+    margin-right:auto;
+    background:white;
+    flex-wrap:wrap;
+    width:76rem;
+    overflow:hidden;
+}
+
+#projectInfo>div{
+    width:50%;
+    margin-bottom:1rem;
+    display:flex;
+    flex-direction:row;
+    overflow: hidden;
+}
+
+#projectInfo>div>div:nth-child(1){
+    width:8rem;
+    text-align:right;
+    margin-right:1rem;
+}
+
+#projectInfo a{
+    color:royalblue;
+    text-decoration:none;
+}
+
+#projectInfo a:hover{
+    text-decoration:underline;
+}
+
+#tabParent>div{
+    border:1px solid rgba(185,185,185,1);
+    padding:5px;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    border-top-left-radius:0.65rem;
+    border-top-right-radius:3px;
+    background:lightgray;
+}
+
+.mainContents{
+    background:white;
+    margin-left:2rem;
+    margin-right:2rem;
+    padding:2rem;
+    border-radius:0.5rem;
+    margin-bottom:2rem;
+    overflow:hidden;
+}
+
+#submitButton{
+    margin-left:auto;
+    margin-top:0.8rem;
+    margin-right:2rem;
+    padding:5px;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    border-radius:5px;
+}
+
+#commentPanel >textarea {
+    resize:none;
+    margin-top:1rem;
+    width:calc(100% - 4rem);
+    height:6rem;
+    overflow:auto;
+    padding:0.5rem;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#activeSelect{
+    background:none;
+    border:none;
+    width:4rem;
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    color:royalblue;
+    font-size:0.9rem;
+}
+
+#activeSelect::-ms-expand { display: none; }
+
+#activeSelect:hover{
+    text-decoration:underline;
+}
+
+#btnPayment{
+    color:white;
+    background:rgba(127,64,60,1);
+    margin-top:0.5rem;
+    margin-left:1.5rem;
+}
+
+#btnPayment:enabled:hover {
+    background:indianred;
+    cursor:pointer;
+    opacity:0.85;
+}
+
+#btnBugAlert{
+    color:white;background:rgba(189,160,82,1);
+    margin-top:0.5rem;
+    margin-left:1.5rem;
+}
+
+#btnBugAlert:enabled:hover{
+    background:rgba(221,195,124,1);;
+    cursor:pointer;
+}
+
+#contactWindow{
+    display:flex;
+    flex-direction:column;
+
+}
+
+#contactWindow>div{
+    display:flex;
+    flex-direction:row;
+
+}
+
+#contactWindow>div >div:first-child{
+    min-width:8rem;
+    text-align:right;
+    margin-right:0.8rem;
+}
+
+#contactWindow>div >div:nth-child(2){
+    min-width:20rem;
+    width:20rem;
+    max-width:20rem;
+    display:flex;
+    flex-direction:column;
+}
+
+#contactWindow button{
+    border:none;
+    background:none;
+    color:royalblue;
+}
+
+#contactWindow button:hover{
+    color:deepskyblue;
+}
+

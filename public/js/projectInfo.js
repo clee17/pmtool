@@ -46,13 +46,7 @@ app.directive('docLink',function($compile,$rootScope){
                 let node = $compile('<b>no updates</b>')(scope);
                 element.append(node);
             } else{
-                let innerHTML = '<table><tr ng-repeat="item in itemList" style="display:flex;flex-direction:row;">' +
-                    '<td style="height:1rem;max-width:1rem;">◉</td>'+
-                    '<td class="singleLine" style="max-width:9rem;width:9rem;margin-left:0;text-align:left;">{{item.name | trim}}</td>' +
-                    '<td style="display:flex;flex-direction:row;">' +
-                    '<div style="opacity:0;height:1rem;width:1px;overflow::hidden;pointer-events:none;">{{item | docLink:assetLink}}</div>' +
-                    '<div><button class="simpleBtn" style="font-weight:bold;" onclick="copyPrev(this)">COPY</button></div>' +
-                    '</td></tr></table>';
+                let innerHTML = '<div ng-repeat="item in itemList"><a href="{{item | docLink:\'1\'}}" target="_blank"><img src="{{item | docIcon}}" style="width:1.2rem;"></a></td></tr></div>';
                 let node = $compile(innerHTML)(scope);
                 element.html('');
                 element.append(node);
@@ -83,6 +77,11 @@ app.directive('infoReceiver',function($rootScope){
         link:function(scope){
             $rootScope.project = JSON.parse(decodeURIComponent(scope.project));
             $rootScope.users = JSON.parse(decodeURIComponent(scope.users));
+            //false log in ;
+            for(let i =0; i<$rootScope.users.length;++i){
+                if($rootScope.users[i]._id == "5e797da1b8859cb0fa0d29bd")
+                    $rootScope.user = $rootScope.users[i];
+            }
             scope.setting = decodeURIComponent(scope.setting);
             scope.setting = scope.setting.replace(/\\r\\n/gi,"");
             $rootScope.setting = JSON.parse(scope.setting);
@@ -217,207 +216,6 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
     }
 });
 
-app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
-    $scope.alerts = [];
-
-    $scope.gotoPage = function(index){
-        let info = $location.search();
-        info.pid = index;
-        $location.search(info);
-        $rootScope.currentPage = $rootScope.pageList[index-1];
-        $rootScope.$broadcast('selection changed',$rootScope.pageList[index-1]);
-    }
-
-    $scope.$on('alert payments updated',function(event,data){
-        $scope.alerts = [];
-        for(let i=0; i<data.length;++i){
-            if(data[i].status <2)
-                $scope.alerts.push(data[i]);
-        }
-    });
-
-    $scope.noAlert = function(){
-        return $scope.alerts.length === 0;
-    }
-});
-
-
-app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,dataManager) {
-    $scope.bugs = [];
-    $scope.releases = [];
-
-    $scope.newBug = {
-        project:$rootScope.project._id,
-        current:"0",
-        developers:[],
-        status: "0",
-        priority:"3",
-        title:"",
-        comment:"",
-        type:0,
-        toBeSaved:[]
-    };
-
-    $scope.addDeveloper = "0";
-
-    $scope.newDeveloper = function(){
-        if($scope.addDeveloper == '0')
-            return;
-        if($scope.newBug.toBeSaved.indexOf($scope.addDeveloper)>=0){
-            alert('不能重复添加开发人员');
-            return;
-        }
-        let user = {_id:$scope.addDeveloper};
-        for(let i=0; i<$rootScope.developers.length;++i){
-            if($rootScope.developers[i]._id === $scope.addDeveloper){
-                $scope.newBug.developers.push($scope.developers[i]);
-                $scope.newBug.toBeSaved.push($scope.addDeveloper);
-                $scope.addDeveloper = "0";
-                break;
-            }
-        }
-    };
-
-    $scope.removeDeveloper = function(id){
-        if($scope.newBug.toBeSaved.indexOf(id)<0 ){
-            return;
-        }
-        let developers = $scope.newBug.developers;
-        for(let i =0; i< developers.length;++i){
-            if(developers[i]._id === id){
-                developers.splice(i,1);
-                break;
-            }
-        }
-        let TBS =  $scope.newBug.toBeSaved;
-        TBS.splice(TBS.indexOf(id),1);
-    }
-
-    $scope.$watch('newRelease.toBeSaved.length',function(newVal,oldVal){
-        let elements = document.getElementsByClassName('addDoc');
-        if (elements.length > 0)
-            elements[0].style.height = 17+newVal*1.8+'rem';
-    });
-
-
-    $scope.$watch('newBug.developers.length',function(newVal,oldVal){
-        let elements = document.getElementsByClassName('addDoc');
-        if (elements.length > 0)
-            elements[0].style.height = 17+newVal*1.8+'rem';
-    });
-
-    $scope.$on('bugfixCancelDoc',function(event,data){
-        cancelDoc();
-    });
-
-    $scope.$on('versions updated',function(event,data){
-        $scope.releases = JSON.parse(JSON.stringify($rootScope.versions));
-         $scope.releases.unshift({_id:"0",version:{type:1}});
-    });
-
-    $scope.$on('bugfix saved',function(event,data){
-        if(!data.success){
-            alert(data.message);
-        }else{
-            let updateQuery = {
-                version:$scope.newBug.current,
-                task:data.result._id
-            }
-            $scope.bugs.push(data.result);
-            dataManager.saveData('versionTask','version saved', updateQuery);
-        }
-    });
-
-
-    $scope.$on('version saved',function(event,data){
-        $rootScope.saving = false;
-        if(!data.success){
-            alert(data.message);
-        }else{
-            $scope.newBug.current = "0";
-            cancelDoc();
-        }
-    });
-
-    $scope.$on('addBugfix',function(event,data){
-        $rootScope.saving = true;
-        let newBug = $scope.newBug;
-        if(newBug.comment === ""){
-            alert("bugfix的描述不能为空");
-            return;
-        }else if(newBug.current === "0"){
-            alert("必须选择当前bug出现的版本");
-            return;
-        }
-        let updateQuery = JSON.parse(JSON.stringify($scope.newBug));
-        for(let i=0; i< updateQuery.developers.length;++i){
-            updateQuery.developers[i] = updateQuery.developers[i]._id;
-        }
-        updateQuery.developers = updateQuery.toBeSaved;
-        delete updateQuery.toBeSaved;
-        updateQuery.status = Number(updateQuery.status);
-        updateQuery.priority = Number(updateQuery.priority);
-        updateQuery.current = updateQuery.current === "0"? null : updateQuery.current._id;
-        updateQuery.populate = 'project developers';
-        delete updateQuery.current;
-        dataManager.saveData('projectTask','bugfix saved', updateQuery);
-    });
-
-    $scope.showCover = function(type){
-        $rootScope.submitType = type;
-        let innerHTML = '<table class="pageCoverTable">'+
-            '<tr><td>title:</td><td><input style="width:12rem" ng-model="newBug.title"></td></tr>'+
-            '<tr><td>developers:</td>' +
-            '<td><select ng-model="addDeveloper" ng-options="developer._id as developer.name for developer in developers"></select>' +
-            '<button class="simpleBtn" style="margin-left:1.5rem;" ng-show="addDeveloper != \'0\'" ng-click="newDeveloper()">ADD</button>'+
-            '</td></tr>'+
-            '<tr ng-repeat="developer in newBug.developers" ><td colspan="2">' +
-            '<button style="margin-right:1rem;" class="simpleBtn" ng-click="removeDeveloper(developer._id)">×</button><span style="margin-right:2rem;">{{developer.name}}</span><span>{{developer.mail}}</span>'+
-            '</td></tr>'+
-            '<tr><td>version:</td>' +
-            '<td><select ng-model="newBug.current" ng-options="release._id as release.version|version for release in releases"></select></td></tr>'+
-            '<tr><td>Priority:</td><td><select style="width:4rem;"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></td></tr>'+
-            '<tr><td>comment:</td><td></td></tr>'+
-            '<tr><td colspan="2"><textarea style="margin-left:2rem;width:16rem;" ng-model="newBug.comment"></textarea></td></tr>'+
-            '</table>';
-        let element = document.getElementById('coverDetail');
-        if(element){
-            element = angular.element(element);
-            let node = $compile(innerHTML)($scope);
-            element.html('');
-            element.append(node);
-        }
-        showPageCover(17);
-    };
-
-    $scope.$on('bugs requested',function(event,data){
-        if(!data.success){
-            alert(data.message);
-        }else{
-            $scope.bugs = data.result;
-        }
-    });
-
-    $scope.initialize = function(){
-        let data = [
-            { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]}]}}},
-            { $lookup:{from:"versionTask",localField:"_id",foreignField:"version",as:"task"}},
-            { $unwind:"$task"},
-            { $set: { "task.version": "$version" } },
-            { $replaceRoot: { newRoot: "$task" } },
-            { $lookup:{  from: "projectTask",localField:"task",foreignField:"_id",as:"info"}},
-            { $unwind:"$info"},
-            { $set: { "info.version": "$version" } },
-            { $replaceRoot: { newRoot: "$info" } },
-            { $sort:{date:-1}},
-            { $lookup:{  from: "user",localField:"developers",foreignField:"_id",as:"developers"}},
-           ];
-        dataManager.requestAggregateData('version','bugs requested', data);
-    };
-
-    $scope.initialize();
-});
-
 app.directive('historyDocList',function($compile){
     return{
         restrict:"A",
@@ -448,13 +246,6 @@ app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
         description:"",
         link:""
     }
-
-    $scope.sources =[
-        {value:"0",name:"assets"},
-        {value:"1",name:"online"},
-        {value:"2",name:"fileserver"},
-    ];
-
 
     $scope.types =[
         {value:"0",name:"NDA"},
@@ -570,7 +361,6 @@ app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
     };
 
     $scope.initialize = function(){
-
         let data = [
             { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]},{$lte:["$type",2]}]}}},
             { $lookup:{from:"doc",localField:"_id",foreignField:"parent",as:"draft"}},

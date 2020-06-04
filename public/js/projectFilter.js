@@ -125,7 +125,7 @@ app.filter('docType',function(){
     return function(type){
         if(typeof type !== 'number')
             type = Number(type);
-        let statusList = ['NDA', 'SOW', 'SLA'];
+        let statusList = ['NDA', 'SOW', 'SLA','Royalty','invoice','reference','draft','other'];
         let result = statusList[type];
         if(!result)
             return statusList[0];
@@ -152,7 +152,7 @@ app.filter('version',function(){
         if(!version)
             return "";
         if(version.type)
-            return 'choose version';
+            return version.info;
         return version.main+'.'+version.update+'.'+version.fix;
     }
 });
@@ -162,7 +162,7 @@ app.filter('bugStatus',function(){
         if(typeof status !== 'number'){
             status = Number(status);
         }
-        let statusList = ['open','investigate','solved','closed'];
+        let statusList = ['open','investigate','solved','closed','pended'];
         return statusList[status];
     }
 });
@@ -214,12 +214,13 @@ app.filter('docLink',function($filter){
         if(typeof doc !== 'object'){
             doc = JSON.parse(doc);
         }
-        if(type === '1')
-            doc.source = null;
-        if(!doc.source)
-            return $filter('linkDocument')(doc.link,doc.source);
-        else
+        if(!doc.type)
             return doc.link;
+        else{
+            if(type === '1')
+                doc.source = null;
+            return $filter('linkDocument')(doc.link,doc.source);
+        }
     }
 })
 
@@ -278,6 +279,18 @@ app.filter('countryCode',function($rootScope){
         return "unknown";
     }
 })
+
+app.filter('shortenContents',function(){
+    return function(contents){
+        if(contents.length <=25)
+            return contents;
+        else
+            return contents.substring(0,25) +'...';
+    }
+})
+
+
+
 
 app.directive('uploadAccount',function($compile,$rootScope){
     return{
@@ -355,3 +368,29 @@ app.directive('contentFormat',function(){
         }
     }
 });
+
+app.directive('docSource',function($compile){
+    return{
+        restrict:"EA",
+        scope:{
+            doc:'='
+        },
+        link:function(scope,element,attr){
+            if(!scope.doc){
+                element.html("No Document Info");
+                return;
+            }
+            let innerHTML = '<a href="{{doc | docLink:\'2\' }}" target="_blank"><img src="{{doc | docIcon}}" style="width:1.2rem;"></a>';
+            let innerHTMLOnline = '<a href="{{doc | docLink:\'2\' }}" target="_blank">+GO+</a>';
+            element.html('');
+            if(scope.doc.source === 0)
+                element.append($compile(innerHTML)(scope));
+            else if(scope.doc.source === 1)
+                element.append($compile(innerHTMLOnline)(scope));
+            else if(scope.doc.source === 2)
+                element.append($compile(innerHTML)(scope));
+        }
+    }
+});
+
+

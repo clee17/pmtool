@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 module.exports = new mongoose.Schema({
     project: {type:mongoose.Schema.ObjectId,ref:'project',default:null},
+    product: {type:mongoose.Schema.ObjectId,ref:'product',default:null},
     version:{
         main:{type:Number,default:1},
         update:{type:Number,default:0},

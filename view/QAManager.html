@@ -13,7 +13,7 @@
     <script src="/js/general.js"></script>
     <script src="/js/dataManager.js"></script>
     <script src="/js/projectFilter.js"></script>
-    <script src="/js/accountManager.js"></script>
+    <script src="/js/QAManager.js"></script>
 </head>
 <style>
     #projectTable{
@@ -40,16 +40,6 @@
         color:white;
     }
 
-    #projectTable tr>td:last-child{
-        min-width:23rem;
-        max-width:23rem;
-    }
-
-    #projectTable tr>td:nth-last-child(2){
-        max-width:15rem;
-        min-width:15rem;
-    }
-
     .topBtnRow{
         display:flex;
         flex-direction:row;
@@ -60,28 +50,28 @@
 
 </style>
 <body ng-app="dashboard"
-      ng-controller="accountCon">
+      ng-controller="QADashboard">
 <info-receiver  ng-init="contents = '<%= encodeURIComponent(JSON.stringify(contents)) %>'"></info-receiver>
 <div id="header">
-    <div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">Cidana 第三方客戶信息维护</div>
-    <div id="headerButtons">
-        <a href="/" target="_self">RETURN</a>
-    </div>
+    <div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">CIDANA QA 任务管理器</div>
 </div>
 <div id="main">
-    <div class="topBtnRow"><button onclick="showPageCover(20)" class="addDocBtn">添加客户</button></div>
+    <div class="topBtnRow"><button onclick="showPageCover(15)" class="addDocBtn">添加新任务</button></div>
     <table id="projectTable">
-        <tr><td>Name</td><td>Alias</td><td>Parent</td><td style="text-align:center;">Priority</td><td style="text-align:center;">Country</td><td>Website</td><td>Description</td></tr>
-        <tr ng-repeat="entry in contents.entries">
-                <td>{{entry.name}}</td>
-                <td>{{entry.alias}}</td>
-                <td account-parent account="{{entry.parent}}"></td>
-                <td style="text-align:center;">{{entry.priority }}</td>
-                <td style="text-align:center;">{{entry.country | countryCode}}</td>
-                <td><a href="{{ 'http://' + entry.official}}" target="_blank">{{entry.official}}</a></td>
-                <td content-format contents="{{entry.description}}"></td>
+        <tr><td>提交人</td><td>提交日期</td><td>测试类型</td><td>Priority</td><td>测试状态</td><td>关联版本</td><td>测试报告</td></tr>
+        <tr><td colspan="7" style="text-align:center"><b>There is no QA tests for you now.</b></td></tr>
+        <tr ng-repeat="entry in QAList">
+            <td>{{entry.submitter.name}}</td>
+            <td>{{entry.date | date:'&y/&m/&d'}}</td>
+            <td>{{entry.type | QAType}}</td>
+            <td>{{entry.priority }}</td>
+            <td>{{entry.status | QAStatus}}</td>
+            <td>{{entry.version | version}} {{entry.version.product | product}}</td>
+            <td content-format contents="{{entry.comment}}"></td>
+            <td doc-link contents="{{entry.report}}"></td>
         </tr>
     </table>
+
     <div class="pageCount" style="margin-top:auto;margin-bottom:1.5rem;display:flex;flex-direction:row;padding-top:3rem;">
         <div ng-if="pageIndex.startIndex>1"><button ng-click="pageIndex.goToPage(1)">1</button></div>
         <div ng-if="pageIndex.startIndex>2">…</div>
@@ -100,20 +90,17 @@
 </div>
 <div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;">
     <div class="addDoc" style="position:relative;">
-        <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);">
+        <div ng-show="saving" class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);">
             <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
         </div>
         <div style="margin:1rem;display:flex;flex-direction:column;">
             <table id="docDetail" class="displayTable" style="flex:1;margin-top:0.5rem;">
-                <tr><td>客户</td><td><input ng-model="newAccount.name" placeholder="Company name(mandatory)"></td></tr>
-                <tr><td>客户别名</td><td><input ng-model="newAccount.alias" placeholder="alias(optional)"></td></tr>
-                <tr><td>官方网站</td><td><input ng-model="newAccount.official" placeholder="official website(optional)"></td></tr>
-                <tr><td>父公司</td><td style="display:flex;flex-direction:row;"><input ng-model="parentSearch" style="max-width:10rem;margin-right:0.5rem;" placeholder="Company name">
-                    <i class="fa fa-spinner fa-spin" ng-show="parentSearching"></i>
-                    <select style="opacity:0;position:absolute;left:0;z-index:99" ng-model="newAccount.parrent"></select>
+                <tr><td>测试类型</td><td><select
+                        ng-options="type.code as type.name for type in types"
+                        ng-model="newTest.type"></select>
                 </td></tr>
                 <tr><td>优先级</td><td>
-                    <select ng-model="newAccount.priority">
+                    <select ng-model="newTest.priority">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -121,9 +108,16 @@
                         <option value="5">5</option>
                     </select>
                 </td></tr>
-                <tr><td>国家</td><td><select ng-model="newAccount.country" ng-options="country.code as country.country for country in countryCodes"></select></td></tr>
-                <tr><td>简介</td><td>
-                    <textarea ng-model="newAccount.description"></textarea>
+                <tr><td>关联项目</td><td><select ng-model="newTest.project"
+                                               ng-options="project._id as project.name for project in projects"
+                                               style="max-width:12rem;"></select></td></tr>
+                <tr ng-show="newTest.project !== '0'"><td>版本</td><td>
+                    <select ng-model="newTest.version"
+                            ng-options="version._id as version.version|version for version in versions">
+                    </select>
+                </td></tr>
+                <tr><td>需求简介</td><td>
+                    <textarea ng-model="newTest.description"></textarea>
                 </td></tr>
             </table>
             <div style="display:flex;flex-direction:row;margin-top:1rem;">

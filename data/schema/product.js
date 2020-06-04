@@ -6,5 +6,6 @@ module.exports = new mongoose.Schema({
     market:[{type:String,default:""}],
     resources:[{type:mongoose.Schema.ObjectId,default:null,ref:'storage'}],
     description: {type:String,default:""},
+    parent:[{type:mongoose.Schema.ObjectId,default:null,ref:'parent'}],
     supported:{type:Boolean,default:true}
 });

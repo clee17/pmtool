@@ -7,6 +7,11 @@
         var PAGE_ID = "<%- pageId+1 %>";
         var SETTING = <%- setting %>;
     </script>
+    <script src="/lib/angular.min.js"></script>
+    <script>
+        var app = angular.module("dashboard",[]);
+    </script>
+    <script src="/js/projectFilter.js"></script>
     <script src="/js/doc.js"></script>
     <script src="/js/docManager.js"></script>
     <link href="/css/general.css" rel="stylesheet" type="text/css"/>
@@ -14,7 +19,12 @@
     <script src="/lib/lz-string.min.js"></script>
 </head>
 <body onload="loaded()">
-<div id="header"><div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">Cidana 文件管理器</div></div>
+<div id="header">
+    <div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">Cidana 文件管理器</div>
+    <div id="headerButtons">
+        <a href="/" target="_self">RETURN</a>
+    </div>
+</div>
 <div id="main">
     <div style="margin-top:2rem;margin-bottom:2rem;min-height:25rem;flex:1;align-self:flex-start;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;">
         <div style="display:flex;flex-direction:row;margin-left:auto;"><button onclick="addDoc()" class="addDocBtn">添加文件</button></div>
@@ -106,7 +116,7 @@
                     <option value="2">SLA(合同与合同修订)</option>
                     <option value="3">Royalty(季度产量报告)</option>
                     <option value="4">invoice(财务收据)</option>
-                    <option value="4">reference(参考文章)</option>
+                    <option value="5">reference(参考文章)</option>
                 </select></td></tr>
                 <tr><td>客户</td><td>
                     <select id="customerSelect" onchange="changeAccount(this)" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:88;">

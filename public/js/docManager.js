@@ -54,8 +54,14 @@ var submitDoc = function(){
         result.account = element.value;
 
     element = document.getElementById('projectSelect');
-    if(element && element.value !== "0" && element.value !== "1")
+    if (element && element.value === '2')
+        result.project = null;
+    else if(element && element.value !== "0" && element.value !== "1")
         result.project = element.value;
+    else{
+        alert('请为该文档选择一个项目');
+        return;
+    }
 
     element = document.getElementById('descriptionInput');
     if(!element || element.value === ""){
@@ -148,6 +154,7 @@ var changeAccount = function(target){
                     obj.options.add(new Option("当前客户没有项目","1")); //这个兼容IE与firefox
                 }else{
                     obj.options.add(new Option("请选择客户项目","1")); //这个兼容IE与firefox
+                    obj.options.add(new Option("客户通用文档","2")); //这个兼容IE与firefox
                     for(let i=0; i<received.result.length;++i){
                         obj.options.add(new Option(received.result[i].name,received.result[i]._id)); //这个兼容IE与firefox
                     }

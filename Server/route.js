@@ -14,9 +14,11 @@ var efforts = require('./../data/model/efforts'),
     projectModel = require('./../data/model/project'),
     positionModel = require('./../data/model/position'),
     projectCommentModel = require('./../data/model/projectComment'),
-    projectTaskModel = require('../data/model/developerTask'),
+    developerTaskModel = require('../data/model/developerTask'),
+    developerLogModel = require('../data/model/developerLog'),
     userModel = require('./../data/model/user'),
     docModel = require('./../data/model/doc'),
+    QAModel = require('./../data/model/QA'),
     versionModel = require('./../data/model/version'),
     versionTaskModel = require('./../data/model/versionTask'),
     contactsModel = require('./../data/model/contacts');
@@ -26,7 +28,8 @@ let tableList = {
     "account":accountModel,
     "product":productModel,
     "project":projectModel,
-    "projectTask":projectTaskModel,
+    "developerTask":developerTaskModel,
+    "developerLog":developerLogModel,
     "projectComment":projectCommentModel,
     "user":userModel,
     "contacts":contactsModel,
@@ -34,7 +37,8 @@ let tableList = {
     "versionTask":versionTaskModel,
     "docs":docModel,
     "payment":paymentModel,
-    "paymentDocs":paymentDocModel
+    "paymentDocs":paymentDocModel,
+    'position':positionModel
 };
 
 let router = express.Router();
@@ -193,6 +197,24 @@ let handler = {
             })
             .catch(function(err){
                 res.render('tutorial.html',{title:"PM教程",contents:err});
+            });
+    },
+
+    QAManager:function(req,res){
+        let pageId = req.query.pid;
+        if(!pageId)
+            pageId = 1;
+        pageId--;
+        let render = {};
+        render.contents = {};
+        QAModel.estimatedDocumentCount().exec()
+            .then(function(count){
+                render.contents.maxCount = count;
+                return QAModel.find({},null,{sort:{name:1},limit:25,skip:pageId*25}).populate('').exec();
+            })
+            .then(function(entries){
+                render.contents.entries = entries;
+                res.render('QAManager.html',render);
             });
     },
 
@@ -419,7 +441,11 @@ let handler = {
 
         let populate = '';
         let search = received._id? {_id:received._id} : received;
+        if(received.search)
+            search = received.search;
         let update = received;
+        if(received.updateExpr)
+            update = received.updateExpr;
         if(update._id)
             delete update._id;
         if(update.populate){
@@ -502,6 +528,7 @@ router.get('/developer',handler.developer);
 router.get('/account',handler.account);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
+router.get('/QAManager',handler.QAManager);
 router.get('/QATool',handler.QA);
 router.get('/QATool/:contentId',handler.QA);
 router.get('/doc',handler.docManager);
@@ -525,8 +552,8 @@ module.exports = function(app){
     app.use('/img',express.static(path.join(basedir,"/public/img")));
     app.use('/assets',express.static(systemSetting.DocLocalPath));
     app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
-    app.use('/',router);
 
+    app.use('/',router);
 
     app.get('*', function(req, res){
         res.render('error.html', {

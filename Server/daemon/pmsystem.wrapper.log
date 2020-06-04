@@ -144,3 +144,115 @@ Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInte
 2020-05-29 16:08:36 - Send SIGINT 5328
 2020-05-29 16:08:36 - SIGINT to 5328 failed - Killing as fallback
 2020-05-29 16:08:36 - Finished pmsystem.exe
+2020-05-29 18:43:05 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-05-29 18:43:05 - Started 30724
+2020-06-02 09:44:04 - Stopping pmsystem.exe
+2020-06-02 09:44:04 - ProcessKill 30724
+2020-06-02 09:44:04 - Found child process: 6164 Name: conhost.exe
+2020-06-02 09:44:04 - Found child process: 14804 Name: node.exe
+2020-06-02 09:44:04 - Stopping process 6164
+2020-06-02 09:44:04 - Send SIGINT 6164
+2020-06-02 09:44:04 - SIGINT to 6164 failed - Killing as fallback
+2020-06-02 09:44:05 - Stopping process 14804
+2020-06-02 09:44:05 - Send SIGINT 14804
+2020-06-02 09:44:05 - SIGINT to 14804 failed - Killing as fallback
+2020-06-02 09:44:05 - Stopping process 30724
+2020-06-02 09:44:05 - Send SIGINT 30724
+2020-06-02 09:44:05 - SIGINT to 30724 failed - Killing as fallback
+2020-06-02 09:44:05 - Finished pmsystem.exe
+2020-06-03 09:19:15 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-06-03 09:19:15 - Started 6352
+2020-06-03 11:14:33 - Stopping pmsystem.exe
+2020-06-03 11:14:33 - ProcessKill 6352
+2020-06-03 11:14:33 - Shutdown exception
+Message:系统正在关机。
+
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementScope.InitializeGuts(Object o)
+   在 System.Management.ManagementScope.Initialize()
+   在 System.Management.ManagementObjectSearcher.Initialize()
+   在 System.Management.ManagementObjectSearcher.Get()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2020-06-03 11:14:58 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-06-03 11:14:58 - Started 6412
+2020-06-03 11:19:39 - Stopping pmsystem.exe
+2020-06-03 11:19:39 - ProcessKill 6412
+2020-06-03 11:19:39 - Shutdown exception
+Message:系统正在关机。
+
+Stacktrace:   在 System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   在 System.Management.ManagementScope.InitializeGuts(Object o)
+   在 System.Management.ManagementScope.Initialize()
+   在 System.Management.ManagementObjectSearcher.Initialize()
+   在 System.Management.ManagementObjectSearcher.Get()
+   在 winsw.WrapperService.GetChildPids(Int32 pid)
+   在 winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   在 winsw.WrapperService.StopIt()
+   在 winsw.WrapperService.OnShutdown()
+2020-06-03 11:20:00 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-06-03 11:20:00 - Started 4944
+2020-06-04 14:51:42 - Stopping pmsystem.exe
+2020-06-04 14:51:42 - ProcessKill 4944
+2020-06-04 14:51:42 - Found child process: 6168 Name: conhost.exe
+2020-06-04 14:51:42 - Found child process: 7816 Name: node.exe
+2020-06-04 14:51:42 - Stopping process 6168
+2020-06-04 14:51:42 - Send SIGINT 6168
+2020-06-04 14:51:42 - SIGINT to 6168 failed - Killing as fallback
+2020-06-04 14:51:42 - Stopping process 7816
+2020-06-04 14:51:42 - Send SIGINT 7816
+2020-06-04 14:51:42 - SIGINT to 7816 failed - Killing as fallback
+2020-06-04 14:51:42 - Stopping process 4944
+2020-06-04 14:51:42 - Send SIGINT 4944
+2020-06-04 14:51:42 - SIGINT to 4944 failed - Killing as fallback
+2020-06-04 14:51:42 - Finished pmsystem.exe
+2020-06-04 14:51:47 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-06-04 14:51:47 - Started 37020
+2020-06-04 14:54:23 - Stopping pmsystem.exe
+2020-06-04 14:54:23 - ProcessKill 37020
+2020-06-04 14:54:24 - Found child process: 39760 Name: conhost.exe
+2020-06-04 14:54:24 - Found child process: 36188 Name: node.exe
+2020-06-04 14:54:24 - Stopping process 39760
+2020-06-04 14:54:24 - Send SIGINT 39760
+2020-06-04 14:54:24 - SIGINT to 39760 failed - Killing as fallback
+2020-06-04 14:54:24 - Stopping process 36188
+2020-06-04 14:54:24 - Send SIGINT 36188
+2020-06-04 14:54:24 - SIGINT to 36188 failed - Killing as fallback
+2020-06-04 14:54:24 - Stopping process 37020
+2020-06-04 14:54:24 - Send SIGINT 37020
+2020-06-04 14:54:24 - SIGINT to 37020 failed - Killing as fallback
+2020-06-04 14:54:24 - Finished pmsystem.exe
+2020-06-04 14:55:34 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-06-04 14:55:34 - Started 32948
+2020-06-04 14:56:57 - Stopping pmsystem.exe
+2020-06-04 14:56:57 - ProcessKill 32948
+2020-06-04 14:56:57 - Found child process: 34716 Name: conhost.exe
+2020-06-04 14:56:57 - Found child process: 34004 Name: node.exe
+2020-06-04 14:56:57 - Stopping process 34716
+2020-06-04 14:56:57 - Send SIGINT 34716
+2020-06-04 14:56:57 - SIGINT to 34716 failed - Killing as fallback
+2020-06-04 14:56:57 - Stopping process 34004
+2020-06-04 14:56:57 - Send SIGINT 34004
+2020-06-04 14:56:57 - SIGINT to 34004 failed - Killing as fallback
+2020-06-04 14:56:57 - Stopping process 32948
+2020-06-04 14:56:57 - Send SIGINT 32948
+2020-06-04 14:56:57 - SIGINT to 32948 failed - Killing as fallback
+2020-06-04 14:56:57 - Finished pmsystem.exe
+2020-06-04 15:21:50 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\PM\system\node_modules\node-windows\lib\wrapper.js --file C:\PM\System\Server\server.js --scriptoptions= --log "PMSystem wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2020-06-04 15:21:50 - Started 6440
+2020-06-04 16:35:51 - Stopping pmsystem.exe
+2020-06-04 16:35:51 - ProcessKill 6440
+2020-06-04 16:35:51 - Found child process: 6468 Name: conhost.exe
+2020-06-04 16:35:51 - Found child process: 7712 Name: node.exe
+2020-06-04 16:35:51 - Stopping process 6468
+2020-06-04 16:35:51 - Send SIGINT 6468
+2020-06-04 16:35:51 - SIGINT to 6468 failed - Killing as fallback
+2020-06-04 16:35:51 - Stopping process 7712
+2020-06-04 16:35:51 - Send SIGINT 7712
+2020-06-04 16:35:51 - SIGINT to 7712 failed - Killing as fallback
+2020-06-04 16:35:51 - Stopping process 6440
+2020-06-04 16:35:51 - Send SIGINT 6440
+2020-06-04 16:35:51 - SIGINT to 6440 failed - Killing as fallback
+2020-06-04 16:35:51 - Finished pmsystem.exe

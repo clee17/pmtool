@@ -1,5 +1,3 @@
-
-
 app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
     $scope.addDeveloper = "0";
     $rootScope.versions = [];
@@ -7,6 +5,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         developers:[],
         toBeSaved:[],
         position:"",
+        source:"0",
         description:"",
         priority:"1",
         version:{
@@ -31,7 +30,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         if(visible){
             let contents = root.children[1];
             let original = contents.children[0];
-            original.style.height = '1rem';
+            original.style.height = '1.5rem';
             targetElement.html('<i class="fa fa-angle-down"></i>');
         }else{
             let contents = root.children[1];
@@ -53,7 +52,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
     }
 
     $scope.newDeveloper = function(){
-        if($scope.addDeveloper == '0')
+        if($scope.addDeveloper === '0')
             return;
         if($scope.newRelease.toBeSaved.indexOf($scope.addDeveloper)>=0){
             alert('不能重复添加开发人员');
@@ -85,10 +84,15 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         TBS.splice(TBS.indexOf(id),1);
     }
 
+
     $scope.$watch('newRelease.toBeSaved.length',function(newVal,oldVal){
         let elements = document.getElementsByClassName('addDoc');
         if (elements.length > 0)
-            elements[0].style.height = 17+newVal*1.8+'rem';
+            elements[0].style.height = 19+newVal*1.8+'rem';
+    });
+
+    $scope.$on('releaseCancelDoc',function(event,data){
+           cancelDoc();
     });
 
     $scope.showCover = function(type){
@@ -96,6 +100,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         let innerHTML = '<table class="pageCoverTable">'+
             '<tr><td>Release Version:</td><td><input style="width:2rem" ng-model="newRelease.version.main">:<input style="width:3rem;" ng-model="newRelease.version.update">:<input style="width:4rem;" ng-model="newRelease.version.fix"></td></tr>'+
             '<tr><td>Positon:</td><td><input ng-model="newRelease.position"></td></tr>' +
+            '<tr><td>Source:</td><td><select style="width:4rem;" ng-model="newRelease.source" ng-options="source.value as source.name for source in sources"></select></td></tr>'+
             '<tr><td>Developers:</td><td style="display:flex;flex-direction:row;">' +
             '<select ng-model="addDeveloper" ng-options="developer._id as developer.name for developer in developers"></select>' +
             '<button class="simpleBtn" style="margin-left:1.5rem;" ng-show="addDeveloper != \'0\'" ng-click="newDeveloper()">ADD</button></td></tr>' +
@@ -113,7 +118,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
             element.html('');
             element.append(node);
         }
-        showPageCover(17);
+        showPageCover(19);
     };
 
     $scope.$on('developers received',function(event,data){
@@ -136,7 +141,9 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         updateSave.date = Date.now();
         updateSave.priority = Number(updateSave.priority);
         updateSave.project = $rootScope.project._id;
-        $scope.updateSave = updateSave;
+        $scope.updateSave = JSON.parse(JSON.stringify(updateSave));
+        delete updateSave.source;
+        delete updateSave.position;
         dataManager.requestData('version','search version existed',{version:updateSave.version,project:updateSave.project});
     });
 
@@ -149,22 +156,25 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
             if(data.result.length > 0)
                 alert('该版本已经存在，请修改信息。');
             else{
-                dataManager.saveData('version','version saved',$scope.updateSave);
+                let source = Number($scope.updateSave.source);
+                dataManager.saveData('position','version position saved',{search:{link:$scope.updateSave.position,source:source},updateExpr:{updated:Date.now()}})
             }
         }
     });
 
-    $scope.$on('versions received',function(event,data){
+    $scope.$on('version position saved',function(event,data){
         if(!data){
-            alert('failed to retrieve historic versions.');
+            alert ('version position received null data');
         }else if(!data.success){
             alert(data.message);
-        }else {
-            console.log(data.result);
-            $rootScope.versions = data.result;
-            $rootScope.$broadcast('versions updated',null);
+        }else{
+            $scope.updateSave.position = data.result._id;
+            delete $scope.updateSave.source;
+            $scope.updateSave.populate = 'position';
+            dataManager.saveData('version','version saved',$scope.updateSave);
         }
     });
+
 
     $scope.$on('version saved',function(event,data){
         $rootScope.saving = false;
@@ -181,6 +191,18 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
             cancelDoc();
         }
     });
+
+    $scope.$on('versions received',function(event,data){
+        if(!data){
+            alert('failed to retrieve historic versions.');
+        }else if(!data.success){
+            alert(data.message);
+        }else {
+            $rootScope.versions = data.result;
+            $rootScope.$broadcast('versions updated',null);
+        }
+    });
+
 
     $scope.initialize = function(){
         let data = {};

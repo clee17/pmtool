@@ -5,6 +5,7 @@ module.exports = new mongoose.Schema({
     description:{type:String,default:""},
     account: {type:mongoose.Schema.ObjectId,ref:'account',default:null},
     endCustomer: {type:mongoose.Schema.ObjectId,ref:'account',default:null},
+    owner: {type:mongoose.Schema.ObjectId,ref:'user',default:null},
     priority:{type:Number,default:0},
     date:{type:Date,default:Date.now()},
     schedule:{type:Date,default:Date.now()},

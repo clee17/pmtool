@@ -17,7 +17,7 @@ var showPageCover = function(size,width){
     setTimeout(function() {
         let elements = document.getElementsByClassName('addDoc');
         if (elements.length > 0){
-            elements[0].style.height = size+'rem';
+            elements[0].style.height = typeof size === 'number'? size+'rem' : size;
             if(width)
                 elements[0].style.width = width+'rem';
             else

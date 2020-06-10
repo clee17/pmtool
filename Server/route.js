@@ -2,6 +2,8 @@ var express = require('express'),
     path = require('path'),
     fs = require('fs'),
     ejs = require('ejs'),
+    session = require('express-session'),
+    redisStore = require('connect-redis')(session),
     mongoose= require('mongoose'),
     LZString = require('lz-string');
 
@@ -68,7 +70,7 @@ let handler = {
         pageId--;
         let render = {};
         render.contents = {};
-        projectModel.find({},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers').exec()
+        projectModel.find({},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
             .then(function(entries){
                 render.contents.entries = entries;
                 return projectModel.estimatedDocumentCount({}).exec();
@@ -553,7 +555,22 @@ module.exports = function(app){
     app.use('/assets',express.static(systemSetting.DocLocalPath));
     app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
 
+    app.use(cookie());
+
+    app.use(session({
+        secret:'a;ejbgda',
+        resave: false,
+        store: new redisStore({ host:'127.0.0.1',port:'6379',db: 0, pass: '',client:redisClient}),
+        cookie: {
+            secure: false,
+            path:'/',
+            httpOnly:true,
+            maxAge:null
+        }
+    }));
+
     app.use('/',router);
+
 
     app.get('*', function(req, res){
         res.render('error.html', {

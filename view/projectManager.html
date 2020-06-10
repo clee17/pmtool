@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="img/favicon.ico"/>
     <title>Cidana 项目管理工具</title>
     <link href="/css/general.css" rel="stylesheet" type="text/css"/>
     <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
@@ -56,7 +57,7 @@
     <div class="topBtnRow"><button ng-click="addProject()" class="addDocBtn">添加项目</button></div>
     <table id="projectTable">
         <tr><td>Account</td><td>End Customer</td><td>Project name</td>
-            <td>priority</td><td>schedule</td><td>product</td><td>status</td><td>established</td></tr>
+            <td>priority</td><td>schedule</td><td>product</td><td>owner</td><td>status</td><td>established</td></tr>
         <tr ng-repeat="entry in contents.entries"
             ng-mouseover="hoverPlink($event,true)"
             ng-mouseleave="hoverPlink($event,false)"
@@ -69,7 +70,8 @@
                 <td>{{entry.priority}}</td>
                 <td>{{entry.schedule | date:"&y/&m/&d"}}</td>
                 <td>{{entry.delivery.description}}</td>
-                <td> {{entry.status | status }} </td>
+                <td>{{entry.owner.name }} </td>
+                <td>{{entry.status | status }} </td>
                 <td>{{entry.date | date:'&y/&m/&d'}}</td>
             </a>
         </tr>

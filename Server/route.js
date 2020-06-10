@@ -10,6 +10,8 @@ var express = require('express'),
     mongoose= require('mongoose'),
     LZString = require('lz-string');
 
+var systemSetting = JSON.parse(SETTING);
+
 var efforts = require('./../data/model/efforts'),
     accountModel = require('../data/model/accounts'),
     paymentModel = require('../data/model/payment'),
@@ -515,8 +517,14 @@ let handler = {
     },
 
     fileserver:function(req,res){
-        let url = req.originalUrl.replace(/\//g,"\\");
-        url = "\\"+url;
+        let url = req.originalUrl;
+        if(systemSetting.OS === "windows"){
+           url = url.replace(/\//g,"\\");
+            url = "\\"+url;
+        }else {
+            url = systemSetting.fileServerPath + url;
+        }
+
         fs.access(url,(err)=>{
             if(err){
                 handler.renderError(res,err);
@@ -524,6 +532,7 @@ let handler = {
                 res.sendFile(url);
             }
         });
+
     }
 };
 
@@ -550,7 +559,6 @@ router.post('/getInfo/products',handler.products);
 
 
 module.exports = function(app){
-    let systemSetting = JSON.parse(SETTING);
     app.use('/lib',express.static(path.join(basedir,"/public/lib")));
     app.use('/js',express.static(path.join(basedir,"/public/js")));
     app.use('/css',express.static(path.join(basedir,"/public/css")));

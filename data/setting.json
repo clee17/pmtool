@@ -1,4 +1,5 @@
 {
   "DocLocalPath": "/var/PMSystem/assets",
-  "fileServerPath": ""
+  "fileServerPath": "/home/pmsys/",
+  "OS":"windows"
 }

@@ -2,8 +2,11 @@ var express = require('express'),
     path = require('path'),
     fs = require('fs'),
     ejs = require('ejs'),
+    cookie = require('cookie-parser'),
     session = require('express-session'),
+    redis = require('redis'),
     redisStore = require('connect-redis')(session),
+    redisClient  = redis.createClient('6379', '127.0.0.1'),
     mongoose= require('mongoose'),
     LZString = require('lz-string');
 
@@ -556,6 +559,10 @@ module.exports = function(app){
     app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
 
     app.use(cookie());
+
+    redisClient.on("error",function(error){
+         console.log(error);
+    });
 
     app.use(session({
         secret:'a;ejbgda',

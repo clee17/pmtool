@@ -1,6 +1,7 @@
 app.controller("commentCon",function($scope,$rootScope,$location,$window,dataManager) {
     $scope.comments = [];
     $scope.contacts = [];
+    $scope.userInfo = $rootScope.user;
     $scope.pageId= 1;
     $scope.maxCount = 1;
     $scope.gotoPage = function(index){
@@ -20,7 +21,6 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
 
 
     $scope.commentSubmit = {
-        user:"",
         contents:"",
         saving:false
     }
@@ -99,7 +99,7 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         let data = {
             date:new Date(Date.now()),
             comment: $scope.commentSubmit.contents,
-            user: $scope.commentSubmit.user,
+            user: $rootScope.user._id,
             project:$rootScope.project._id
         };
 
@@ -149,7 +149,6 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
             dataManager.requestData('contacts','contacts received',{populate:'company',search:{company:$rootScope.project.account._id},cond:{sort:{name:1}}});
         else
             $scope.contacts = $rootScope.manangers;
-        $scope.commentSubmit.user = "5e797da1b8859cb0fa0d29bd";
         $scope.refreshCommentData();
     }
 

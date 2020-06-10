@@ -71,7 +71,6 @@ let handler = {
     },
 
     index:function(req,res){
-        console.log(req.session.user);
         if(!req.session.user){
             res.render('login.html', {});
         }else{
@@ -110,11 +109,16 @@ let handler = {
             .then(function(ECMs){
                 render.ECMs = ECMs;
                 render.title = 'PM';
+                render.user = req.session.user;
                 res.render('projectManager.html',render);
             });
     },
 
     pmInfo:function(req,res){
+        if(!req.session.user){
+            res.render('login.html',{});
+            return;
+        }
         let id = req.query.id;
         if(!id || !id.match(/^[0-9a-fA-F]{24}$/)){
             res.render('projectInfo.html',{title:'未知的项目',header:'请输入有效的项目id'});
@@ -162,6 +166,7 @@ let handler = {
             .then(function(users){
                 render.users = users;
                 render.setting = SETTING;
+                render.user = req.session.user;
                 res.render('projectInfo.html',render);
             })
             .catch(function(err){
@@ -557,7 +562,6 @@ let handler = {
                 if(credential && credential.pwd  === received.cre){
                     response.success = true;
                     req.session.user = response.userInfo;
-                    console.log(req.session.user);
                 }else if(!credential){
                     response.message = "you need to set your password before your first login.";
                 }else{

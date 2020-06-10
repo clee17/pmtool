@@ -44,7 +44,8 @@
 </style>
 <body ng-app="dashboard"
       ng-controller="projectDashboard">
-<info-receiver  ng-init="contents = '<%= encodeURIComponent(JSON.stringify(contents)) %>'"></info-receiver>
+<info-receiver  ng-init="contents = '<%= encodeURIComponent(JSON.stringify(contents)) %>';
+                         userId ='<%= user._id %>'"></info-receiver>
 <div id="header">
     <div style="margin-top:auto;margin-bottom:auto;margin-left:0.5rem;">Cidana项目管理工具</div>
     <div id="headerButtons">

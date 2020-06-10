@@ -1,7 +1,8 @@
-app.directive('infoReceiver',function(){
+app.directive('infoReceiver',function($rootScope){
     return{
         restrict:"E",
         link:function(scope){
+            $rootScope.userId = scope.userId;
             scope.contents = JSON.parse(decodeURIComponent(scope.contents));
             scope.initialize();
         }
@@ -126,7 +127,8 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         if(np.endCustomer === '0')
             updateQuery.endCustomer = null;
         updateQuery.status = Number(updateQuery.status);
-        updateQuery.populate = 'account';
+        updateQuery.owner = $rootScope.userId;
+        updateQuery.populate = 'account owner';
         dataManager.saveData('project','project added',updateQuery);
     }
 
@@ -139,7 +141,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             commentUpdate.date = Date.now();
             commentUpdate.schedule = data.result.schedule;
             commentUpdate.comment = data.result.description;
-            commentUpdate.user = "5e797da1b8859cb0fa0d29bd"; //CLEE To Be Updated.
+            commentUpdate.user = $rootScope.userId;
             dataManager.saveData('projectComment','project comment finished',commentUpdate);
             $scope.newProject.name = '';
             $scope.newProject.account = '1';

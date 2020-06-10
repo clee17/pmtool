@@ -77,11 +77,8 @@ app.directive('infoReceiver',function($rootScope){
         link:function(scope){
             $rootScope.project = JSON.parse(decodeURIComponent(scope.project));
             $rootScope.users = JSON.parse(decodeURIComponent(scope.users));
-            //false log in ;
-            for(let i =0; i<$rootScope.users.length;++i){
-                if($rootScope.users[i]._id == "5e797da1b8859cb0fa0d29bd")
-                    $rootScope.user = $rootScope.users[i];
-            }
+            $rootScope.user = JSON.parse(decodeURIComponent(scope.user));
+
             scope.setting = decodeURIComponent(scope.setting);
             scope.setting = scope.setting.replace(/\\r\\n/gi,"");
             $rootScope.setting = JSON.parse(scope.setting);

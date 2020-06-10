@@ -1,0 +1,121 @@
+*{
+    padding:0;
+    margin:0;
+}
+
+body{
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background:rgba(24,18,30,1);
+}
+
+#loginBox{
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    padding-bottom:4.5rem;
+}
+
+#loginBox>div{
+    text-align:center;
+}
+
+#loginBox>div:nth-child(1){
+    color:white;
+    font-size:2rem;
+    font-weight:bold;
+    text-align:center;
+    font-family:"Microsoft YaHei UI", arial,serif;
+}
+
+#loginBox >div:nth-child(2){
+    font-family:"Microsoft Yahei UI", arial, serif;
+    font-size:0.85rem;
+    color:white;
+    max-width:16rem;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#header{
+    font-size:3rem;
+    text-align:center;
+    width:100%;
+    color:rgba(152,75,67,1);
+    margin-top:1rem;
+    padding-top:1rem;
+}
+
+#login{
+    padding:0.5rem;
+    padding-left:0.8rem;
+    padding-right:0.8rem;
+    font-size:1rem;
+    border-radius:0.5rem;
+    border:solid 1px rgba(152,75,67,1);
+    background:rgba(1,1,1,0);
+    color: rgba(152,75,67,1);
+    transition:background 0.3s,color 0.3s;
+}
+
+#login:hover{
+    background:rgba(152,75,67,1);
+    color:rgba(24,18,30,1);
+}
+
+#passwordSet{
+    color:rgba(152,75,67,1);
+    background:none;
+    border:none;
+    font-size:0.9rem;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+#passwordSet:hover{
+    color:darkred;
+}
+
+input{
+    padding-left:4px;
+}
+.error{
+    text-align:left;
+    color:rgba(152,75,67,1);
+    min-width:18rem;
+    min-height:1rem;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#successInfo{
+    color:rgba(152,75,67,1);
+    font-size:1.5rem;
+    line-height:3rem;
+}
+
+#information{
+    color:white;
+    display:flex;
+    flex-direction:column;
+    min-width:20rem;
+    text-align:left;
+    padding-left:3rem;
+    padding-top:1rem;
+    opacity:0;
+    transition:0.6s opacity;
+}
+
+#information >div:before{
+    content: "●";
+    margin-right:5px;
+}
+
+select{
+    transition:0.3s background;
+}
+
+select:hover{
+    background:rgba(152,75,67,1);
+}

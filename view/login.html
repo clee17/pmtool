@@ -4,8 +4,30 @@
     <link rel="icon" href="img/favicon.ico"/>
     <meta charset="UTF-8">
     <title>Cidana PM 管理系统</title>
+    <link href="/css/login.css" rel="stylesheet" type="text/css"/>
+    <script src="/lib/lz-string.min.js"></script>
+    <script src="/lib/angular.min.js"></script>
+    <script src="/lib/md5.min.js"></script>
+    <script>
+        var app = angular.module("login",[]);
+    </script>
+    <script src="/js/dataManager.js"></script>
+    <script src="/js/loginManager.js"></script>
 </head>
-<body>
-
+<body ng-app="login"
+      ng-controller="loginCon">
+<div id="header">CIDANA PM SERVER</div>
+<div id="loginBox">
+    <div>LOG IN TO CIDANA <br> PM SERVER</div>
+    <div style="margin-top:8px;">If this is the first time you log in, please set your password <a id="passwordSet" href="/pwdSet">Here</a>.</div>
+    <div><input style="width:18rem; height:1.5rem;margin-top:3.3rem;" placeholder="username" ng-model="username" ng-change="resetError()"></div>
+    <div class="error" style="text-align:left;">{{errorMessage.user}}</div>
+    <div>
+        <input style="width:18rem; height:1.5rem;margin-top:2rem;" placeholder="password" type="password" oninput="changePwd()" id="input">
+        <input style="position:absolute;opacity:0;pointer-events:none;" id="shadow">
+    </div>
+    <div class="error" style="text-align:left;">{{errorMessage.pwd}}</div>
+    <div style="margin-top:3rem;"><button id="login" ng-click="sendLogin()">LOG IN</button></div>
+</div>
 </body>
 </html>

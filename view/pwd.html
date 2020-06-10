@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="img/favicon.ico"/>
+    <meta charset="UTF-8">
+    <title>密码重设</title>
+    <link href="/css/login.css" rel="stylesheet" type="text/css"/>
+    <script src="/lib/lz-string.min.js"></script>
+    <script src="/lib/angular.min.js"></script>
+    <script src="/lib/md5.min.js"></script>
+    <script>
+        var app = angular.module("pwd",[]);
+    </script>
+    <script src="/js/dataManager.js"></script>
+    <script src="/js/pwdManager.js"></script>
+</head>
+<body ng-app="pwd"
+      ng-controller="pwdCon">
+<div id="header">PM SERVER PASSWORD RESET</div>
+<div id="loginBox" style="position:relative;">
+    <div>PASSWORD RESET</div>
+    <div style="margin-top:8px;">Please choose your user account below and set your password if required.</div>
+    <div style="min-height:3.5rem;">
+        <div ng-show="success" id="successInfo">Password reset successfully!</div>
+    </div>
+    <div >
+    <select ng-options="user._id as user.name for user in users" ng-model="user" style="width:18.5rem;height:1.8rem;"></select>
+    <div>
+        <input style="width:18rem; height:1.5rem;margin-top:2rem;" placeholder="password" type="password" ng-model="pwd" id="input">
+    </div>
+    <div class="error" style="text-align:left;">{{error}}</div>
+    <div style="margin-top:3rem;">
+        <button id="login" ng-click="reset()">RESET</button>
+    </div>
+    <div id="information" style="position:absolute;left:100% ;top:0;">
+        <div>Passwords needs to be at least 6 characters in length.</div>
+        <div>Passwords cannot contain spaces.</div>
+    </div>
+</div>
+</body>
+</html>

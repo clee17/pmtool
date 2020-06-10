@@ -12,6 +12,10 @@ app.service("dataManager",function($http,$rootScope){
                 });
     };
 
+    manager.requestLogin = function(info){
+        manager.request('/login/',"loginComplete",info);
+    }
+
     manager.vagueSearch = function(tableId,value){
         manager.request('/vagueSearch/',"vagueSearchFinished",{index:tableId,value:value});
     };

@@ -17,6 +17,7 @@ var efforts = require('./../data/model/efforts'),
     paymentDocModel = require('../data/model/paymentDocs'),
     productModel = require('./../data/model/product'),
     deliveryModel = require('./../data/model/delivery'),
+    credentialModel = require('./../data/model/userCredential'),
     projectModel = require('./../data/model/project'),
     positionModel = require('./../data/model/position'),
     projectCommentModel = require('./../data/model/projectComment'),
@@ -69,14 +70,31 @@ let handler = {
         res.send(LZString.compressToBase64(JSON.stringify(data)));
     },
 
+    index:function(req,res){
+        console.log(req.session.user);
+        if(!req.session.user){
+            res.render('login.html', {});
+        }else{
+            handler.pm(req,res);
+        }
+    },
+
+    pwdReset:function(req,res){
+        res.render('pwd.html', {});
+    },
+
     pm:function(req,res){
+        if(!req.session.user){
+            res.render('login.html',{});
+            return;
+        }
         let pageId = req.query.pid;
         if(!pageId)
             pageId = 1;
         pageId--;
         let render = {};
         render.contents = {};
-        projectModel.find({},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
+        projectModel.find({owner:req.session.user._id},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
             .then(function(entries){
                 render.contents.entries = entries;
                 return projectModel.estimatedDocumentCount({}).exec();
@@ -517,6 +535,74 @@ let handler = {
         });
     },
 
+    login:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent:false,
+            userInfo:null,
+            message:"unknown failure"
+        };
+
+        userModel.findOne({name:received.username}).exec()
+            .then(function(account){
+                if(!account){
+                    throw 'no such user found';
+                }else
+                {
+                    response.userInfo = account;
+                    return credentialModel.findOne({user:account._id}).exec();
+                }
+            })
+            .then(function(credential){
+                if(credential && credential.pwd  === received.cre){
+                    response.success = true;
+                    req.session.user = response.userInfo;
+                    console.log(req.session.user);
+                }else if(!credential){
+                    response.message = "you need to set your password before your first login.";
+                }else{
+                    response.message = "your password is incorrect!";
+                }
+                handler.sendResult(res,response);
+            })
+            .catch(function(err){
+                response.message = err;
+                handler.sendResult(res,response);
+            })
+    },
+
+    pwd:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent:false,
+            message:"unknown failure"
+        };
+
+        credentialModel.findOne({user:received.user}).exec()
+            .then(function(result){
+                if(!result)
+                    return credentialModel.findOneAndUpdate({user:received.user},
+                        {pwd:received.pwd},
+                        {upsert:true,setDefaultsOnInsert:true,new:true}).exec();
+                else
+                    throw ' Your password has been set already, please contact admin if you needs to reset it.'
+            })
+            .then(function(update){
+                if(!update)
+                    throw ' something is wrong';
+                else{
+                    response.success = true;
+                    response.message = 'your password has been successfully reset';
+                    handler.sendResult(res,response);
+                }
+            })
+            .catch(function(err){
+                response.success = false;
+                response.message = typeof err != 'string' ? JSON.stringify(err):err;
+                handler.sendResult(res,response);
+            });
+    },
+
     fileserver:function(req,res){
         let url = req.originalUrl;
         if(systemSetting.OS === "windows"){
@@ -533,11 +619,11 @@ let handler = {
                 res.sendFile(url);
             }
         });
-
     }
 };
 
-router.get('/',handler.pm);
+router.get('/',handler.index);
+router.get('/pwdSet',handler.pwdReset);
 router.get('/project/info',handler.pmInfo);
 router.get('/developer',handler.developer);
 router.get('/account',handler.account);
@@ -557,7 +643,8 @@ router.post('/aggregate/:tableId',handler.aggregate);
 router.post('/save/:tableId',handler.save);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
-
+router.post('/login/',handler.login);
+router.post('/pwdReset/',handler.pwd);
 
 module.exports = function(app){
     app.use('/lib',express.static(path.join(basedir,"/public/lib")));
@@ -586,7 +673,6 @@ module.exports = function(app){
     }));
 
     app.use('/',router);
-
 
     app.get('*', function(req, res){
         res.render('error.html', {

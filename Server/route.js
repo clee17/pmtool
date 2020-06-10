@@ -10,7 +10,6 @@ var express = require('express'),
     mongoose= require('mongoose'),
     LZString = require('lz-string');
 
-var systemSetting = JSON.parse(SETTING);
 
 var efforts = require('./../data/model/efforts'),
     accountModel = require('../data/model/accounts'),
@@ -53,6 +52,8 @@ let router = express.Router();
 let basedir = path.join(path.resolve(__dirname),'../');
 let dataDir = path.join(basedir,'data/');
 let SETTING = fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
+
+var systemSetting = JSON.parse(SETTING);
 
 let handler = {
     renderError:function(res,message){

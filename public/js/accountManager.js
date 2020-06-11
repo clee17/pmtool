@@ -25,7 +25,6 @@ app.controller("accountCon",function($scope,$rootScope,dataManager,$location,$wi
         }
     }
 
-
     $scope.newAccount = {
         name:"",
         priority:'1',
@@ -56,7 +55,6 @@ app.controller("accountCon",function($scope,$rootScope,dataManager,$location,$wi
             $scope.contents.entries.unshift(data.result);
         }
     });
-
 
     $scope.initialize = function(){
         $scope.pageIndex.pageMax = Math.ceil($scope.contents.maxCount/25);

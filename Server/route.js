@@ -4,6 +4,7 @@ var express = require('express'),
     ejs = require('ejs'),
     cookie = require('cookie-parser'),
     session = require('express-session'),
+    multer = require('multer'),
     redis = require('redis'),
     redisStore = require('connect-redis')(session),
     redisClient  = redis.createClient('6379', '127.0.0.1'),
@@ -497,6 +498,32 @@ let handler = {
         }).populate(populate);
     },
 
+    upload:function(req,res){
+        let files = req.files;
+        if(req.files[0]){
+
+            let receivedStr = req.body.data;
+            receivedStr = decodeURIComponent(req.body.data);
+            let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
+            let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference'];
+            let prefix = prefixList[received.type] || '';
+            if (prefix !== '')
+                prefix += '/';
+            let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
+            let newLink  = systemSetting.DocLocalPath + prefix+files[0].filename + ext;
+            fs.rename(files[0].path,newLink,function(err){
+                if(err){
+                    received.link = files[0].path;
+                }else{
+                    received.link = prefix+files[0].filename+ext;
+                }
+                req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
+                handler.save(req,res);
+            });
+        }else
+            throw Error('something went wrong when processing the file upload');
+    },
+
     developers:function(req,res){
         let data = {
             sent:false,
@@ -645,12 +672,15 @@ router.post('/vagueSearch/',handler.vague);
 router.post('/search/:tableId',handler.search);
 router.post('/aggregate/:tableId',handler.aggregate);
 router.post('/save/:tableId',handler.save);
+router.post('/upload/:tableId',handler.upload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
 router.post('/login/',handler.login);
 router.post('/pwdReset/',handler.pwd);
 
+
 module.exports = function(app){
+    let objMulter = multer({dest:systemSetting.DocLocalPath});
     app.use('/lib',express.static(path.join(basedir,"/public/lib")));
     app.use('/js',express.static(path.join(basedir,"/public/js")));
     app.use('/css',express.static(path.join(basedir,"/public/css")));
@@ -658,6 +688,7 @@ module.exports = function(app){
     app.use('/assets',express.static(systemSetting.DocLocalPath));
     app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
 
+    app.use(objMulter.any());
     app.use(cookie());
 
     redisClient.on("error",function(error){

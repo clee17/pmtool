@@ -5,6 +5,8 @@
     <title>文件管理器</title>
     <script>
         var PAGE_ID = "<%- pageId+1 %>";
+        var MAX_PAGE = "<%- Math.ceil(total/20) %>";
+        var TOTAL = "<%- total %>";
         var SETTING = <%- setting %>;
     </script>
     <script src="/lib/angular.min.js"></script>
@@ -28,7 +30,7 @@
 <div id="main">
     <div style="margin-top:2rem;margin-bottom:2rem;min-height:25rem;flex:1;align-self:flex-start;margin-left:auto;margin-right:auto;display:flex;flex-direction:column;">
         <div style="display:flex;flex-direction:row;margin-left:auto;"><button onclick="addDoc()" class="addDocBtn">添加文件</button></div>
-        <table class="listTable docEntries" style="margin-left:auto;margin-right:auto;">
+        <table id="docListTable" class="listTable docEntries" style="margin-left:auto;margin-right:auto;">
             <tr>
                 <td>编号</td>
                 <td>客户</td>
@@ -131,12 +133,19 @@
                     <option value="1">请选择客户项目</option>
                 </select></td></tr>
                 <tr><td>文件描述</td><td><textarea id="descriptionInput"></textarea></td></tr>
-                <tr><td>文件来源</td><td><select id="sourceSelect">
+                <tr><td>文件来源</td><td><select id="sourceSelect" onchange="changeSource(this)">
                     <option value="0">assets</option>
                     <option value="1">online</option>
                     <option value="2">fileserver</option>
                 </select></td></tr>
-                <tr><td>文件地址</td><td><input id="linkInput"></td></tr>
+                <tr><td>文件地址</td><td>
+                    <input id="linkInput" style="display:none;">
+                    <form enctype="multipart/form-data" action="/upload/docs">
+                       <input id="fileName" style="display:none;">
+                        <input id="fileUpload" style="display:block;" type="file">
+                        <input id="fileSubmit" style="display:none;" type="submit" value="Submit">
+                    </form>
+                </td></tr>
                 <tr><td>参考信息</td><td><textarea id="referenceInput"></textarea></td></tr>
             </table>
             <div style="display:flex;flex-direction:row;">

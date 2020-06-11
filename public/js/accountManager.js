@@ -44,12 +44,11 @@ app.controller("accountCon",function($scope,$rootScope,dataManager,$location,$wi
             return;
         }
         updateQuery.priority = Number(updateQuery.priority);
-        updateQuery.country = Number(updateQuery.priority);
+        updateQuery.country = Number(updateQuery.country);
         dataManager.saveData('account','account added',updateQuery);
     }
 
     $scope.$on('account added',function(event,data){
-
         if(!data.success){
             alert(data.message);
         }else{

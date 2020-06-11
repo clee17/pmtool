@@ -79,11 +79,11 @@
                         reference
                     <% } %>
                 </td>
-                <td><% if(entries[i].source === 1){ %>
-                    <a href="<%- entries[i].link %>" target="_blank">前往</a>
+                <td style="overflow:hidden;">
+                    <% if(entries[i].source === 0) { %>
+                    <a href="<%- '/assets/'+entries[i].link %>" target="_blank">前往</a>
                     <% } else { %>
-                    <div style="width:0;height:0;overflow:hidden;"><%- entries[i].link %></div>
-                    <div><button onclick="copyLocal(this)" style="padding-left:5px;padding-right:5px;">复制地址</button></div>
+                    <a href="<%- entries[i].link %>" target="_blank">前往</a>
                     <% } %>
                 </td>
                 <td><%- entries[i].reference %></td>

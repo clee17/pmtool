@@ -640,9 +640,12 @@ let handler = {
            url = url.replace(/\//g,"\\");
             url = "\\"+url;
         }else {
+            url = url.replace(/\\/g,"/");
+            url = url.replace(/\/\//g,"/");
             url = systemSetting.fileServerPath + url;
         }
 
+        url = decodeURI(url);
         fs.access(url,(err)=>{
             if(err){
                 handler.renderError(res,err);

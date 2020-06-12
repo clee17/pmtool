@@ -214,7 +214,7 @@ app.filter('docLink',function($filter){
         if(typeof doc !== 'object'){
             doc = JSON.parse(doc);
         }
-        if(!doc.type)
+        if(!type)
             return doc.link;
         else{
             if(type === '1')

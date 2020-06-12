@@ -12,6 +12,20 @@ app.service("dataManager",function($http,$rootScope){
                 });
     };
 
+    manager.uploadFile = function(url,symbol,data){
+        $http.post(url,data, {
+            transformRequest: angular.identity,
+            headers: { 'Content-Type': undefined }
+        })
+            .then(function(response){
+                    let receivedData = JSON.parse(LZString.decompressFromBase64(response.data));
+                    $rootScope.$broadcast(symbol,receivedData);
+            },
+                function(err){
+                    $rootScope.$broadcast(symbol,{success:false,info:err});
+                });
+    };
+
     manager.requestLogin = function(info){
         manager.request('/login/',"loginComplete",info);
     }

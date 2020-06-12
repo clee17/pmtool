@@ -501,22 +501,33 @@ let handler = {
     upload:function(req,res){
         let files = req.files;
         if(req.files[0]){
-
             let receivedStr = req.body.data;
             receivedStr = decodeURIComponent(req.body.data);
             let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
-            let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference'];
-            let prefix = prefixList[received.type] || '';
+            let type = req.body.type || received.type || 9;
+            if(typeof type !== 'number')
+                type = Number(type);
+            let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference','','','','','release'];
+            let prefix = prefixList[type] || '';
             if (prefix !== '')
                 prefix += '/';
             let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
-            let newLink  = systemSetting.DocLocalPath + prefix+files[0].filename + ext;
-            fs.rename(files[0].path,newLink,function(err){
+            let newLink  =  prefix+files[0].filename + ext;
+            if(Number(req.body.origin))
+                newLink =  prefix+files[0].originalname;
+            if(req.body.filename)
+                newLink = prefix+files[0].filename+ext;
+            fs.rename(files[0].path,systemSetting.DocLocalPath+newLink,function(err){
+                let updateLink = "";
                 if(err){
-                    received.link = files[0].path;
+                    updateLink = files[0].path;
                 }else{
-                    received.link = prefix+files[0].filename+ext;
+                    updateLink = newLink;
                 }
+                if(received.search)
+                    received.search.link = updateLink;
+                else
+                    received.link = updateLink;
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
                 handler.save(req,res);
             });

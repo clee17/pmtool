@@ -287,7 +287,7 @@ app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,$f
             element.html('');
             element.append(node);
         }
-        showPageCover(17);
+        showPageCover(19);
     };
 
     $scope.$on('bugs requested',function(event,data){

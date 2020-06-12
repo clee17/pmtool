@@ -191,9 +191,11 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             '</select></td></tr>' +
             '<tr ng-show="newPayment.status !== \'0\'"><td>Invoice</td><td>' +
             '<select ng-model="newPayment.invoice" ng-options="invoice._id as invoice.name for invoice in invoiceList"></select>' +
+            '<a ng-show="invoiceList.length === 1" href="/doc" target="_blank" class="simpleBtn" style="text-decoration:none;margin-left:0.5rem;font-size:0.8rem;">GO TO ASSET</a>'+
             '</td></tr>'+
             '<tr><td>docs</td><td>' +
             '<select ng-model="newPayment.doc" ng-options="doc._id as doc.name for doc in docs"></select>' +
+            '<a ng-show="docs.length === 1" href="/doc" target="_blank" class="simpleBtn" style="text-decoration:none;margin-left:0.5rem;font-size:0.8rem;">GO TO ASSET</a>'+
             '</td></tr>'+
             '<tr><td>Description</td><td></td></tr>'+
             '<tr><td colspan="2"><textarea style="margin-left:2rem;width:16rem;" ng-model="newPayment.comment"></textarea></td></tr>'
@@ -205,7 +207,7 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             element.html('');
             element.append(node);
         }
-        showPageCover(19);
+        showPageCover(19.5);
     };
 
 
@@ -230,14 +232,22 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
                 {_id:"0",name:"add invoice"}
             ];
             $scope.docs = [
-                {_id:"0",name:"add doc"}
+                {_id:"0",name:"add Royalty/Detail"}
             ];
             for(let i=0;i<data.result.length;++i){
                 if(data.result[i].type === 4)
                     $scope.invoiceList.push(data.result[i]);
-                else
+                else if(data.result[i].type <=3 && data.result[i].type >=2)
                     $scope.docs.push(data.result[i]);
             }
+            if($scope.invoiceList.length === 1)
+                $scope.invoiceList = [
+                    {_id:"0",name:"no invoice found"}
+                ];
+            if($scope.docs.length === 1)
+                $scope.docs = [
+                    {_id:"0",name:"no documents found"}
+                ];
             $scope.docs = $scope.docs.concat(data.result);
         }
     });

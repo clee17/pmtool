@@ -88,7 +88,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
     $scope.$watch('newRelease.toBeSaved.length',function(newVal,oldVal){
         let elements = document.getElementsByClassName('addDoc');
         if (elements.length > 0)
-            elements[0].style.height = 19+newVal*1.8+'rem';
+            elements[0].style.height = 20+newVal*1.8+'rem';
     });
 
     $scope.$on('releaseCancelDoc',function(event,data){
@@ -99,7 +99,10 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         $rootScope.submitType = type;
         let innerHTML = '<table class="pageCoverTable">'+
             '<tr><td>Release Version:</td><td><input style="width:2rem" ng-model="newRelease.version.main">:<input style="width:3rem;" ng-model="newRelease.version.update">:<input style="width:4rem;" ng-model="newRelease.version.fix"></td></tr>'+
-            '<tr><td>Positon:</td><td><input ng-model="newRelease.position"></td></tr>' +
+            '<tr><td>Positon:</td><td>' +
+            '<input ng-model="newRelease.position" ng-show="newRelease.source !=='+"'0'"+'">' +
+            '<input type=file id="fileUpload" ng-show="newRelease.source ==='+"'0'"+'">' +
+            '</td></tr>' +
             '<tr><td>Source:</td><td><select style="width:4rem;" ng-model="newRelease.source" ng-options="source.value as source.name for source in sources"></select></td></tr>'+
             '<tr><td>Developers:</td><td style="display:flex;flex-direction:row;">' +
             '<select ng-model="addDeveloper" ng-options="developer._id as developer.name for developer in developers"></select>' +
@@ -118,7 +121,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
             element.html('');
             element.append(node);
         }
-        showPageCover(19);
+        showPageCover(20);
     };
 
     $scope.$on('developers received',function(event,data){
@@ -144,7 +147,13 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         $scope.updateSave = JSON.parse(JSON.stringify(updateSave));
         delete updateSave.source;
         delete updateSave.position;
-        dataManager.requestData('version','search version existed',{version:updateSave.version,project:updateSave.project});
+        let searchField = {
+            project:updateSave.project,
+            "version.main":updateSave.version.main,
+            "version.update":updateSave.version.update,
+            "version.fix":updateSave.version.fix
+        }
+        dataManager.requestData('version','search version existed',searchField);
     });
 
     $scope.$on('search version existed',function(event,data){
@@ -153,11 +162,35 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         }else if(!data.success){
             alert(data.message);
         }else {
+            console.log(data.result);
             if(data.result.length > 0)
                 alert('该版本已经存在，请修改信息。');
             else{
                 let source = Number($scope.updateSave.source);
-                dataManager.saveData('position','version position saved',{search:{link:$scope.updateSave.position,source:source},updateExpr:{updated:Date.now()}})
+                let dataDetail = {search:{link:$scope.updateSave.position,source:source},updateExpr:{updated:Date.now()}};
+                if(source === 0){
+                    let formData = new FormData();
+                    let upload = document.getElementById('fileUpload');
+                    let files = [];
+                    if(upload && upload.files)
+                        files = upload.files;
+                    if(files.length<=0){
+                        alert('you must upload a release file');
+                        return;
+                    }
+                    formData.append('file', files[0]);
+                    formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(dataDetail))));
+                    formData.append('origin','1');
+                    formData.append('type','10');
+                    dataManager.uploadFile('/upload/position','version position saved',formData)
+                }else{
+                    if($scope.updateSave.position.length ===0){
+                        alert('you must provide the position of the release file');
+                        return;
+                    }
+                    dataManager.saveData('position','version position saved',dataDetail);
+                }
+
             }
         }
     });

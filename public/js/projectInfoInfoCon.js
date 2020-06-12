@@ -190,6 +190,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
             $rootScope.project = data.result;
             $rootScope.contacts = JSON.parse(contacts);
             $rootScope.projectContacts = JSON.parse(projectContacts);
+            $scope.resetStatus();
             $rootScope.$broadcast('project Updated',null);
         }
         cancelDoc();

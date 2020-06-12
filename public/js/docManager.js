@@ -109,6 +109,7 @@ var fileUpload = function(result){
     if(files.length>0){
         let formData = new FormData()
         formData.append('file', files[0]);
+        formData.append('origin','1');
         formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(result))));
         let xmlhttp = new XMLHttpRequest()
         xmlhttp.onreadystatechange = function(received){

@@ -513,8 +513,8 @@ let handler = {
                 prefix += '/';
             let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
             let newLink  =  prefix+files[0].filename + ext;
-            if(Number(req.body.origin))
-                newLink =  prefix+files[0].originalname;
+            // if(Number(req.body.origin))
+            //     newLink =  prefix+files[0].originalname;
             if(req.body.filename)
                 newLink = prefix+req.body.filename+ext;
             let path = systemSetting.DocLocalPath;
@@ -523,8 +523,8 @@ let handler = {
             fs.rename(files[0].path,path+newLink,function(err){
                 let updateLink = "";
                 if(err){
-                    console.log(err);
-                    updateLink = files[0].path;
+                    fs.unlink(files[0].path);
+                    throw Error('something went wrong when processing the file upload');
                 }else{
                     updateLink = newLink;
                 }

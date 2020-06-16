@@ -192,7 +192,7 @@ app.filter('linkIcon',function(){
             {type:'word',link:['doc']},
             {type:'ppt',link:['ppt']},
             {type:'apk',link:['apk']},
-            {type:'zip',link:['zip']},
+            {type:'zip',link:['zip','rar']},
         ];
         let index = link.lastIndexOf('.');
         if(index >=0){

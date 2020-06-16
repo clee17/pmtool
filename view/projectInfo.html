@@ -304,15 +304,15 @@
     </div>
 </div>
 
-<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;">
+<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;">
     <div class="addDoc" style="position:relative;display:flex;flex-direction:column;">
-        <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);" ng-show="saving">
-            <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
-        </div>
         <div style="margin:1rem;display:flex;flex-direction:column;overflow-y:auto;" id="coverDetail"></div>
         <div style="display:flex;flex-direction:row;margin-bottom:1.5rem;margin-top:auto;">
             <button style="margin-left:6rem;margin-right:auto;" ng-click="submitDoc()">提交</button>
             <button style="margin-left:auto;margin-right:6rem;" ng-click="cancelDoc()">取消</button>
+        </div>
+        <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);display:flex;" ng-show="saving">
+            <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
         </div>
     </div>
 </div>

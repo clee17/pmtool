@@ -181,6 +181,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         pageId = 1;
     else
         pageId = Number(pageId);
+    $rootScope.saving = false;
 
     $rootScope.currentPage = $rootScope.pageList[pageId-1];
 

@@ -516,10 +516,14 @@ let handler = {
             if(Number(req.body.origin))
                 newLink =  prefix+files[0].originalname;
             if(req.body.filename)
-                newLink = prefix+files[0].filename+ext;
-            fs.rename(files[0].path,systemSetting.DocLocalPath+newLink,function(err){
+                newLink = prefix+req.body.filename+ext;
+            let path = systemSetting.DocLocalPath;
+            if(path.charAt(path.length-1) !== '/')
+                 path += '/';
+            fs.rename(files[0].path,path+newLink,function(err){
                 let updateLink = "";
                 if(err){
+                    console.log(err);
                     updateLink = files[0].path;
                 }else{
                     updateLink = newLink;

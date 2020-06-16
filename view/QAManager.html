@@ -88,9 +88,9 @@
 <div class="footer" style="padding-top:1rem;padding-bottom:1rem;display:flex;height:2rem;">
     <div style="margin:auto;">@ cidana corporation</div>
 </div>
-<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;">
+<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;">
     <div class="addDoc" style="position:relative;">
-        <div ng-show="saving" class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);">
+        <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);" ng-show="saving">
             <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
         </div>
         <div style="margin:1rem;display:flex;flex-direction:column;">

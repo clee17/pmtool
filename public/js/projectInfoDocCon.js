@@ -90,6 +90,8 @@ app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
         if(!data.success){
             alert(data.message);
         }else{
+            if(!data.result.draft)
+                data.result.draft = [];
             $scope.docs.unshift(data.result);
             cancelDoc();
         }

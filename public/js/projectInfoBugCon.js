@@ -174,6 +174,7 @@ app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,$f
         else{
             $scope.currentBug.refer.status = data.result.status;
             $scope.currentBug = null;
+            $rootScope.$broadcast('bug payments updated',data.result);
             cancelDoc();
         }
     })

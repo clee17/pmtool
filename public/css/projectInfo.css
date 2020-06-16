@@ -176,3 +176,12 @@ body{
     color:deepskyblue;
 }
 
+#commentPanel table{
+	border:1px solid lightgray;
+}
+
+#commentPanel table tr td{
+	border:1px solid lightgray;
+	padding:3px;
+}
+

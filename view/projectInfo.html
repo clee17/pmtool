@@ -191,12 +191,12 @@
         </tr>
         <tr ng-repeat="release in versions" class="entry">
                 <td valign="top"style="line-height:1.5rem;height:1.5rem;">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</td>
-                <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;">{{release.description}}</div></td>
+                <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;" content-format contents={{release.description}}></div></td>
                 <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
                 <td valign="top" style="text-align:center">
                     <a href="{{release.position | positionLink}}" target="_blank"><img src="{{release.position | positionIcon}}" style="width:1.2rem;"></a>
                 </td>
-                <td></td>
+                <td></td> 
                 <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event)"><i class="fa fa-angle-down"></i></button></td>
         </tr>
         </table>
@@ -241,7 +241,7 @@
                 <td>DEVELOPER</td>
                 <td>COMMENT</td>
                 <td>LOG</td>
-                <td>STATUS</td>
+                <td style="text-align:center;" >STATUS</td>
             </tr>
             <tr ng-show="bugs.length === 0" style="text-align:center;margin-top:1rem;font-size:1rem;">
                 <td colspan="6"><b>No record of bugs under this project</b></td></tr>
@@ -252,7 +252,7 @@
                 <td style="display:flex;flex-direction:column;padding-top:1.2rem;">
                     <div ng-repeat="developer in bug.developers">◉ {{developer.name}}</div>
                 </td>
-                <td style="width:22rem;max-width:22rem;white-space:normal;word-break:break-all;max-height:12rem;overflow-y:auto;padding-bottom:1.2rem;padding-top:1.2rem;padding-right:0.5rem;padding-left:0.5rem;"
+                <td style="width:22rem;max-width:15rem;white-space:normal;word-break:break-all;max-height:12rem;overflow-y:auto;padding-bottom:1.2rem;padding-top:1.2rem;padding-right:0.5rem;padding-left:0.5rem;"
                     content-format contents="{{bug.comment}}">{{bug.comment}}</td>
                 <td style="min-width:20rem;padding-left:1rem;padding-right:0.5rem;margin-bottom:1rem;"><div style="display:flex;flex-direction:column;height:12rem;">
                         <div style="display:flex;flex-direction:row;padding-top:1.2rem;">
@@ -274,7 +274,7 @@
                             <div ng-if="bug.logs.length ===0" style="font-weight:bold;text-align:center;font-weight:bold;">No logs added so far</div>
                         </div>
                  </div></td>
-                <td style="text-align:center;"><button class="inlineBtn" ng-click="changeTaskStatus(bug)">{{bug.status | bugStatus}}</button></td>
+                <td style="text-align:center;"><button class="inlineBtn" ng-click="changeTaskStatus(bug)" style="font-size:1.2rem;" >{{bug.status | bugStatus}}</button></td>
             </tr>
         </table>
     </div>

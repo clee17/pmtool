@@ -115,7 +115,7 @@ app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,$f
             "<td style='min-width:8rem;'>{{log.user.name}}</td>" +
             "<td style='min-width:6rem;'>{{log.date | date:'&y/&m/&d'}} <br> {{log.date | date:'&h:&i:&s'}}</td>" +
             "<td style='min-width:4rem;text-align:center;'>{{log.efforts}}</td>" +
-            "<td style='padding-left:1rem;'>{{log.contents}}</td></tr>"+
+            "<td content-format contents='{{log.contents}}' style='padding-left:1rem;'></td></tr>"+
         '</table><div style="flex:1"></div>';
         let element = document.getElementById('coverDetail');
         if(element){
@@ -148,8 +148,8 @@ app.controller("bugCon",function($scope,$rootScope,$compile,$location,$window,$f
         if($scope.newLog.contents  === ""){
             alert('log cannot be empty.')
             return;
-        }else if($scope.newLog.contents.length >= 250){
-            alert('log can not exceeds 250 characters');
+        }else if($scope.newLog.contents.length >= 1000){
+            alert('log can not exceeds 1000 characters');
             return;
         }
         let update = {user:$rootScope.user._id,contents:$scope.newLog.contents,task:$scope.newLog._id,populate:'user'};

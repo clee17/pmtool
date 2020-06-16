@@ -14,7 +14,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
     $scope.$on('alert payments updated',function(event,data){
         $scope.paymentAlerts = [];
         for(let i=0; i<data.length;++i){
-            if(data[i].status <2)
+            if(data[i].status <= 4)
                 $scope.paymentAlerts.push(data[i]);
         }
         if($scope.paymentAlerts.length>0)
@@ -24,7 +24,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
     $scope.$on('bug payments updated',function(event,data){
         $scope.taskAlerts = [];
         for(let i=0; i<data.length;++i){
-            if(data[i].status <= 4)
+            if(data[i].status < 2)
                 $scope.taskAlerts.push(data[i]);
         }
         if($scope.paymentAlerts.length === 0)

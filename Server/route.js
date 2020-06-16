@@ -517,9 +517,10 @@ let handler = {
                 newLink =  prefix+files[0].originalname;
             if(req.body.filename)
                 newLink = prefix+files[0].filename+ext;
-            fs.rename(files[0].path,systemSetting.DocLocalPath+newLink,function(err){
+            fs.rename(files[0].path,systemSetting.DocLocalPath+'/'+newLink,function(err){
                 let updateLink = "";
                 if(err){
+					console.log(err); 
                     updateLink = files[0].path;
                 }else{
                     updateLink = newLink;

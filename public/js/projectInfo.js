@@ -226,7 +226,7 @@ app.directive('historyDocList',function($compile){
                 element.html('<button class="simpleBtnRight">ADD</button>')
             else {
                 scope.drafts = JSON.parse(scope.draft);
-                let innerHTML = "<div ng-repeat='draft in drafts'>{{draft.name}} {{draft.date | date:'&y/&m/&d'}}</div>"
+                let innerHTML = "<div ng-repeat='draft in drafts'>{{draft.name}} {{draft.date | date:'&y/&m/&d'}}<a href=\"{{draft | docLink:'1'}}\" target='_blank'>+Go+</a></div>"
                 let node = $compile(innerHTML)(scope);
                 element.html('');
                 element.append(node);

@@ -223,7 +223,7 @@
                 <td content-format contents="{{doc.description}}" style="width:20rem;"></td>
                 <td><b>{{doc.type | docType}}</b></td>
                 <td>
-                    <div style="text-align:center;"><a href="{{doc | docLink:'1'}}" target="_blank"><img src="{{doc | docIcon}}" style="width:1.2rem;"></a></div>
+                    <div style="text-align:center;" ng-if="doc.link!==''"><a href="{{doc | docLink:'1'}}" target="_blank"><img src="{{doc | docIcon}}" style="width:1.2rem;"></a></div>
                     <div ng-if="doc.link == ''"><button class="simpleBtnRight" ng-click="edit(doc)">ADD</button></div></td>
                 <td history-doc-list draft="{{doc.draft}}">
 

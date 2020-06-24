@@ -30,6 +30,7 @@ app.controller("accountCon",function($scope,$rootScope,dataManager,$location,$wi
         priority:'1',
         description: "",
         official:"",
+		type:false,
         country:"1"
     }
 
@@ -44,6 +45,7 @@ app.controller("accountCon",function($scope,$rootScope,dataManager,$location,$wi
         }
         updateQuery.priority = Number(updateQuery.priority);
         updateQuery.country = Number(updateQuery.country);
+		updateQuery.type = updateQuery.type? 1:0;
         dataManager.saveData('account','account added',updateQuery);
     }
 

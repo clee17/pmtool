@@ -1,3 +1,8 @@
+<style>
+    #DTVDecoderTable td{
+        background:white;
+    }
+</style>
 <h1 style="letter-spacing:0.2rem;">DTV Player（电视播放器）综述</h1>
 
 <div class="contents">
@@ -56,16 +61,18 @@
 
     <h3 id="DTVDecoders">&nbspDTV的解码器构成&nbsp</h3>
     <p>请参照下表对照不同的DTV播放器使用的解码器，并在对客户提供的SOW说明书中阐明客户所购买的相应解码器的:</p>
-    <table style="margin-left:3rem;">
+    <table id="DTVDecoderTable" style="margin-left:3rem;background:rgba(215,215,215,0.7);">
         <tr>
             <td>播放器名称</td>
+            <td>标准号</td>
             <td>组成部分</td>
             <td>解码器组成</td>
-            <td>是否需要第三方许可</td>
+            <td>third party license</td>
             <td>注意信息</td>
         </tr>
         <tr>
-            <td style="border-bottom:none"></td>
+            <td rowspan="4">DVB T/C</td>
+            <td rowspan="4">标准号</td>
             <td>video decoder</td>
             <td>
                 <ul>
@@ -77,7 +84,6 @@
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;">DVB T/C</td>
             <td>Audio decoder</td>
             <td><ul>
                 <li> Mpeg-audio</li>
@@ -94,21 +100,20 @@
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;"></td>
             <td>Subtitle/CC</td>
             <td>Dvb subtitle</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;"></td>
             <td>EPG</td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;"></td>
+            <td rowspan="4">DVBT2</td>
+            <td rowspan="4">标准号</td>
             <td>Video decoder</td>
             <td><ul>
                 <li>h.264</li>
@@ -121,49 +126,40 @@
             </ul></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;">DVBT2</td>
             <td>Audio decoder</td>
             <td>AAC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>Subtitle/CC</td>
             <td>DVB subtitle</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>EPG</td>
             <td>EPG</td>
             <td></td>
             <td></td>
         </tr>
-        <tr>
-            <td>DVBH</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>市场上基本已经淘汰，不再支持</td>
+        <tr >
+            <td style="background:lightgray;">DVBH</td>
+            <td colspan="5" style="background:lightgray;">市场上基本已经淘汰，不再支持</td>
         </tr>
         <tr>
-            <td>DVBS</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>需要S standards for satellite<br>cidana不提供该产品 </td>
+            <td style="background:lightgray;">DVBS</td>
+            <td colspan="5" style="background:lightgray">需要S standards for satellite<br>cidana不提供该产品 </td>
         </tr>
         <tr>
-            <td style="border-bottom:none"></td>
+            <td rowspan="4">ATSC 1.0</td>
+            <td rowspan="4">标准号</td>
             <td>Video decoder</td>
             <td>mpeg-2</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;">ATSC 1.0</td>
             <td>Audio decoder</td>
             <td><ul>
                 <li>mpeg-audio</li>
@@ -176,133 +172,120 @@
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;"></td>
             <td>Subtitle/CC</td>
             <td>ATSC CC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;"></td>
             <td>EPG</td>
             <td>EPG</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td >ATSC M/H</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>这相当于第二代的ATSC，但我们并不支持</td>
+            <td style="background:lightgray;">ATSC M/H</td>
+            <td colspan="5" style="background:lightgray">这相当于第二代的ATSC，但我们并不支持</td>
         </tr>
         <tr>
-            <td style="border-bottom:none;"></td>
+            <td rowspan="4">ATSC 3.0</td>
+            <td rowspan="4">标准号</td>
             <td>Video decoder</td>
             <td>h.265</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;">ATSC 3.0</td>
             <td>Audio decoder</td>
             <td><ul><li>mpeg-h（韩)</li><li>AC4(美）</li></ul></td>
             <td><ul><li></li><li>需要购买license</li></ul></td>
             <td><ul><li></li><li>需要机器支持10bit</li></ul></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>Subtitle/CC</td>
             <td>ATSC 3.0 CC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;"></td>
             <td>EPG</td>
             <td>Omabcast-EPG</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;"></td>
+            <td rowspan="5">ISDBT</td>
+            <td rowspan="5">标准号</td>
             <td>video decoder</td>
             <td>h.264</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>Audio decoder</td>
             <td>AAC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;">ISDBT</td>
             <td>subtitle/cc</td>
             <td>ISDBT CC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>EPG</td>
             <td>DVB EPG</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;"></td>
             <td>Data service</td>
             <td>BML（日）</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;"></td>
+            <td rowspan="6">SBTVD(巴西）</td>
+            <td rowspan="6">标准号</td>
             <td>Video decoder</td>
             <td>h.264</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>Video decoder</td>
             <td>AAC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;">SBTVD(巴西）</td>
             <td>Subtitle/CC</td>
             <td>ISDBT CC</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>EPG</td>
             <td>DVB EPG</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;border-bottom:none;"></td>
             <td>Data service</td>
             <td>Ginga(Brazil)</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-top:none;"></td>
             <td>scan</td>
             <td>none</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;"></td>
+            <td rowspan="4">DTMB<br>国标</td>
+            <td rowspan="4">标准号</td>
             <td>Video decoder</td>
             <td><ul>
                 <li>mpeg-2</li>
@@ -321,7 +304,6 @@
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;">DTMB<br>国标</td>
             <td>Audio decoder</td>
             <td><ul>
                 <li>mpeg-audio</li>
@@ -338,14 +320,12 @@
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;"></td>
             <td>subtitle/CC</td>
             <td>DVB subtitle</td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td style="border-bottom:none;border-top:none;"></td>
             <td>EPG</td>
             <td>EPG</td>
             <td></td>

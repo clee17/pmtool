@@ -14,7 +14,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
     $scope.$on('alert payments updated',function(event,data){
         $scope.paymentAlerts = [];
         for(let i=0; i<data.length;++i){
-            if(data[i].status <= 4)
+            if(data[i].status !== 2)
                 $scope.paymentAlerts.push(data[i]);
         }
         if($scope.paymentAlerts.length>0)

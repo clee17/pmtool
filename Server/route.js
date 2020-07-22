@@ -501,6 +501,7 @@ let handler = {
     upload:function(req,res){
         let files = req.files;
         if(req.files[0]){
+            console.log(req.files);
             let receivedStr = req.body.data;
             receivedStr = decodeURIComponent(req.body.data);
             let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
@@ -513,8 +514,6 @@ let handler = {
                 prefix += '/';
             let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
             let newLink  =  prefix+files[0].filename + ext;
-            // if(Number(req.body.origin))
-            //     newLink =  prefix+files[0].originalname;
             if(req.body.filename)
                 newLink = prefix+req.body.filename+ext;
             let path = systemSetting.DocLocalPath;
@@ -522,9 +521,12 @@ let handler = {
                  path += '/';
             fs.rename(files[0].path,path+newLink,function(err){
                 let updateLink = "";
+                console.log(err);
                 if(err){
-                    fs.unlink(files[0].path);
-                    throw Error('something went wrong when processing the file upload');
+                    fs.unlink(files[0].path,function(err){
+                        console.log(err);
+                    });
+                    throw Error(JSON.stringify(err));
                 }else{
                     updateLink = newLink;
                 }

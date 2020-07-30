@@ -30,7 +30,7 @@ var showPageCover = function(size,width){
 var getCurrentStatus = function(status){
     if(typeof status !== 'number')
         status = Number(status);
-    let statusList = ['opportunities', 'business','development','delivery','maintenance','closed','re-open','mass production'];
+    let statusList = [`'opportunities', 'business','development','delivery','maintenance','closed','re-open','mass production'`];
     return statusList[status];
 };
 
@@ -41,6 +41,7 @@ var countryCodes = [
     {code:"886", country:"Taiwan,China"},
     {code:"39", country:"Italy"},
     {code:"81", country:"Japan"},
+    {code:"55", country:"Brazil"},
     {code:"31", country:"Netherlands"},
     {code:"1", country:"united States"}
     ];

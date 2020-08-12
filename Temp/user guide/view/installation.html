@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="icon" href="/img/favicon.ico"/>
+    <script src="/js/general.js"></script>
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+</head>
+<style>
+
+
+</style>
+<body style="display:flex;flex-direction:column;min-height:100vh;" onload="finishLoad()">
+<div id="header">
+    <div id="logo">TEST FRAME</div>
+    <div style="background:rgba(218,218,218,0.8);width:1px;min-width:1px;height:1.2rem;margin-left:0.8rem;"></div>
+    <div id="map1"><button>Documentation</button></div>
+</div>
+<div style="display:flex;flex-direction:row;flex:1;position:relative;">
+
+    
+    
+    
+    
+    
+    
+                <div id="leftMap">
+        <div>
+            <button onclick="closeLeftMap()">Close ×</button>
+            <span>Test Frame Version 1.0</span>
+        </div>
+        <div>
+            <span class="link topLink">Introduction</span>
+            <ul style="display:none;">
+                <li>Getting Started</li>
+                <li>Sitemap</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Installation</span></div>
+        <div><span class="link topLink">Manage your account</span>
+            <ul style="display:none;">
+                <li>admin panel</li>
+                <li>mail notification</li>
+            </ul>
+        </div>
+        <div>
+            <span class="link topLink">Add a codebase</span>
+            <ul style="display:none;">
+                <li>github sync</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Start a test</span>
+            <ul style="display:none;">
+                <li>Coverage test</li>
+                <li>Conformance test</li>
+                <li>Performance test</li>
+                <li>Customized tests</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Manage the results</span></div>
+        <div><span class="link topLink">regression report</span></div>
+        <div><span class="link topLink">Notification centre</span></div>
+        <div><span class="link topLink">Job centre</span></div>
+        <div><span class="link topLink">Contact us</span></div>
+    </div>
+    <div id="mapFloater" onclick="showLeftMap()">MAP</div>
+
+    <div id="contents">
+        <div class="t1">Installation</div>
+        <div class="conclusion">
+            <div>On this page</div>
+            <ul>
+                <li><button onclick="scrollToView('contents_prerequisites')">Prerequisites</button></li>
+                <li><button onclick="scrollToView('contents_package')">Get installation package</button></li>
+                <li><button onclick="scrollToView('contents_configuration')">Configuration</button></li>
+                <li><button onclick="scrollToView('contents_deployment')">Deployment</button></li>
+            </ul>
+        </div>
+
+        <div>The code of test framework could be found on the github at  <img src="/img/githubIcon.png" style="height:1.2rem;margin-right:0.5rem;margin-left:0.5rem;"><a href="https://github.com/Cidana-Developers/CidanaTestPlatformRelease" target="_blank">Cidana Test Frame</a></div>
+        <div class="t2" id="contents_prerequisites">Pre-requisites</div>
+        <div>Before deploy, please kindly make sure the target device meets the basic requirements: </div>
+        <div style="font-weight:bold;">OS</div>
+        <div>The Test framework runs on linux , including but not limited to Ubuntu and CentOS. It could be deployed to both a physical linux machine and a virtual one.</div>
+        <div class="important">
+        <div><ul style="margin-left:3rem;">
+            <li>Ubuntu 16.04 or above (Recommend)</li>
+            <li>CentOS 7 or above</li>
+        </ul></div>
+        </div>
+        <div style="font-weight:bold;margin-top:2rem;">Git</div>
+        <div>The test framework could either be installed directly with a downloaded package or fetched from the github at the address of <img src="/img/githubIcon.png" style="height:1.2rem;margin-right:0.5rem;margin-left:0.5rem;"><a href="https://github.com/Cidana-Developers/CidanaTestPlatformRelease" target="_blank">Cidana Test Frame</a>. In the case a <span class="sign">git</span> is used, the version has to be higher than <span class="marked">2.7</span>.</div>
+        <div class="important"><ul style="margin-left:3rem;">
+            <li>Ubuntu 16.04 or above (Recommend)</li>
+            <li>CentOS 7 or above</li>
+        </ul></div>
+        <div>The followging command can check if the <span class="marked">git</span> is ready in your test machine.</div>
+        <div class="code">git --version</div>
+        <div>If <span class="marked">git</span> is ready, you will get exact version number, like <span>git version 2.7.4</span>,else <span class="marked">command not found</span> will occurs. </div>
+        <div>please install <span class="marked">git</span> by command if necessary:</div>
+        <div class="code"> sudo apt install </div>
+        <div style="font-weight:bold;margin-top:2rem;">Docker</div>
+        <div>If the package is to be installed in a docker, the docker has to meet below standards.</div>
+        <div class="important">Docker 19.0 or above.</div>
+        <div>Please use the following command to check if the test machine have docker installed.</div>
+        <div class="code">docker --version</div>
+        <div>If error <span class="marked">command not found</span> occurs, it means no docker environment is installed </div>
+        <div>If a docker needs to be installed , the following commands shall be required.</div>
+        <div class="important">
+            <div style="font-weight:bold;">Install docker in ubuntu:</div>
+            <div class="code">sudo apt install docker.io</div>
+            <div style="font-weight:bold;margin-top:1.5rem;">Install docker in CentOS:</div>
+            <div>please refer to <a href=" https://docs.docker.com/engine/install/centos/#install-using-the-repository">https://docs.docker.com/engine/install/centos/#install-using-the-repository</a> to install docker in CentOS.</div>
+        </div>
+        <div class="t2" id="contents_package">Get installation package</div>
+        <div class="t3">1. target directory</div>
+        <div>The test framework could be installed to any directory, however, the <span class="marked">/home</span> dir is highly as the target deployment directory. </div>
+        <div>By default, the <span class="marked">/home</span> dir will sohw up immediately after you login to your linux system. The directory could be reached by <span class="marked">cd</span> or <span class="marked">cd ~</span> if otherwise.</div>
+        <div class="t3">2. Get the installation package from github</div>
+        <div>The installation package could be retrieved from github at below address:</div>
+        <div class="important">
+            <div class="code">git clone https://github.com/Cidana-Developers/CidanaTestPlatformRelease.git</div>
+        </div>
+        <div class="t3">3. Get the installation package from CIDANA</div>
+        <div>If you've purchased the frame from CIDNA, please kindly contact your person of contact in CIDANA to get the latest package.</div>
+        <div class="important">
+            <p>TITLE:  Program Manager</p>
+            <p>MAIL:   <a href="mailto:christina.li@cidana.com">christina.li@cidana.com</a></p>
+        </div>
+        <div class="t2" id="contents_configuration">Configuration (Optional)</div>
+        <div>Before deployment, we need to generate a config first. A utility is highly recommended which you could trigger as below:</div>
+        <div class="code"> cd ./CidanaTestPlatformRelease/scripts && sudo chmod +x *.sh && sudo ./config.sh -c {xyz} </div>
+        <div>Please note that:</div>
+        <div><ul style="margin-left:2rem;">
+            <li>Where <span>{xyz}</span> is a placeholder, please replace it with <span>a real name</span> for the config file.</li>
+            <li>config is generated when the Test framework gets deployed for the first time, it could be used in the next few deployement should it is deployed on the same machine.</li>
+        </ul></div>
+        <div> The correct IP/domain & port of target machine needs to be set up according to instructions given by the config generation procedure.</div>
+        <div>After the config is generated, a new command of <span class="marked">deploy CLI</span> will show up. Please copy the command directly and boot the test frame.</div>
+        <div class="t2" id="contents_deployment">Deployment</div>
+        <div>When there is a final command showing up in the configuration step, the deployment process shall be completed automatically.</div>
+        <div>Please note that:</div>
+        <div><ul style="margin-left:2rem;">
+            <li>option <span class="marked">-u</span>in <span class="marked">deploy CLI</span> tail will force download the latest docker's image when deploy, otherwise a local docker's image is preferred. Please download a docker image only when it does not exist in local.</li>
+        </ul></div>
+        <div>Once the deployment is finished successfully, the entrance link of Test Framework shall be displayed on screen, just as below:</div>
+        <div class="code">http://192.168.0.88:8083</div>
+        <div>Please kindly note that the address varies according to your configuration so please kindly copy the one on your screen instead of the one shown above, and open that link in a browser.</div>
+        <div>If below page shows up, the deployment is completed:</div>
+        <div><img src="/img/products/2020-08-10_15-53-15.png"></div>
+        <div>© CIDANA, Inc Test Frame</div>
+    </div>
+    <div id="endSign" style="display:none"></div>
+</div>
+
+</body>
+</html>

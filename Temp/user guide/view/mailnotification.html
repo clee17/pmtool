@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="icon" href="/img/favicon.ico"/>
+    <script src="/js/general.js"></script>
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+</head>
+<style>
+
+
+</style>
+<body style="display:flex;flex-direction:column;min-height:100vh;" onload="finishLoad()">
+<div id="header">
+    <div id="logo">TEST FRAME</div>
+    <div style="background:rgba(218,218,218,0.8);width:1px;min-width:1px;height:1.2rem;margin-left:0.8rem;"></div>
+    <div id="map1"><button>Documentation</button></div>
+</div>
+<div style="display:flex;flex-direction:row;flex:1;position:relative;">
+
+    
+                <div id="leftMap">
+        <div>
+            <button onclick="closeLeftMap()">Close ×</button>
+            <span>Test Frame Version 1.0</span>
+        </div>
+        <div>
+            <span class="link topLink">Introduction</span>
+            <ul style="display:none;">
+                <li>Getting Started</li>
+                <li>Sitemap</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Installation</span></div>
+        <div><span class="link topLink">Manage your account</span>
+            <ul style="display:none;">
+                <li>admin panel</li>
+                <li>mail notification</li>
+            </ul>
+        </div>
+        <div>
+            <span class="link topLink">Add a codebase</span>
+            <ul style="display:none;">
+                <li>github sync</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Start a test</span>
+            <ul style="display:none;">
+                <li>Coverage test</li>
+                <li>Conformance test</li>
+                <li>Performance test</li>
+                <li>Customized tests</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Manage the results</span></div>
+        <div><span class="link topLink">regression report</span></div>
+        <div><span class="link topLink">Notification centre</span></div>
+        <div><span class="link topLink">Job centre</span></div>
+        <div><span class="link topLink">Contact us</span></div>
+    </div>
+    <div id="mapFloater" onclick="showLeftMap()">MAP</div>
+
+    <div id="contents">
+        <div class="t1">Mail notification</div>
+        <div>One do not need a real mail address to complete the registration of an account. However, any user could add a mail address to their account later.</div>
+        <div>After a mail address is added, the following items shall be sent:
+            <ul style="margin-left:2rem;margin-top:0.5rem;">
+                <li>The notification mail when a test is completed.</li>
+                <li>The notification of a regression that is found in test.</li>
+            </ul>
+        </div>
+        <div class="t2"> Configure your mail </div>
+        <div>1. In order to add a mail address to your account, you need to own an account and login first as below:
+            <img src="/img/products/2020-08-10_15-53-15.png" style="margin-top:5px;margin-left:1rem;"></div>
+        <div>2. You should be able to found the userinfo on the top right corner of your home page, click on that:
+            <img src="/img/products/2020-08-11_16-24-17.png" style="margin-top:5px;margin-left:1rem;"></div>
+        <div>3. Please enter the mail address in the tab and click OK:
+            <img src="/img/products/2020-08-11_16-36-05.png" style="margin-top:5px;margin-left:1rem;"></div>
+        <div>4. In the case you want to change the mail address that has already been added, please kindly repeat above steps.</div>
+        <div class="t2">Frequently asked questions</div>
+        <div>1. How do I remove the mail that has already been configured? </div>
+        <div style="margin-left:2rem;margin-top:0;">in the case the mail address needs to be removed from the configuration, please leave the input blank and click OK ad below:<img src="/img/products/2020-08-11_16-41-39.png" style="margin-top:5px;margin-left:1rem;"></div>
+        <div>2. How could I check what mail address has been configured for my account?</div>
+        <div style="margin-left:2rem;margin-top:0;">We are sincerely sorry that so far you cannot check what mail address has been configured for your account, yet this should be fixed in <span class="marked">future versions </span>soon enough.</div>
+        <div style="margin-top:3rem;"></div>
+        <div>© CIDANA, Inc Test Frame</div>
+    </div>
+    <div id="endSign" style="display:none"></div>
+</div>
+
+</body>
+</html>

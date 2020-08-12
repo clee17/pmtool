@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="icon" href="/img/favicon.ico"/>
+    <script src="/js/general.js"></script>
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+</head>
+<style>
+
+
+</style>
+<body style="display:flex;flex-direction:column;min-height:100vh;" onload="finishLoad()">
+<div id="header">
+    <div id="logo">TEST FRAME</div>
+    <div style="background:rgba(218,218,218,0.8);width:1px;min-width:1px;height:1.2rem;margin-left:0.8rem;"></div>
+    <div id="map1"><button>Documentation</button></div>
+</div>
+<div style="display:flex;flex-direction:row;flex:1;position:relative;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div id="leftMap">
+        <div>
+            <button onclick="closeLeftMap()">Close ×</button>
+            <span>Test Frame Version 1.0</span>
+        </div>
+        <div>
+            <span class="link topLink">Introduction</span>
+            <ul style="display:none;">
+                <li>Getting Started</li>
+                <li>Sitemap</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Installation</span></div>
+        <div><span class="link topLink">Manage your account</span>
+            <ul style="display:none;">
+                <li>admin panel</li>
+                <li>mail notification</li>
+            </ul>
+        </div>
+        <div>
+            <span class="link topLink">Add a codebase</span>
+            <ul style="display:none;">
+                <li>github sync</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Start a test</span>
+            <ul style="display:none;">
+                <li>Coverage test</li>
+                <li>Conformance test</li>
+                <li>Performance test</li>
+                <li>Customized tests</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Manage the results</span></div>
+        <div><span class="link topLink">regression report</span></div>
+        <div><span class="link topLink">Notification centre</span></div>
+        <div><span class="link topLink">Job centre</span></div>
+        <div><span class="link topLink">Contact us</span></div>
+    </div>
+    <div id="mapFloater" onclick="showLeftMap()">MAP</div>
+
+    <div id="contents">
+        <div class="t1">Start A test</div>
+        <div class="conclusion">
+            <div>On this page</div>
+            <ul>
+                <li><button onclick="scrollToView('contents_testCentre')">Test Framework's test centre</button></li>
+                <li><button onclick="scrollToView('contents_intro')">Introduction to Tests</button></li>
+                <li><button onclick="scrollToView('contents_start')">Start a test</button></li>
+            </ul>
+        </div>
+        <div>Test Framework has provided a simple and straightforward tests center where codec developers could easily trigger a test with a simple click or scheduled task.</div>
+        <div>Through these tests, a developer could easily simplify there procedure of continuous integration as well as improve the quality of their codecs.</div>
+        <div>Developers could easily get to know the quality of a deployed codebase through <span class="marked">conformance tests </span>with more details to come in <span class="marked"> performance test </span>, while a <span class="marked"> coverage test </span>could inform the developers that to which extent the codec has been covered by the unit tests' suit deployed with Test Framework.</div>
+        <div class="t2" id="contents_testCentre">Test Framework's test centre</div>
+        <div>As soon as a project's link is clicked, the test centre connected to this project will show up as below:</div>
+        <div><img src="/img/products/2020-08-11_19-38-05.png"></div>
+        <div>① <b>return to test centre</b>, when navigating on a specific test page, you may click on the logo to return to the <span class="marked">test centre</span>.</div>
+        <div>② <b>Entrance to Notification centre</b>, this mark will only show up when there is an alerts that needs your attention, you may click it to open the <span class="marked">notification centre</span>.</div>
+        <div>③ <b>Entrance to job centre</b>,this mark will only show up when thre is a few jobs are running or being scheduled, you may click it to open the <span class="marked">job centre</span>.</div>
+        <div>④，<b>User info</b>, you may </div>
+        <div style="margin-top:3rem;"></div>
+        <div>© CIDANA, Inc Test Frame</div>
+    </div>
+    <div id="endSign" style="display:none"></div>
+</div>
+
+</body>
+</html>

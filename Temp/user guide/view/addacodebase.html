@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="icon" href="/img/favicon.ico"/>
+    <script src="/js/general.js"></script>
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+</head>
+<style>
+
+
+</style>
+<body style="display:flex;flex-direction:column;min-height:100vh;" onload="finishLoad()">
+<div id="header">
+    <div id="logo">TEST FRAME</div>
+    <div style="background:rgba(218,218,218,0.8);width:1px;min-width:1px;height:1.2rem;margin-left:0.8rem;"></div>
+    <div id="map1"><button>Documentation</button></div>
+</div>
+<div style="display:flex;flex-direction:row;flex:1;position:relative;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div id="leftMap">
+        <div>
+            <button onclick="closeLeftMap()">Close ×</button>
+            <span>Test Frame Version 1.0</span>
+        </div>
+        <div>
+            <span class="link topLink">Introduction</span>
+            <ul style="display:none;">
+                <li>Getting Started</li>
+                <li>Sitemap</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Installation</span></div>
+        <div><span class="link topLink">Manage your account</span>
+            <ul style="display:none;">
+                <li>admin panel</li>
+                <li>mail notification</li>
+            </ul>
+        </div>
+        <div>
+            <span class="link topLink">Add a codebase</span>
+            <ul style="display:none;">
+                <li>github sync</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Start a test</span>
+            <ul style="display:none;">
+                <li>Coverage test</li>
+                <li>Conformance test</li>
+                <li>Performance test</li>
+                <li>Customized tests</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Manage the results</span></div>
+        <div><span class="link topLink">regression report</span></div>
+        <div><span class="link topLink">Notification centre</span></div>
+        <div><span class="link topLink">Job centre</span></div>
+        <div><span class="link topLink">Contact us</span></div>
+    </div>
+    <div id="mapFloater" onclick="showLeftMap()">MAP</div>
+
+    <div id="contents">
+        <div class="t1">Add a codebase</div>
+        <div class="conclusion">
+            <div>On this page</div>
+            <ul>
+                <li><button onclick="scrollToView('contents_projectInfo')">Project's information</button></li>
+                <li><button onclick="scrollToView('contents_add')">Add, Delete and Modify</button></li>
+            </ul>
+        </div>
+        <div>As soon a user login onto the Test Framework, there would be a list of projects showing up listing all projects that is being managed by your Test Framework.</div>
+        <div><img src="/img/products/2020-08-11_18-21-17.png"></div>
+        <div class="t2" id="contents_projectInfo">Project's information</div>
+        <div>On the project's information board, you may find all information related to a project listed as below:</div>
+        <div><img src="/img/products/2020-08-11_18-54-17.png"></div>
+        <div>①，<b>Name of the project</b>, and by clicking at the link, a user could enter this project's test centre. </div>
+        <div style="margin-bottom:0.5rem;">②，<b>Project's description</b>, you could refer to the description of a project here.</div>
+        <div style="margin-left:1.8rem;margin-top:0;">Please kindly be aware that if a project is configured with a github link, the description shall be pulled from the github repository directly.</div>
+        <div>③，<b>Delete the Project</b>, an administrator of Test Framework could delete a listed project with this button. </div>
+        <div class="t2" id="contents_add">Add, Delete and Modify</div>
+        <div>A user could add, delete and modify a project on this dashboard.</div>
+        <div class="t3">Add a project</div>
+        <div>An administrator of Test Framework could add a new project with the ADD button in the right bottom corner show as below:</div>
+        <div><img src="/img/products/2020-08-11_19-04-47.png"></div>
+        <div>Test Framework accepts a project from a storage that is either a local hardware or a remote repository on github. Regretfully Test Framework do not accept projects stored with other platforms. However, there are possibilities that those are to be added in future. </div>
+        <div>And please kindly provide below information when a request needs to be added by CIDANA:</div>
+        <div><table>
+            <tr><td>Storage's type </td><td>Example:github or local hardware</td></tr>
+            <tr><td>codebase's location</td><td>example: https://github.com/Cidana-Developers/CidanaTestPlatformRelease.git</td></tr>
+        </table></div>
+        <div class="t3">Delete a project</div>
+        <div>As shown below, an administrator could delete an added project from the project's listed with a simple click: </div>
+        <div><img src="/img/products/2020-08-11_19-11-40.png"></div>
+        <div>please kindly be aware that a deleted project could not be restored again, as well as <span class="marked">all testing results </span> related to this project. </div>
+        <div class="t3">Modify a project</div>
+        <div>When a project is added, the information related to this project could be modified when required.</div>
+        <div>For those codebase that is deployed in a github repository, as long as the description and name is updated in the github, the inforamtion listed in project's list could be updated in a few hours.</div>
+        <div>As for those who has used the codebase that is deployed locally, they could simply modify the configuration file that is sent by CIDADA to save in the target project's root directoy.</div>
+        <div>In the case any further modification is required, please kindly contact your person of contact in CIDANA.</div>
+        <div style="border-top:solid 1px rgba(185,185,185,1);"></div>
+        <div>An administrator's account is needed to add, delete or modify a project, as in the situation that you requested the deployment service from CIDANA, please kindly contact your person of contact in CIDANA to complete the deployment of new project:</div>
+        <div class="important">
+            <p>TITLE:  Program Manager</p>
+            <p>MAIL:   <a href="mailto:christina.li@cidana.com">christina.li@cidana.com</a></p>
+        </div>
+        <div style="margin-top:3rem;"></div>
+        <div>© CIDANA, Inc Test Frame</div>
+    </div>
+    <div id="endSign" style="display:none"></div>
+</div>
+
+</body>
+</html>

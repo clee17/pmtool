@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="icon" href="/img/favicon.ico"/>
+    <script src="/js/general.js"></script>
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+</head>
+<style>
+
+
+</style>
+<body style="display:flex;flex-direction:column;min-height:100vh;" onload="finishLoad()">
+<div id="header">
+    <div id="logo">TEST FRAME</div>
+    <div style="background:rgba(218,218,218,0.8);width:1px;min-width:1px;height:1.2rem;margin-left:0.8rem;"></div>
+    <div id="map1"><button>Documentation</button></div>
+</div>
+<div style="display:flex;flex-direction:row;flex:1;position:relative;">
+
+    
+    
+    
+                <div id="leftMap">
+        <div>
+            <button onclick="closeLeftMap()">Close ×</button>
+            <span>Test Frame Version 1.0</span>
+        </div>
+        <div>
+            <span class="link topLink">Introduction</span>
+            <ul style="display:none;">
+                <li>Getting Started</li>
+                <li>Sitemap</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Installation</span></div>
+        <div><span class="link topLink">Manage your account</span>
+            <ul style="display:none;">
+                <li>admin panel</li>
+                <li>mail notification</li>
+            </ul>
+        </div>
+        <div>
+            <span class="link topLink">Add a codebase</span>
+            <ul style="display:none;">
+                <li>github sync</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Start a test</span>
+            <ul style="display:none;">
+                <li>Coverage test</li>
+                <li>Conformance test</li>
+                <li>Performance test</li>
+                <li>Customized tests</li>
+            </ul>
+        </div>
+        <div><span class="link topLink">Manage the results</span></div>
+        <div><span class="link topLink">regression report</span></div>
+        <div><span class="link topLink">Notification centre</span></div>
+        <div><span class="link topLink">Job centre</span></div>
+        <div><span class="link topLink">Contact us</span></div>
+    </div>
+    <div id="mapFloater" onclick="showLeftMap()">MAP</div>
+
+    <div id="contents">
+        <div class="t1">Accounts</div>
+        <div class="conclusion">
+            <div>On this page</div>
+            <ul>
+                <li><button onclick="scrollToView('contents_accounts')">Default accounts</button></li>
+                <li><button onclick="scrollToView('contents_add')">Add an account</button></li>
+
+                <li><button onclick="scrollToView('contents_contacts')">contact us</button></li>
+            </ul>
+        </div>
+        <div>In order to use CIDANA Test Framework, a user needs to own an account first. Every test would be run by an individual who is registered with Test Framework. The testing results shall be limited to registered users only. </div>
+        <div>Although there is indeed an option that the Test Framework is completely deployed locally, the login system is still kept due to the reason that the results and analyze reports could be managed and stored more safely.</div>
+        <div>CIDANA Test Framework has provided some initial accounts for a user to start with, yet users are more than welcome to register and set up their own accounts.</div>
+        <div><img src="/img/products/2020-08-10_15-53-15.png"></div>
+        <div class="t2" id="contents_accounts">Default accounts</div>
+        <div>As soon as the Test Framework is deployed for the first time, you could use below accounts to login into the system.</div>
+        <div class="important">
+            <table><tr><td>Username</td><td>password</td></tr>
+                <tr><td>Guest01</td><td>123</td></tr>
+            </table>
+        </div>
+        <div>However, it is highly recommended to set up your own account as soon as possible.</div>
+        <div class="t2" id="contents_add">Add an account</div>
+        <div class="t3">1. Add an account through management portal</div>
+        <div>An account could be added through the management panel where an administrator could easily add, delete and manage the accounts.</div>
+        <div>However, please kindly be aware that the management panel is only available in higher version (Test Framework 1.4.2). </div>
+        <div class="t3">2. Add an account through CIDANA</div>
+        <div>For those who are using versions lower than 2.4.0, the users and maintenance will be completed by the CIDANA support team, please kindly contact your person of contact in CIDANA to update your accounts.</div>
+        <div class="t2" id="contents_contacts">Contact us</div>
+        <div>For those who need further assistance from CIDANA, please kindly contact us at below contact:</div>
+        <div class="important">
+            <p>TITLE:  Program Manager</p>
+            <p>MAIL:   <a href="mailto:christina.li@cidana.com">christina.li@cidana.com</a></p>
+        </div>
+        <div>Our support team shall be more than willing to provide assistance.</div>
+        <div>© CIDANA, Inc Test Frame</div>
+    </div>
+    <div id="endSign" style="display:none"></div>
+</div>
+
+</body>
+</html>

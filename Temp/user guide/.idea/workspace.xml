@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b0836531-dd9d-4b4b-9700-9af43dedb54b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/public/css/general.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/githubIcon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-05_19-49-19.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-06_15-14-00.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-06_19-07-11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-10_15-53-15.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_16-24-17.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_16-36-05.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_16-41-39.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_18-21-17.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_18-54-17.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_19-04-47.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_19-11-40.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/products/2020-08-11_19-38-05.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/general.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/script/replaceLeftMap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/template/leftMap.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/addacodebase.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/adminpanel.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/configuration.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/gettingstarted.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/installation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/introduction.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/mailnotification.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/manageyouraccount.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/sitemap.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/startatest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/tests.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/view/usage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../documents/Cidana Software OEM Agreement_xxxxx(OEM)_20200410.doc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20190822.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20200224.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20200403.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20200410.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20200605.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20200628.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../draft/Cidana_Encoder_Test_Framework_20200709.ppt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Description .docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Design-20200430/Cidana_Testframe_Conformance.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Design-20200430/Cidana_Testframe_Coverage.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Design-20200430/Cidana_Testframe_Guidepage.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Design-20200430/Cidana_Testframe_Guidepage.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Design-20200430/Cidana_Testframe_infoOfTest.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Design-20200430/Cidana_Testframe_infoOfTest.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TestFramework Deploy（new）.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow.rar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/data/document.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/data/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/files/sitemap/data.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/files/sitemap/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u138_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u138_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u138_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u139_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u139_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u139_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u140_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u140_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u143_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u143_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u143_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u144_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u144_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u144_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u145_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u145_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u145_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u149_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u149_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u149_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u150_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u150_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u150_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u150_seg3.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u150_seg4.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u152_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u152_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u152_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u152_seg3.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u153_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u153_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u153_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u153_seg3.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u153_seg4.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u155_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u155_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u169.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u170.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u171.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u172.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u173.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u174.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u240_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u240_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u240_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u241_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u241_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u241_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u242_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u242_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u242_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u243_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u243_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u243_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u261_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u261_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u261_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u28_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u28_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u28_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u3.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u50_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u50_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u50_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u50_seg3.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u62.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u63.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u64.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u65.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u66.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u67.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u73_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u73_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u73_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u77_seg0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u77_seg1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u77_seg2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/images/sitemap/u79.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/debug/debug.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/debug/styles/debug.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/debug/styles/images/console_panel_off.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/debug/styles/images/console_panel_on.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/page_notes/page_notes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/page_notes/styles/images/notes_panel_off.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/page_notes/styles/images/notes_panel_on.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/page_notes/styles/page_notes.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/recordplay/recordplay.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/recordplay/styles/recordplay.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/sitemap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/back_keys.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/closed_item.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/flow.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/folder_closed_blue.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/forward_keys.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/left_arrow.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/open_item.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/page_lt_grey.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/right_arrow.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/search_off.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/search_on.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/sitemap_panel_off.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/images/sitemap_panel_on.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/plugins/sitemap/styles/sitemap.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/Other.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/allow-access.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/axure-chrome-extension.crx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/axure_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/chrome.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/details.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/extensions.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/firefox.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/preview-rp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/safari.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/safari_advanced.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/safari_restrictions.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/splitter.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/chrome/splitter.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/axure_rp_page.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/default.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/images.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/newwindow.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/note.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/touch.cur" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/touch.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_flat_0_aaaaaa_40x100.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_glass_55_fbf9ee_1x400.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_glass_65_ffffff_1x400.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_glass_75_dadada_1x400.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_glass_75_e6e6e6_1x400.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_glass_75_ffffff_1x400.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_highlight-soft_75_cccccc_1x100.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-bg_inset-soft_95_fef1ec_1x100.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-icons_222222_256x240.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-icons_2e83ff_256x240.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-icons_454545_256x240.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-icons_888888_256x240.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/images/ui-icons_cd0a0a_256x240.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/jquery-ui-themes.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/previewfonts.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/previewfonts/SourceSansPro-OpenFontLicense.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/previewfonts/SourceSansPro-Regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/previewfonts/SourceSansPro-Semibold.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/css/reset.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/expand.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/axure9_logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/axure_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/axure_logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/caret_down.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/caret_down_off.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/close_x.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/close_x_minimize.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/divider.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/divider.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/exit.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/favicon_play.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/overflow-icon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/overflow_checkmark.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/overflow_icon_off.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/refresh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/resize.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/return.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/transparent.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/images/views-icon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/reload.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/action.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/adaptive.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/annotation.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/axQuery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/axQuery.std.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/doc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/drag.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/events.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/expr.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/flyout.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/geometry.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/globals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/ie.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/init.temp.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/ios.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/jquery.nicescroll.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/legacy.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/math.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/model.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/move.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/recording.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/repeater.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/sto.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/style.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/tree.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/utils.temp.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/variables.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/viewer.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axure/visibility.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/axutils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/jquery-1.7.1.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/jquery-3.2.1.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/jquery-ui-1.8.10.custom.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/messagecenter.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/player/axplayer.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/player/init.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/resources/scripts/player/splitter.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/sitemap.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/start.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/start_c_1.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../User Flow/start_with_pages.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../WBS20200430.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test frame 1.0 review.xlsx" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectId" id="1fcYG2cFUr9E0flqXHOIlqwnzhU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="Console" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0836531-dd9d-4b4b-9700-9af43dedb54b" name="Default Changelist" comment="" />
+      <created>1596518748329</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1596518748329</updated>
+      <workItem from="1596518749676" duration="21939000" />
+      <workItem from="1596625376223" duration="5425000" />
+      <workItem from="1596693185617" duration="277000" />
+      <workItem from="1596693738965" duration="59000" />
+      <workItem from="1596693832882" duration="17260000" />
+      <workItem from="1596797358626" duration="19940000" />
+      <workItem from="1597133338989" duration="9291000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="270" y="57" key="SettingsEditor" timestamp="1596627367577">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="270" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1596627367577" />
+    <state x="729" y="259" width="600" height="536" key="find.popup" timestamp="1597145662244">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="729" y="259" width="600" height="536" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1597145662244" />
+    <state x="382" y="202" width="672" height="678" key="search.everywhere.popup" timestamp="1597146122182">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="382" y="202" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1597146122182" />
+  </component>
+</project>

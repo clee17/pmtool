@@ -100,7 +100,7 @@ let handler = {
         projectModel.find(owner,null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
             .then(function(entries){
                 render.contents.entries = entries;
-                return projectModel.countDocuments({owner:req.session.user._id}).exec();
+                return projectModel.countDocuments(owner).exec();
             })
             .then(function(count){
                 render.contents.maxCount = count;

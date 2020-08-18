@@ -69,7 +69,7 @@ app.controller("pwdCon",function($scope,$rootScope,dataManager,$window){
 
 
     $scope.initialize = function(){
-        dataManager.requestData('user','users received',{search:{title:'Program Manager'},cond:{sort:{name:1}}});
+        dataManager.requestData('user','users received',{search:{title:{$in:['Program Manager','CEO']}},cond:{sort:{name:1}}});
     }
 
     $scope.resetError();

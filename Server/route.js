@@ -94,7 +94,10 @@ let handler = {
         pageId--;
         let render = {};
         render.contents = {};
-        projectModel.find({owner:req.session.user._id},null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
+        let owner = {owner:req.session.user._id};
+        if(req.session.user.title === 'CEO')
+            owner = {};
+        projectModel.find(owner,null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
             .then(function(entries){
                 render.contents.entries = entries;
                 return projectModel.countDocuments({owner:req.session.user._id}).exec();
@@ -505,9 +508,9 @@ let handler = {
             receivedStr = decodeURIComponent(req.body.data);
             let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
             let type = req.body.type || received.type || 10;
-            type--;
             if(typeof type !== 'number')
                 type = Number(type);
+			type--;
             let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference','','','','','release'];
             let prefix = prefixList[type] || '';
             if (prefix !== '')
@@ -530,13 +533,15 @@ let handler = {
                 }else{
                     updateLink = newLink;
                 }
-                if(updateLink.indexOf('assets/')<0)
-                    updateLink = '/assets/'+updateLink;
-                console.log(updateLink);
                 if(received.search)
                     received.search.link = updateLink;
                 else
                     received.link = updateLink;
+				if(received.search)
+					received.search.type = type;
+				else 
+					received.type = type;
+				
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
                 handler.save(req,res);
             });
@@ -739,4 +744,3 @@ module.exports = function(app){
         })
     });
 };
-

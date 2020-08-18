@@ -83,7 +83,10 @@
                 </td>
                 <td style="overflow:hidden;">
                     <% if(entries[i].source === 0) { %>
-                    <a href="<%- '/assets/'+entries[i].link %>" target="_blank">前往</a>
+					<% let link = entries[i].link; %>
+					<% if(link.indexOf('/assets')<0) { %>
+					<%       link = '/assets/'+link; } %>
+                    <a href="<%- link %>" target="_blank">前往</a>
                     <% } else { %>
                     <a href="<%- entries[i].link %>" target="_blank">前往</a>
                     <% } %>

@@ -57,21 +57,25 @@ var submitDoc = function(){
         result.description = element.value;
 
     element = document.getElementById('sourceSelect');
+    if(element)
         result.source = Number(element.value);
 
     element = document.getElementById('typeSelect');
-        result.type = Number(element.value);
+    if(element)
+        result.type = Number(element.value)+1;
 
     element = document.getElementById('fileUpload');
-    if(result.type === 0 && element && element.files.length === 0){
+    if(element && result.type === 0 && element && element.files.length === 0){
         alert('您必须上传一个文件');
         return;
     };
 
     element = document.getElementById('linkInput');
+    if(element)
         result.link = element.value;
 
     element = document.getElementById('referenceInput');
+    if(element)
         result.reference = element.value;
 
         result.populate = 'account project';

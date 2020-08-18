@@ -75,6 +75,19 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         }
     }
 
+    $scope.logout = function(){
+        dataManager.requestLogout({_id:$rootScope.userId});
+    }
+
+    $scope.$on('logoutComplete',function(event,data){
+        if(!data.success){
+            alert(data.message);
+        }else{
+            console.log('entered');
+            $window.location.reload();
+        }
+    });
+
     $scope.statusVisible =false;
 
     $scope.showStatus = function(){

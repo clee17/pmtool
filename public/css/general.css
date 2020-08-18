@@ -405,5 +405,23 @@ body{
     margin-left:0.8rem;
     margin-top:auto;
     margin-bottom:0.2rem;
+}
 
+#headerButtons button{
+    border:none;
+    background:none;
+    color:white;
+    font-family:'Microsoft YaHei UI Light';
+    font-weight:bold;
+}
+
+#headerButtons button:hover{
+   text-decoration:underline;
+    cursor:pointer;
+}
+
+
+
+#headerButtons button:disabled{
+    color:lightgray;
 }

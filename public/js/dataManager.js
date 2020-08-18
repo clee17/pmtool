@@ -30,6 +30,10 @@ app.service("dataManager",function($http,$rootScope){
         manager.request('/login/',"loginComplete",info);
     }
 
+    manager.requestLogout = function(info){
+        manager.request('/logout/',"logoutComplete",info);
+    }
+
     manager.vagueSearch = function(tableId,value){
         manager.request('/vagueSearch/',"vagueSearchFinished",{index:tableId,value:value});
     };

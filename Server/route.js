@@ -627,6 +627,28 @@ let handler = {
             })
     },
 
+    logout:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent:false,
+            userInfo:null,
+            message:"unknown failure"
+        };
+
+        if(req.session.user && req.session.user._id === received._id){
+            response.success = true;
+            req.session.user = null;
+            handler.sendResult(res,response);
+        }else if(!req.session.user){
+            response.message = "The user has logged out already."
+            handler.sendResult(res,response);
+        }else if(req.session.user && req.session.user._id !== received._id){
+            response.message = "You cannot logout for someone else."
+            handler.sendResult(res,response);
+        }
+    },
+
+
     pwd:function(req,res){
         let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let response = {
@@ -704,6 +726,7 @@ router.post('/upload/:tableId',handler.upload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
 router.post('/login/',handler.login);
+router.post('/logout/',handler.logout);
 router.post('/pwdReset/',handler.pwd);
 
 

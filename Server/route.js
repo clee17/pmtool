@@ -501,11 +501,11 @@ let handler = {
     upload:function(req,res){
         let files = req.files;
         if(req.files[0]){
-            console.log(req.files);
             let receivedStr = req.body.data;
             receivedStr = decodeURIComponent(req.body.data);
             let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
-            let type = req.body.type || received.type || 9;
+            let type = req.body.type || received.type || 10;
+            type--;
             if(typeof type !== 'number')
                 type = Number(type);
             let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference','','','','','release'];
@@ -521,8 +521,8 @@ let handler = {
                  path += '/';
             fs.rename(files[0].path,path+newLink,function(err){
                 let updateLink = "";
-                console.log(err);
                 if(err){
+                    console.log(err);
                     fs.unlink(files[0].path,function(err){
                         console.log(err);
                     });
@@ -530,6 +530,9 @@ let handler = {
                 }else{
                     updateLink = newLink;
                 }
+                if(updateLink.indexOf('assets/')<0)
+                    updateLink = '/assets/'+updateLink;
+                console.log(updateLink);
                 if(received.search)
                     received.search.link = updateLink;
                 else

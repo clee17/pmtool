@@ -75,6 +75,23 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         }
     }
 
+    $scope.statusVisible =false;
+
+    $scope.showStatus = function(){
+        $scope.statusVisible = !$scope.statusVisible;
+        let element = document.getElementById('projectStatusPanel');
+        if(!element)
+            return;
+        if($scope.statusVisible){
+            element.style.width = '8rem'
+            element.style.height = '12rem';
+            element.style.opacity = '1';
+        }else {
+            element.style.width = '0';
+            element.style.height = '0';
+            element.style.opacity = '0';
+        }
+    };
     $scope.goToProject = function(id){
         $window.location.href= '/project/info?id='+id;
     }

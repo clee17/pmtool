@@ -60,7 +60,7 @@ app.controller("docCon",function($scope,$rootScope,$compile,dataManager) {
         }
 
         saveQuery.source = Number(saveQuery.source);
-        saveQuery.type = Number(saveQuery.type);
+        saveQuery.type = Number(saveQuery.type)+1;
         saveQuery.account = $rootScope.project.account._id;
         saveQuery.project = $rootScope.project._id;
         saveQuery.populate = 'parent';

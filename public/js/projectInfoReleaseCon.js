@@ -181,7 +181,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
                     formData.append('file', files[0]);
                     formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(dataDetail))));
                     formData.append('origin','1');
-                    formData.append('type','10');
+                    formData.append('type','11');
                     dataManager.uploadFile('/upload/position','version position saved',formData)
                 }else{
                     if($scope.updateSave.position.length ===0){

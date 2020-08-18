@@ -168,7 +168,9 @@ var addNewRec = function(result){
         let typeList = [ 'NDA','SOW','SLA','Royalty','invoice', 'reference'];
         let type = typeList[result.type]?typeList[result.type]:"unknown";
         innerHTML += '<td>'+type+'</td>';
-        let prefix = result.type === 0? '/assets/':'';
+        let prefix = result.source === 0? '/assets/':'';
+        if(result.link.indexOf('/assets/')>=0)
+            prefix = '';
         innerHTML += '<td><a href="'+prefix+ result.link +'" target="_blank">前往</a></td>';
         result.reference.replace(/\n/g,'<br>');
         innerHTML +=  '<td>'+result.reference +'</td>';

@@ -501,6 +501,38 @@ let handler = {
         }).populate(populate);
     },
 
+    delete:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent:false,
+            index:received.index,
+            maxCount:0,
+            message:"unknown failure"
+        };
+
+        let tableId = received.index;
+        if(!tableList[tableId]){
+            handler.renderError(res,'no valid tableId received');
+            return;
+        }
+
+        tableList[tableId].deleteMany(received.search,function(err,result){
+            console.log(err);
+            console.log(result);
+            if(err){
+                response.message = err.message;
+                response.success = false;
+                handler.sendResult(res,response);
+            }else{
+                response.maxCount = result;
+                response.message = "";
+                response.success = true;
+                handler.sendResult(res,response);
+            }
+        })
+    },
+
+
     upload:function(req,res){
         let files = req.files;
         if(req.files[0]){
@@ -511,7 +543,7 @@ let handler = {
             if(typeof type !== 'number')
                 type = Number(type);
 			type--;
-            let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference','','','','','release'];
+            let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference','payment','','','','release'];
             let prefix = prefixList[type] || '';
             if (prefix !== '')
                 prefix += '/';
@@ -722,6 +754,7 @@ router.post('/vagueSearch/',handler.vague);
 router.post('/search/:tableId',handler.search);
 router.post('/aggregate/:tableId',handler.aggregate);
 router.post('/save/:tableId',handler.save);
+router.post('/delete/:tableId',handler.delete);
 router.post('/upload/:tableId',handler.upload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);

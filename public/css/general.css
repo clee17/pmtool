@@ -425,3 +425,13 @@ body{
 #headerButtons button:disabled{
     color:lightgray;
 }
+
+.closeButtonInline{
+    background:none;
+    border:none;
+    color:dimgray;
+}
+
+.closeButtonInline:hover{
+    color:rgba(152,75,67,1);
+}

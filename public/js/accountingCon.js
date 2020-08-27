@@ -64,6 +64,10 @@ app.controller('accountCon',function($scope,$rootScope,$window,$location,dataMan
         let end = path.indexOf('?');
         if(end>0)
             id = path.substring(0,end);
+        if(id === ''){
+            id = 'payment';
+            $window.history.pushState(null,null,'/accounting/payment');
+        }
         $scope.$broadcast('pageChanged',{id:id});
     });
 
@@ -108,6 +112,7 @@ app.controller('leftController',function($scope,$rootScope,$location,dataManager
 app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dataManager) {
     $scope.pid = 1;
     $scope.maxCount = 0;
+    $scope.maxPage = 1;
     $scope.filter = false;
     $scope.options = [
         {name:"Payment",id:"payment"},
@@ -161,6 +166,7 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
         if(tableName === 'collection')
             tableName = 'accounting_'+tableName;
         dataManager.requestData(tableName,'results received',{populate:'project account',search:$scope.search,cond:{sort:{date:-1},skip:20*($scope.pid-1),limit:20},requestingId:$scope.requestingId});
+        dataManager.countPage(tableName,'count received',{search:$scope.search});
     }
 
     $scope.$on('results received',function(event,result){
@@ -176,6 +182,14 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
                 element.style.opacity = '1';
         }
     })
+
+    $scope.$on('countReceived',function(event,data){
+        if(data.success){
+            $scope.maxCount = data.maxCount;
+            $scope.maxPage = Math.ceil(data.maxCount/20);
+        }else
+            alert(data.message);
+    });
 
     $scope.switchFilter = function(){
         let element = document.getElementById('filterBoard');

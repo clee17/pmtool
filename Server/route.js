@@ -322,12 +322,15 @@ let handler = {
             message:"unknown failure"
         };
 
+        let search = {};
+        if(received.search)
+            search = received.search;
         let tableId = received.index;
         if(!tableList[tableId]){
             handler.renderError(res,'no valid tableId received');
             return;
         }
-        tableList[tableId].countDocuments({},function(err,result){
+        tableList[tableId].countDocuments(search,function(err,result){
             if(err){
                 handler.renderError(res,JSON.stringify(err));
             }else{

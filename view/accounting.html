@@ -173,7 +173,7 @@
 
         </div>
         <div class="pageCount" id="pageCount" style="margin-top:auto;margin-bottom:1.5rem;">
-            <button  ng-repeat="x in [].constructor(Math.ceil(maxCount/20)) track by $index" onclick="gotoPage($index)">
+            <button  ng-repeat="x in [].constructor(maxPage) track by $index" onclick="gotoPage($index)" ng-disabled="$index === (pid-1)">
                 {{$index+1}}</button>
         </div>
     </div>

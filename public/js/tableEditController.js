@@ -12,8 +12,11 @@ app.service("dataManager",function($http,$rootScope){
             });
     };
 
-    manager.countPage = function(tableId){
-        manager.request('/countInfo/',"countReceived",{index:tableId});
+    manager.countPage = function(tableId,data){
+        if(!data)
+            data = {};
+        data.index = tableId;
+        manager.request('/countInfo/',"countReceived",data);
     };
 
     manager.vagueSearch = function(tableId,value){

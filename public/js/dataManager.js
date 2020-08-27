@@ -63,4 +63,23 @@ app.service("dataManager",function($http,$rootScope){
         manager.request('/delete/'+tableName,symbol,data);
     };
 
+    manager.countPage = function(tableId,data){
+        if(!data)
+            data = {};
+        data.index = tableId;
+        manager.request('/countInfo/',"countReceived",data);
+    };
+
+    manager.vagueSearch = function(tableId,value){
+        manager.request('/vagueSearch/',"vagueSearchFinished",{index:tableId,value:value});
+    };
+
+    manager.requestDevelopers = function(){
+        manager.request('/getInfo/developers',"dataReceived",{index:"developers"});
+    };
+
+    manager.requestProducts = function(condition){
+        manager.request('/getInfo/products','dataReceived',{index:"products",condition:condition});
+    };
+
 });

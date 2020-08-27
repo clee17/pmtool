@@ -151,6 +151,18 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
         $scope.refreshPage();
     };
 
+    $scope.goToPage = function(index){
+        if($scope.requesting)
+            return;
+        $scope.pid = index+1;
+        let path = $location.path();
+        let end = path.indexOf('?');
+        if(end>0)
+            path = path.substring(0,end);
+        $window.history.pushState(path+'?pid='+$scope.pid);
+        $scope.refreshPage();
+    }
+
     $scope.$on('pageChanged',function(event,data){
         $scope.requestingId = data.id +'_'+Date.now();
         $scope.main_pageIndex = data.id;
@@ -166,7 +178,7 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
         if(tableName === 'collection')
             tableName = 'accounting_'+tableName;
         dataManager.requestData(tableName,'results received',{populate:'project account',search:$scope.search,cond:{sort:{date:-1},skip:20*($scope.pid-1),limit:20},requestingId:$scope.requestingId});
-        dataManager.countPage(tableName,'count received',{search:$scope.search});
+        dataManager.countPage(tableName,{search:$scope.search});
     }
 
     $scope.$on('results received',function(event,result){

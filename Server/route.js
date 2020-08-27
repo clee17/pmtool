@@ -545,7 +545,7 @@ let handler = {
 			type--;
 			let project = received.project || null;
             let prefixList = ['Legal','Legal','Legal','Royalty','Payments','reference','Payments','','','','Release'];
-            let typeList = ['NDA','SOW','SLA','Royalty','invoice','payment','reference','','','',''];
+            let typeList = ['NDA','SOW','SLA','Royalty','invoice','reference','receipt','','','',''];
             let prefix = prefixList[type] || '';
             let typeIndicator = typeList[type] || '';
             let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));

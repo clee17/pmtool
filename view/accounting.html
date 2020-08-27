@@ -121,6 +121,7 @@
         display:flex;
         flex-direction:column;
         overflow:hidden;
+        z-index:99;
     }
 
     #filterBoard >button{
@@ -168,7 +169,7 @@
         <div style="height:1rem;position:relative;"><div id="filterBoard">
             <button ng-repeat="stat in status" ng-click="selectStat(stat.index,$event)">{{stat.name}}</button>
         </div></div>
-        <div id="main_records" style="display:flex;flex:1;padding-top:2rem;">
+        <div id="main_records" style="display:flex;flex:1;padding-top:2rem;flex-direction:column;transition:opacity 0.35s;opacity:0;">
 
         </div>
         <div class="pageCount" id="pageCount" style="margin-top:auto;margin-bottom:1.5rem;">

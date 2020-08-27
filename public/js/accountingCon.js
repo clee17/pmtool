@@ -29,6 +29,25 @@ app.directive('paymentDue',function($compile,$rootScope){
 });
 
 
+
+app.directive('paymentProject',function($compile,$rootScope){
+    return{
+        restrict:"A",
+        scope:{},
+        link:function(scope,element,attr){
+            let entry = scope.$parent.entry;
+            let project = entry.project;
+            if(project){
+                let html = '<a  href="/project/info?id='+entry.project._id+'" target="_blank">'+entry.project.name+'</a>';
+                element.html(html)
+            }else{
+                element.html('General customer');
+            }
+        }}
+});
+
+
+
 app.controller('accountCon',function($scope,$rootScope,$window,$location,dataManager) {
     $scope.initialize = function(){
         if($scope.initialized)
@@ -86,7 +105,7 @@ app.controller('leftController',function($scope,$rootScope,$location,dataManager
     $scope.$emit('leftLoaded', {});
 });
 
-app.controller('mainController',function($scope,$rootScope,$compile,dataManager) {
+app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dataManager) {
     $scope.pid = 1;
     $scope.maxCount = 0;
     $scope.filter = false;
@@ -135,6 +154,9 @@ app.controller('mainController',function($scope,$rootScope,$compile,dataManager)
 
     $scope.refreshPage = function(){
         $scope.requesting = true;
+        let element = document.getElementById('main_records');
+        if(element)
+            element.style.opacity = '0';
         let tableName = $scope.main_pageIndex;
         if(tableName === 'collection')
             tableName = 'accounting_'+tableName;
@@ -149,6 +171,9 @@ app.controller('mainController',function($scope,$rootScope,$compile,dataManager)
             $scope.initPage();
         }else{
             alert(result.message);
+            let element = document.getElementById('main_records');
+            if(element)
+                element.style.opacity = '1';
         }
     })
 
@@ -165,9 +190,10 @@ app.controller('mainController',function($scope,$rootScope,$compile,dataManager)
         switch($scope.main_pageIndex){
             case 'payment':
                 html = '<table class="entryTable">' +
-                    '<tr><td>account</td><td>description</td><td>amount</td><td>Status</td><td>created</td><td>due by</td></tr>'+
+                    '<tr><td>Account</td><td>Project</td><td>Description</td><td>Amount</td><td>Status</td><td>Created</td><td>Due by</td></tr>'+
                     '<tr ng-repeat="entry in entries" class="entry" payment-due>' +
-                    '<td>{{entry.account.name}}</td>' +
+                    '<td><a href="{{\'/account/info?id=\'+entry.account._id}}" target="_blank">{{entry.account.name}}</a></td>' +
+                    '<td payment-project></td>' +
                     '<td>{{entry.comment}}</td>' +
                     '<td>{{entry.amount}}  {{entry.currency | currency:\'full\'}}</td>' +
                     '<td>{{entry.status | payStatus}}</td>' +
@@ -180,11 +206,18 @@ app.controller('mainController',function($scope,$rootScope,$compile,dataManager)
             case 'default':
                 break;
         }
+
+        if($scope.entries.length ===0){
+            html += '<div style="margin:auto;font-size:1.2rem;font-weight:bold;">No entries found</div>';
+        }
         let element = document.getElementById('main_records');
         if(element){
             element = angular.element(element);
             element.html('');
             element.append($compile(html)($scope));
+            $timeout(function(){
+                element.css('opacity','1');
+            },200);
         }
     }
 

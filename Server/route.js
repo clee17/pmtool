@@ -543,27 +543,35 @@ let handler = {
             if(typeof type !== 'number')
                 type = Number(type);
 			type--;
-            let prefixList = ['SLA','SOW','SLA','Royalty','invoice','reference','payment','','','','release'];
+			let project = received.project || null;
+            let prefixList = ['Legal','Legal','Legal','Royalty','Payments','reference','Payments','','','','Release'];
+            let typeList = ['NDA','SOW','SLA','Royalty','invoice','payment','reference','','','',''];
             let prefix = prefixList[type] || '';
-            if (prefix !== '')
-                prefix += '/';
+            let typeIndicator = typeList[type] || '';
             let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
-            let newLink  =  prefix+files[0].filename + ext;
+            let newLink  =  typeIndicator+'_'+files[0].filename + ext;
             if(req.body.filename)
-                newLink = prefix+req.body.filename+ext;
+                newLink = typeIndicator+req.body.filename+ext;
             let path = systemSetting.DocLocalPath;
             if(path.charAt(path.length-1) !== '/')
-                 path += '/';
-            fs.rename(files[0].path,path+newLink,function(err){
+                path += '/';
+            let projectLink = received.project? "projects/"+received.project : 'accounts/'+received.account;
+            projectLink += '/';
+            if (!fs.existsSync(path+projectLink+prefix)){
+                fs.mkdirSync(path+projectLink+prefix,{recursive:true});
+            };
+            if (prefix !== '')
+                prefix += '/';
+            console.log(path+projectLink+prefix+newLink);
+            fs.rename(files[0].path,path+projectLink+prefix+newLink,function(err){
                 let updateLink = "";
                 if(err){
-                    console.log(err);
                     fs.unlink(files[0].path,function(err){
                         console.log(err);
                     });
-                    throw Error(JSON.stringify(err));
+                    throw Error(err.message);
                 }else{
-                    updateLink = newLink;
+                    updateLink = projectLink+prefix+newLink;
                 }
                 if(received.search)
                     received.search.link = updateLink;

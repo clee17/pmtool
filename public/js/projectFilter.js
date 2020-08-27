@@ -179,7 +179,8 @@ app.filter('linkDocument',function($rootScope){
             assetLink = "";
         else
             assetLink =  $rootScope.setting.DocLocalPath || "";
-
+        if(link.indexOf('/assets/')>= 0 &&  assetLink === '/assets/' )
+            assetLink = "";
         return assetLink+link;
     }
 });

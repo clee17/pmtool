@@ -58,4 +58,9 @@ app.service("dataManager",function($http,$rootScope){
     manager.updateData = function(tableName,symbol,data){
         manager.request('/save/'+tableName,symbol,data);
     }
+
+    manager.deleteMany = function(tableName,symbol,data){
+        manager.request('/delete/'+tableName,symbol,data);
+    };
+
 });

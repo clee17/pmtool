@@ -16,6 +16,7 @@ var efforts = require('./../data/model/efforts'),
     accountModel = require('../data/model/accounts'),
     paymentModel = require('../data/model/payment'),
     paymentDocModel = require('../data/model/paymentDocs'),
+    collectionModel = require('../data/model/accounting_collection')
     productModel = require('./../data/model/product'),
     deliveryModel = require('./../data/model/delivery'),
     credentialModel = require('./../data/model/userCredential'),
@@ -34,6 +35,7 @@ var efforts = require('./../data/model/efforts'),
 let tableList = {
     "efforts":efforts,
     "account":accountModel,
+    "collection":collectionModel,
     "product":productModel,
     "project":projectModel,
     "developerTask":developerTaskModel,
@@ -427,6 +429,7 @@ let handler = {
         let response = {
             sent:false,
             index:tableId,
+            requestId:received.requestId,
             result:[],
             message:"unknown failure"
         };
@@ -444,6 +447,8 @@ let handler = {
         tableList[tableId].countDocuments(search).exec()
             .then(function(count){
                 response.count = count;
+                console.log(search);
+                console.log(cond);
                 return tableList[tableId].find(search,null,cond).populate(populate).exec();
             })
             .then(function(docs){
@@ -518,7 +523,6 @@ let handler = {
 
         tableList[tableId].deleteMany(received.search,function(err,result){
             console.log(err);
-            console.log(result);
             if(err){
                 response.message = err.message;
                 response.success = false;
@@ -562,7 +566,6 @@ let handler = {
             };
             if (prefix !== '')
                 prefix += '/';
-            console.log(path+projectLink+prefix+newLink);
             fs.rename(files[0].path,path+projectLink+prefix+newLink,function(err){
                 let updateLink = "";
                 if(err){
@@ -608,6 +611,20 @@ let handler = {
                 handler.sendResult(res,data);
             }
         });
+    },
+
+    accounting:function(req,res){
+        let page = req.params.page;
+        let limited = ['collection','payment'];
+        if(page && limited.indexOf(page)<0){
+            handler.renderError(res,'no such page');
+            return;
+        }
+        if(!req.session.user){
+            res.render('login.html', {});
+        }else{
+            res.render('accounting', {pageId:page,user:req.session.user});
+        }
     },
 
     products:function(req,res){
@@ -753,6 +770,8 @@ router.get('/tutorial/:contentId',handler.tutorial);
 router.get('/QAManager',handler.QAManager);
 router.get('/QATool',handler.QA);
 router.get('/QATool/:contentId',handler.QA);
+router.get('/Accounting',handler.accounting);
+router.get('/Accounting/:page',handler.accounting);
 router.get('/doc',handler.docManager);
 router.get('/doc/:projectId/:docId',handler.doc);
 router.get('/fileserver/*',handler.fileserver)

@@ -1,6 +1,16 @@
+app.filter('month',function(){
+    return function(month,digit) {
+        if (typeof month !== 'number')
+           month = Number(month);
+        let list = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        let monthStr=  list[month] || 'unknown';
+        if(monthStr !== 'unknown'  && typeof digit === 'number' && digit >0)
+            monthStr = monthStr.substring(0,digit);
+        return monthStr;
+    }
+})
 
-
-app.filter('date',function(){
+app.filter('date',function($filter){
     return function(date,type){
         if(!date)
             return "";
@@ -13,6 +23,7 @@ app.filter('date',function(){
         let seconds = date.getSeconds();
         type = type.replace(/&y/,year.toString());
         type = type.replace(/&m/,month.toString());
+        type = type.replace(/%m/,$filter('month')(month));
         type = type.replace(/&d/,currentDate.toString());
         type = type.replace(/&h/,hour.toString());
         type = type.replace(/&i/,minutes.toString());
@@ -20,6 +31,20 @@ app.filter('date',function(){
         if(year >= 3000)
             return '';
         return type;
+    }
+});
+
+app.filter('dueBy',function($filter){
+    return function(entry,type){
+        if(!entry)
+            return "";
+        let date = entry.due;
+        if(!date){
+            date = entry.date;
+            date = Number(new Date(date));
+            date += 1000*60*60*24*30;
+        }
+        return $filter('date')(date,type);
     }
 });
 
@@ -70,9 +95,9 @@ app.filter('currency',function(){
         if(typeof currency != 'number')
             currency = Number(currency);
         let currencyList = [
-            {icon:'$',name:'dollar'},
-            {icon:'¥',name:'RMB'},
-            {icon:'￥',name:'JPY'}
+            {icon:'$',name:'dollar',full:'$(Dollor)'},
+            {icon:'¥',name:'RMB',full:'¥(RMB)'},
+            {icon:'￥',name:'JPY',full:'￥(JPY)'}
         ];
         if(!type)
             type = 'icon';

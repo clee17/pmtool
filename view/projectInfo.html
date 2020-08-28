@@ -88,9 +88,12 @@
     </div>
     <div style="width:100%;border-bottom:solid 1px lightgray;padding-bottom:0.5rem;"></div>
     <div ng-show="!noAlert()" style="display:flex;flex-direction:column;">
-        <div>
+        <div style="display:flex;flex-direction:row;">
             <button class="inlineBtn" id="btnPayment" ng-click="gotoAlertPage(1)" ng-disabled="alertPageIndex() === 1" ng-show="paymentAlerts.length >0">PAYMENT</button>
             <button class="inlineBtn" id="btnBugAlert" ng-click="gotoAlertPage(2)" ng-disabled="alertPageIndex() ===2" ng-show="taskAlerts.length >0">Bugfix</button>
+            <div style="margin-left:auto;margin-right:4rem;margin-top:auto;margin-bottom:0;">
+                <a href="/accounting/payment" target="_blank"  class="simpleBtn" style="text-decoration:none;line-height:1.5rem;font-family:Arial ,serif;margin-top:0.5rem;">View more</a>
+            </div>
         </div>
         <div ng-show="alertPageIndex() === 1">
             <table style="margin-left:1rem;margin-top:1rem;">
@@ -282,7 +285,10 @@
     </div>
 
     <div ng-show="currentPage=='payment'" style="display:flex;flex-direction:column;" ng-controller="paymentCon">
-        <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('payment')">ADD PAYMENT</button>
+        <div style="margin-left:auto;margin-right:2rem;font-family:Arial,serif;">
+            <button  class="simpleBtn" ng-click="showCover('payment')">Add payment</button>
+            <a class="simpleBtn" href="/accounting/payment" target="_blank" style="text-decoration:none;margin-left:1.5rem;">View more</a>
+        </div>
         <table class="dataListTable" style="margin-left:auto;margin-right:auto;margin-top:2rem;">
             <tr><td>PAYER</td><td>PO</td><td>DATE</td></td><td>PAYMENT</td><td style="text-align:center;">STATUS</td><td>COMMENT</td><td>INVOICE</td><td>DOC</td><td></td></tr>
             <tr ng-show="payments.length ===0"><td colspan="8" style="text-align:center;">

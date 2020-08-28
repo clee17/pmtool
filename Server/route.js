@@ -450,8 +450,6 @@ let handler = {
         tableList[tableId].countDocuments(search).exec()
             .then(function(count){
                 response.count = count;
-                console.log(search);
-                console.log(cond);
                 return tableList[tableId].find(search,null,cond).populate(populate).exec();
             })
             .then(function(docs){

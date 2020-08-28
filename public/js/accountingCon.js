@@ -6,6 +6,66 @@ app.directive('infoReceiver',function($rootScope){
     }
 });
 
+app.directive('floatBoard',function(){
+    return{
+        restrict:"C",
+        scope:{
+            index:"@"
+        },
+        link:function(scope,element,attr){
+            scope.clicked = false;
+            scope.$on('floatClicked',function(event,data){
+                if(data.index === scope.index) {
+                    scope.clicked = !scope.clicked;
+                    if(data.status)
+                        scope.clicked=  data.status;
+                    let height = scope.clicked ? data.height + 'rem' : '0';
+                    let opacity = scope.clicked ? '1' : '0';
+                    element.css('height', height);
+                    element.css('opacity', opacity);
+                    scope.refresh();
+                }
+
+            });
+
+            // click to close the panel;
+            scope.$on('clicked',function(event,data){
+                if(scope.clicked){
+                    let target =data.target;
+                    let hide = true;
+                    while(target){
+                        if(target === element[0])
+                            hide = false;
+                        target= target.parentElement;
+                    }
+                    if(hide){
+                        element.css('height',0);
+                        element.css('opacity',0);
+                        scope.clicked = false;
+                    }
+                    scope.refresh();
+                }
+
+            });
+
+            // Finish on the click issue
+            scope.$on('force close float',function(event,data){
+                if(data.index === scope.index) {
+                    scope.clicked = false;
+                    element.css('height', '0');
+                    element.css('opacity', '0');
+                    scope.refresh();
+                }
+            })
+
+            // finish on
+            scope.refresh = function(){
+                scope.$emit('float status changed',{index:scope.index, status:scope.clicked});
+            }
+
+        }}
+})
+
 window.addEventListener("popstate", function(e) {
     //浏览器后退按钮监听
 }, false);
@@ -49,6 +109,11 @@ app.directive('paymentProject',function($compile,$rootScope){
 
 
 app.controller('accountCon',function($scope,$rootScope,$window,$location,dataManager) {
+    $scope.onClick = function(event){
+        let target = event.target;
+        $scope.$broadcast('clicked',{target:target});
+    };
+
     $scope.initialize = function(){
         if($scope.initialized)
             return;
@@ -113,7 +178,6 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
     $scope.pid = 1;
     $scope.maxCount = 0;
     $scope.maxPage = 1;
-    $scope.filter = false;
     $scope.options = [
         {name:"Payment",id:"payment"},
         {name:"Collection",id:"collection"}
@@ -125,6 +189,65 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
         {name:"PART",index:3},
     ];
     $scope.search = {};
+    $scope.company = null;
+    $scope.searchName = "";
+    $scope.accountList = [];
+
+    $scope.searchCompany = function($event){
+        $scope.accountList = [];
+        $scope.companyRequesting = true;
+        let height = $scope.accountList.length*1.5;
+        let showBoard = $scope.searchName.length >0;
+        let element = document.getElementById('companySearchBoard');
+        if(element){
+            if(height <= 5)
+                height = 5;
+            $rootScope.$broadcast('floatClicked', {target:element,index:'account',status:showBoard,height:height,status:showBoard});
+        }
+        dataManager.requestData('account','company search finished',{search:{name:{$regex:$scope.searchName,$options:"g"}},cond:{limit:10}});
+    };
+
+    $scope.clearCompany = function($event){
+        $scope.company = null;
+        if($scope.search.account !== undefined)
+            delete $scope.search.account;
+        let element = document.getElementById('currentCompanyName');
+        if(element)
+            element.value = "";
+        $scope.refreshPage();
+    };
+
+    $scope.selectCompany = function(account,event){
+        $scope.company = account;
+        let element = document.getElementById('currentCompanyName');
+        if(element){
+            element.value = $scope.company.name;
+            $scope.search.account = $scope.company._id;
+        }
+        $rootScope.$broadcast('force close float', {index:'account'});
+        $scope.refreshPage();
+    }
+
+    $scope.$on('float status changed',function(event,data){
+        if(data.index === 'status'){
+            let element = document.getElementById('statusButton');
+            element.style.backColor = data.status? 'rgba(215,215,215,0.4)':'white';
+            element.style.color = data.status? 'rgba(152,75,67,1)':'inherit';
+            element.style.borderColor = data.status? 'rgba(152,75,67,1)':'rgba(185,185,185,1)';
+        }
+    })
+
+    $scope.$on('company search finished',function(event,data){
+        $scope.companyRequesting = false;
+        if(!data.success){
+            alert(data.message);
+        }else{
+            $scope.accountList = data.result;
+            let element = document.getElementById('companySearchBoard');
+            if(element)
+                element.style.height = (data.result.length*1+0.5)+'rem';
+        }
+    });
 
     $scope.selectStat = function(index,event){
         if($scope.requesting)
@@ -145,7 +268,6 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
             ele.style.color = 'inherit';
             origin.splice(origin.indexOf(index),1);
         }
-
         if($scope.search.status && $scope.search.status.$in.length === 0)
             delete $scope.search.status;
         $scope.refreshPage();
@@ -203,11 +325,12 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
             alert(data.message);
     });
 
-    $scope.switchFilter = function(){
+    $scope.switchFilter = function(event){
+        event.preventDefault();
+        event.stopPropagation();
         let element = document.getElementById('filterBoard');
         if(element){
-            $scope.filter = !$scope.filter;
-            element.style.height = $scope.filter? '8rem' : '0';
+            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:8});
         }
     }
 

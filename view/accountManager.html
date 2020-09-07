@@ -74,15 +74,15 @@
 <div id="main">
     <div class="topBtnRow"><button onclick="showPageCover(22)" class="addDocBtn">添加客户</button></div>
     <table id="projectTable">
-        <tr><td>Name</td><td>Alias</td><td>Parent</td><td style="text-align:center;">Priority</td><td style="text-align:center;">Country</td><td>Website</td><td>Description</td></tr>
+        <tr><td>Name</td><td>Parent</td><td style="text-align:center;">Priority</td><td style="text-align:center;">Country</td><td>Website</td><td>Address</td><td>Description</td></tr>
         <tr ng-repeat="entry in contents.entries">
-                <td>{{entry.name}}</td>
-                <td>{{entry.alias}}</td>
+            <td style="display:flex;flex-direction:column;"><span>{{entry.name}}</span><span>{{entry.alias}}</span></td>
                 <td account-parent account="{{entry.parent}}"></td>
                 <td style="text-align:center;">{{entry.priority }}</td>
                 <td style="text-align:center;">{{entry.country | countryCode}}</td>
                 <td><a href="{{ 'http://' + entry.official}}" target="_blank">{{entry.official}}</a></td>
-                <td content-format contents="{{entry.description}}"></td>
+                 <td address-format account="{{entry.address}}" style="max-width:6rem;"></td>
+                <td content-format contents="{{entry.description}}" style="max-width:6rem;"></td>
         </tr>
     </table>
     <div class="pageCount" style="margin-top:auto;margin-bottom:1.5rem;display:flex;flex-direction:row;padding-top:3rem;">

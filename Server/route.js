@@ -213,7 +213,16 @@ let handler = {
         accountModel.estimatedDocumentCount().exec()
             .then(function(count){
                 render.contents.maxCount = count;
-                return accountModel.find({},null,{sort:{name:1},limit:25,skip:pageId*25}).populate('').exec();
+                return accountModel.aggregate([
+                    {$match:{}},
+                    {$sort:{name:1}},
+                    {$skip:pageId*25},
+                    {$limit:25},
+                    {$lookup:{from:'accountAddress',localField:'_id',foreignField:'account',as:"address"}},
+                    {$unwind:{path: "$address", preserveNullAndEmptyArrays: true }},
+                    {$lookup:{from:'account',localField:'parent',foreignField:'_id',as:"parent"}},
+                    {$unwind:{path: "$parent", preserveNullAndEmptyArrays: true }},
+                ]).exec();
             })
             .then(function(entries){
                 render.contents.entries = entries;

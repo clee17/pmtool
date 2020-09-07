@@ -368,14 +368,14 @@ app.directive('accountParent',function(){
             if(scope.account && scope.account !== "")
                 scope.account = JSON.parse(scope.account);
             if(!scope.account)
-                element.css('');
+                element.html('');
             if(typeof scope.account !== "string"){
                 let parentLink = "/account/info?id="+account._id;
                 let accountName = account.name;
                 let innerHTML = '<a href="'+parentLink+'">'+accountName+'</a>';
-                element.css(innerHTML);
+                element.html(innerHTML);
             }else
-                element.css('');
+                element.html('');
         }}
 });
 

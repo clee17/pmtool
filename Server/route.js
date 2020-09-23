@@ -548,6 +548,7 @@ let handler = {
 
 
     upload:function(req,res){
+        console.log('entered');
         let files = req.files;
         if(req.files[0]){
             let receivedStr = req.body.data;
@@ -562,10 +563,20 @@ let handler = {
             let typeList = ['NDA','SOW','SLA','Royalty','invoice','reference','receipt','','','',''];
             let prefix = prefixList[type] || '';
             let typeIndicator = typeList[type] || '';
+            if(typeIndicator.length >0)
+                typeIndicator += '_';
             let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
-            let newLink  =  typeIndicator+'_'+files[0].filename + ext;
-            if(req.body.filename)
-                newLink = typeIndicator+req.body.filename+ext;
+            let filename = req.body.filename? req.body.filename : files[0].filename;
+            let date = Date.now();
+             date = new Date(date);
+             let year = date.getFullYear();
+             let month = date.getMonth();
+             let day = date.getDate();
+             let hour = date.getHours();
+             let min = date.getMinutes();
+             let secs=  date.getSeconds();
+             let timeStamp = year.toString()+month.toString()+day.toString()+hour.toString()+min.toString()+secs.toString();
+            let newLink  =  typeIndicator+timeStamp+'_'+filename+ ext;
             let path = systemSetting.DocLocalPath;
             if(path.charAt(path.length-1) !== '/')
                 path += '/';
@@ -580,7 +591,6 @@ let handler = {
                 let updateLink = "";
                 if(err){
                     fs.unlink(files[0].path,function(err){
-                        console.log(err);
                     });
                     throw Error(err.message);
                 }else{
@@ -590,11 +600,10 @@ let handler = {
                     received.search.link = updateLink;
                 else
                     received.link = updateLink;
-				if(received.search)
+				if(received.search && type <10)
 					received.search.type = type;
-				else 
+				else if(type <10)
 					received.type = type;
-				
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
                 handler.save(req,res);
             });

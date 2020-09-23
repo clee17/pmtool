@@ -262,6 +262,16 @@ app.filter('positionLink',function($filter){
     }
 })
 
+app.filter('positionAndLink',function($filter){
+    return(function(release){
+        if(release.link && release.link.length >1){
+            return 'assets/'+release.link;
+        }else{
+            return $filter('positionLink')(release.position);
+        }
+    })
+})
+
 app.filter('positionIcon',function($filter){
     return function(position){
         if(typeof position !== 'object'){

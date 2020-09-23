@@ -147,16 +147,17 @@
             </div>
             <div style="padding-left:2rem;padding-right:2rem;padding-top:0.5rem;" content-format contents="{{comment.comment}}">{{comment.comment}}</div>
         </div>
+        <div style="margin:auto;" ng-show="requesting"> <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i></div>
         <div class="pageCount" style="margin-top:1rem;margin-bottom:0.5rem;">
-            <div ng-if="startIndex>1"><button ng-click="goToPage(1)">1</button></div>
+            <div ng-if="startIndex>1"><button ng-click="goToCommentPage(1)">1</button></div>
             <div ng-if="startIndex>2">…</div>
             <div ng-repeat="x in [].constructor(7) track by $index">
                 <button ng-if="$index+startIndex <= page"
-                        ng-click="goToPage($index+startIndex)"
+                        ng-click="goToCommentPage($index+startIndex)"
                         ng-disabled="pageId - startIndex === $index">{{$index+startIndex}}</button></div>
             <div ng-if="startIndex+7 < pageMax">…</div>
             <div ng-if="startIndex+7 <= page">
-                <button ng-click="goToPage(pageMax)">{{pageMax}}</button>
+                <button ng-click="goToCommentPage(pageMax)">{{pageMax}}</button>
             </div>
         </div>
         <div style="display:flex;flex-direction:row;margin-top:2rem;">
@@ -197,7 +198,7 @@
                 <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;" content-format contents={{release.description}}></div></td>
                 <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
                 <td valign="top" style="text-align:center">
-                    <a href="{{release.position | positionLink}}" target="_blank"><img src="{{release.position | positionIcon}}" style="width:1.2rem;"></a>
+                    <a href="{{release | positionAndLink}}" target="_blank"><img src="{{release.position | positionIcon}}" style="width:1.2rem;"></a>
                 </td>
                 <td></td> 
                 <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event)"><i class="fa fa-angle-down"></i></button></td>

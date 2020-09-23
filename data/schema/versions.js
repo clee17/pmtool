@@ -11,5 +11,6 @@ module.exports = new mongoose.Schema({
     date:{type:Date,default:Date.now()},
     developers:[{type:mongoose.Schema.ObjectId,ref:'user',default:null}],
     description:{type:String,default:""},
+    link:{type:String,default:""},
     position: {type:mongoose.Schema.ObjectId,ref:'position',default:null},
 });

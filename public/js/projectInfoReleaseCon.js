@@ -99,13 +99,10 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         $rootScope.submitType = type;
         let innerHTML = '<table class="pageCoverTable">'+
             '<tr><td>Release Version:</td><td><input style="width:2rem" ng-model="newRelease.version.main">:<input style="width:3rem;" ng-model="newRelease.version.update">:<input style="width:4rem;" ng-model="newRelease.version.fix"></td></tr>'+
-            '<tr><td>Positon:</td><td>' +
-            '<input ng-model="newRelease.position" ng-show="newRelease.source !=='+"'0'"+'">' +
-            '<input type=file id="fileUpload" ng-show="newRelease.source ==='+"'0'"+'">' +
-            '</td></tr>' +
-            '<tr><td>Source:</td><td><select style="width:4rem;" ng-model="newRelease.source" ng-options="source.value as source.name for source in sources"></select></td></tr>'+
-            '<tr><td>Developers:</td><td style="display:flex;flex-direction:row;">' +
-            '<select ng-model="addDeveloper" ng-options="developer._id as developer.name for developer in developers"></select>' +
+            '<tr><td >File:</td><td><input type=file id="fileUpload"></td></tr>' +
+            '<tr><td>Developers:</td>' +
+            '<td style="display:flex;flex-direction:row;height:2rem;">' +
+            '<select ng-model="addDeveloper" style="margin-top:auto;margin-bottom:auto;" ng-options="developer._id as developer.name for developer in developers"></select>' +
             '<button class="simpleBtn" style="margin-left:1.5rem;" ng-show="addDeveloper != \'0\'" ng-click="newDeveloper()">ADD</button></td></tr>' +
             '<tr ng-repeat="developer in newRelease.developers" ><td colspan="2">' +
             '<button style="margin-right:1rem;" class="simpleBtn" ng-click="removeDeveloper(developer._id)">×</button><span style="margin-right:2rem;">{{developer.name}}</span><span>{{developer.mail}}</span>'+
@@ -144,9 +141,9 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         updateSave.date = Date.now();
         updateSave.priority = Number(updateSave.priority);
         updateSave.project = $rootScope.project._id;
-        $scope.updateSave = JSON.parse(JSON.stringify(updateSave));
         delete updateSave.source;
         delete updateSave.position;
+        $scope.updateSave = JSON.parse(JSON.stringify(updateSave));
         let searchField = {
             project:updateSave.project,
             "version.main":updateSave.version.main,
@@ -162,35 +159,26 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         }else if(!data.success){
             alert(data.message);
         }else {
-            console.log(data.result);
-            if(data.result.length > 0)
+            if(data.result.length > 0) {
+                $rootScope.saving = false;
                 alert('该版本已经存在，请修改信息。');
-            else{
-                let source = Number($scope.updateSave.source);
-                let dataDetail = {search:{link:$scope.updateSave.position,source:source},updateExpr:{updated:Date.now()}};
-                if(source === 0){
-                    let formData = new FormData();
-                    let upload = document.getElementById('fileUpload');
-                    let files = [];
-                    if(upload && upload.files)
-                        files = upload.files;
-                    if(files.length<=0){
-                        alert('you must upload a release file');
-                        return;
-                    }
-                    formData.append('file', files[0]);
-                    formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(dataDetail))));
-                    formData.append('origin','1');
-                    formData.append('type','11');
-                    dataManager.uploadFile('/upload/position','version position saved',formData)
-                }else{
-                    if($scope.updateSave.position.length ===0){
-                        alert('you must provide the position of the release file');
-                        return;
-                    }
-                    dataManager.saveData('position','version position saved',dataDetail);
+            }else{
+                let dataDetail = {project:$scope.updateSave.project,search:$scope.updateSave,updateExpr:{updated:Date.now()}};
+                let formData = new FormData();
+                let upload = document.getElementById('fileUpload');
+                let files = [];
+                if(upload && upload.files)
+                    files = upload.files;
+                if(files.length<=0){
+                    alert('you must upload a release file');
+                    return;
                 }
-
+                formData.append('file', files[0]);
+                formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(dataDetail))));
+                formData.append('origin','1');
+                formData.append('type','11');
+                formData.append('filename',$scope.updateSave.version.main+'.'+$scope.updateSave.version.update+'.'+$scope.updateSave.version.fix);
+                dataManager.uploadFile('/upload/version','version saved',formData)
             }
         }
     });

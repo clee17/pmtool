@@ -2,12 +2,16 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
     $scope.comments = [];
     $scope.contacts = [];
     $scope.userInfo = $rootScope.user;
-    $scope.pageId= 1;
+    $scope.page = 1;
+    $scope.pageId = 1;
     $scope.maxCount = 1;
-    $scope.gotoPage = function(index){
-        if(index <= page && index >=1 ){
+    $scope.requesting = true;
+
+    $scope.goToCommentPage = function(index){
+        if(index <= $scope.page && index >=1 ){
             $scope.pageId = index;
-            dataManager.requestData('projectComment','comments received',{populate:'user',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*$scope.pid-1,limit:35}});
+            $scope.reqeusting = true;
+            dataManager.requestData('projectComment','comments received',{populate:'user',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*($scope.pageId-1),limit:35}});
         }
     }
 
@@ -34,6 +38,7 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
     }
 
     $scope.$on('comments received',function(event,data){
+        $scope.requesting = false;
         if(!data.success){
             alert(data.message);
         }else{
@@ -144,7 +149,7 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
 
     $scope.initialize = function(){
         $scope.projectUpdate.status = $rootScope.project.status.toString();
-        dataManager.requestData('projectComment','comments received',{populate:'user',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*$scope.pid-1,limit:35}});
+        dataManager.requestData('projectComment','comments received',{populate:'user',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*($scope.pageId-1),limit:35}});
         if($rootScope.project.account)
             dataManager.requestData('contacts','contacts received',{populate:'company',search:{company:$rootScope.project.account._id},cond:{sort:{name:1}}});
         else

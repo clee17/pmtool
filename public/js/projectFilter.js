@@ -284,6 +284,17 @@ app.filter('positionIcon',function($filter){
     }
 })
 
+app.filter('positionAndLinkIcon',function($filter){
+    return(function(release){
+        if(release.link && release.link.length >1){
+            return $filter('linkIcon')(release.link);
+        }else {
+            return $filter('positionIcon')(release.position);
+        }
+    })
+})
+
+
 app.filter('docIcon',function($filter){
     return function(doc){
         if(typeof doc !== 'object'){

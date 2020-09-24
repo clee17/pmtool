@@ -198,7 +198,7 @@
                 <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;" content-format contents={{release.description}}></div></td>
                 <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
                 <td valign="top" style="text-align:center">
-                    <a href="{{release | positionAndLink}}" target="_blank"><img src="{{release.position | positionIcon}}" style="width:1.2rem;"></a>
+                    <a href="{{release | positionAndLink}}" target="_blank"><img src="{{release | positionAndLinkIcon}}" style="width:1.2rem;"></a>
                 </td>
                 <td></td> 
                 <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event)"><i class="fa fa-angle-down"></i></button></td>

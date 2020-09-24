@@ -15,7 +15,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
         }
     }
 
-    $scope.expandData = function(event){
+    $scope.expandData = function(event,desc){
         let target = event.target;
         if(target.nodeName === 'I')
             target = target.parentNode;
@@ -36,17 +36,20 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
             let contents = root.children[1];
             let original = contents.children[0];
             let newDiv  = document.createElement('DIV');
+            desc = desc.replace(/\n/g,'<br>');
             if(newDiv)
-                newDiv.innerHTML = contents. innerHTML;
-            newDiv.style.width = contents.style.width;
+                newDiv.innerHTML = desc;
+            newDiv.style.width = '25rem';
             newDiv.style.position = "absolute";
             newDiv.style.left = '0';
             newDiv.style.right = '0';
-            root.appendChild(newDiv);
+            newDiv.style.background = 'pink';
+            newDiv.style.opacity = '0.8';
+            document.body.appendChild(newDiv);
             newDiv.style.opacity = '0';
-            original.style.height = newDiv.scrollHeight+'rem';
-            original.style.webkitLineClamp = '100';
-            root.removeChild(newDiv);
+            console.log(original.offsetHeight);
+            original.style.height = newDiv.scrollHeight+10+6+'px';
+            document.body.removeChild(newDiv);
             targetElement.html('<i class="fa fa-angle-up"></i>');
         }
     }

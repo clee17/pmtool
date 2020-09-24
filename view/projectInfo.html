@@ -195,13 +195,15 @@
         </tr>
         <tr ng-repeat="release in versions" class="entry">
                 <td valign="top"style="line-height:1.5rem;height:1.5rem;">{{release.version.main}}.{{release.version.update}}.{{release.version.fix}}</td>
-                <td valign="top"><div class="singleLine" style="max-width:32rem;margin:0;" content-format contents={{release.description}}></div></td>
+                <td valign="top"><div  style="width:25rem;min-width:25rem;margin:0;text-overflow:ellipsis;height:1.5rem;word-break:break-all;overflow:hidden;"
+                                       content-format
+                                       contents={{release.description}}></div></td>
                 <td valign="top">{{release.date | date:'&y-&m-&d &h:&i:&s'}}</td>
                 <td valign="top" style="text-align:center">
                     <a href="{{release | positionAndLink}}" target="_blank"><img src="{{release | positionAndLinkIcon}}" style="width:1.2rem;"></a>
                 </td>
                 <td></td> 
-                <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event)"><i class="fa fa-angle-down"></i></button></td>
+                <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event,release.description)"><i class="fa fa-angle-down"></i></button></td>
         </tr>
         </table>
     </div>

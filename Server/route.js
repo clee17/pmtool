@@ -9,7 +9,7 @@ var express = require('express'),
     redisStore = require('connect-redis')(session),
     redisClient  = redis.createClient('6379', '127.0.0.1'),
     mongoose= require('mongoose'),
-    LZString = require('lz-string');
+    LZString = require('../public/lib/lz-string.min.js');
 
 
 var efforts = require('./../data/model/efforts'),
@@ -294,7 +294,7 @@ let handler = {
             })
             .then(function(count){
                 render.total = count;
-                return accountModel.find({}).exec();
+                return accountModel.find({},null,{sort:{name:1}}).exec();
             })
             .then(function(accounts){
                 render.accounts = accounts;
@@ -302,8 +302,11 @@ let handler = {
                 res.render('docManager.html',render);
             })
             .catch(function (err) {
+                console.log(err);
                 render.err = err;
-                res.render('docManager.html',render);
+                render.title = err.message;
+                render.message =err.message;
+                res.render('error.html',render);
             });
     },
 
@@ -422,13 +425,24 @@ let handler = {
     },
 
     search:function(req,res){
-        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let receivedStr = LZString.decompressFromBase64(req.body.data);
+        let received = null;
+        let err = '';
+        try{
+            received = JSON.parse(unescape(receivedStr));
+        }catch(err){
+            err  = err.message;
+        }
+
         let tableId = req.params.tableId;
 
         if(!tableList[tableId]){
             handler.renderError(res,'no valid tableId received');
             return;
+        }else if(!received){
+            handler.renderError(res,err);
         }
+
         let search = {};
         let cond = null;
         search = received.search? received.search : received;

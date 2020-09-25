@@ -275,7 +275,7 @@ var changeAccount = function(target){
     let data = {
         account:target.value
     }
-    xmlhttp.send("data="+LZString.compressToBase64(JSON.stringify(data)));
+    xmlhttp.send("data="+LZString.compressToBase64(escape(JSON.stringify(data))));
 }
 
 var changeSource = function(target){

@@ -66,8 +66,7 @@ app.service("dataManager",function($http,$rootScope){
     manager.countPage = function(tableId,data){
         if(!data)
             data = {};
-        data.index = tableId;
-        manager.request('/countInfo/',"countReceived",data);
+        manager.request('/countInfo/',"countReceived", {search:data,index:tableId});
     };
 
     manager.vagueSearch = function(tableId,value){

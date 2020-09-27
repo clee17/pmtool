@@ -435,3 +435,96 @@ body{
 .closeButtonInline:hover{
     color:rgba(152,75,67,1);
 }
+
+.header_button{
+    background:none;
+    border:solid 1px rgba(185,185,185,1);
+    color:inherit;
+    transition:background 0.25s, border-bottom 0.15s;
+    border-radius:5px;
+    padding:0.3rem;
+    margin-top:0.3rem;
+    margin-bottom:0.3rem;
+
+}
+
+.header_button:hover{
+    background:rgba(215,215,215,0.4);
+    color:rgba(152,75,67,1);
+    border: solid 1px rgba(152,75,67,1);
+    cursor:pointer;
+}
+
+.closeBtnInline{
+    border:none;
+    background:none;
+    color:rgba(55,55,55,1);
+}
+
+.closeBtnInline:hover{
+    color:rgba(152,75,67,1);
+    cursor:pointer;
+}
+
+
+.float-board{
+    position:absolute;
+    transition:height 0.15s ease-out, opacity 0.25s;
+    height:0;
+    opacity:0;
+    z-index:99;
+    outline:solid 1px rgba(180,180,180,1);
+    outline-offset:-1px;
+    background:white;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border-radius:5px;
+}
+
+.float-board >button{
+    text-align:left;
+    border:none;
+    background:white;
+    transition:background 0.25s;
+    padding-left:1.5rem;
+    display:flex;
+    flex-direction:row;
+}
+
+
+#filterBoard>button{
+    height:2rem;
+    line-height:2rem;
+}
+
+#filterBoard >button i{
+    margin-right:1.5rem;
+    margin-left:auto;
+    line-height:2rem;
+}
+
+#filterBoard >button:hover{
+    background:rgba(152,75,67,0.4);
+    color:rgba(152,75,67,1);
+    cursor:pointer;
+}
+
+
+#companySearchBoard {
+    width:10rem;
+    left: 8.5rem;
+    top: -10px;
+    padding-top:0.5rem;
+}
+
+#companySearchBoard >button{
+    height:1rem;
+    line-height:1rem;
+}
+
+#companySearchBoard >button:hover{
+    background:rgba(215,215,215,0.4);
+    cursor:pointer;
+}
+

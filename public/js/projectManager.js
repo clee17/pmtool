@@ -9,6 +9,99 @@ app.directive('infoReceiver',function($rootScope){
     }
 });
 
+app.directive('filterCheck',function(){
+    return{
+        restrict:"C",
+        scope:{
+            index:"@",
+            id:"@",
+        },
+        link:function(scope,element,attr){
+            scope.isChecked = function(){
+                let rootScope = scope.$parent.$parent;
+                if(typeof scope.id !== 'number')
+                    scope.id = Number(scope.id);
+                if(rootScope[scope.index].indexOf(scope.id) >=0){
+                    let children = element.children();
+                   children[1].style.display = 'inline-block';
+                   element.css('color','rgba(152,75,67,1)');
+                }else{
+                    element.css('color','inherit');
+                    let children = element.children();
+                    children[1].style.display = 'none';
+                }
+
+            };
+
+            scope.isChecked();
+
+            scope.$on('filter refreshed',function(event,data){
+                scope.isChecked();
+            });
+        }
+    }
+})
+
+app.directive('floatBoard',function(){
+    return{
+        restrict:"C",
+        scope:{
+            index:"@"
+        },
+        link:function(scope,element,attr){
+            scope.clicked = false;
+            scope.$on('floatClicked',function(event,data){
+                if(data.index === scope.index) {
+                    scope.clicked = !scope.clicked;
+                    if(data.status)
+                        scope.clicked=  data.status;
+                    let height = scope.clicked ? data.height + 'rem' : '0';
+                    let opacity = scope.clicked ? '1' : '0';
+                    element.css('height', height);
+                    element.css('opacity', opacity);
+                    scope.refresh();
+                }
+
+            });
+
+            // click to close the panel;
+            scope.$on('clicked',function(event,data){
+                if(scope.clicked){
+                    let target =data.target;
+                    let hide = true;
+                    while(target){
+                        if(target === element[0])
+                            hide = false;
+                        target= target.parentElement;
+                    }
+                    if(hide){
+                        element.css('height',0);
+                        element.css('opacity',0);
+                        scope.clicked = false;
+                    }
+                    scope.refresh();
+                }
+
+            });
+
+            // Finish on the click issue
+            scope.$on('force close float',function(event,data){
+                if(data.index === scope.index) {
+                    scope.clicked = false;
+                    element.css('height', '0');
+                    element.css('opacity', '0');
+                    scope.refresh();
+                }
+            })
+
+            // finish on
+            scope.refresh = function(){
+                scope.$emit('float status changed',{index:scope.index, status:scope.clicked});
+            }
+
+        }}
+})
+
 app.directive('projectStatus',function(){
     return{
         restrict:"A",
@@ -67,13 +160,93 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         pageId:1,
         pageMax:1,
         goToPage:function(index){
-            let href = window.location.href;
-            if(href.indexOf('?')>0)
-                href=  href.substring(0,href.indexOf('?'));
-            href+='?pid='+index;
-            window.location.href = href;
+            $scope.pageIndex.pageId = index;
+            $scope.searchProject();
+            $scope.countProject();
         }
     }
+
+    $scope.company = null;
+
+    $scope.selectedStatus = [
+        0,1,2,3,4,6
+    ];
+
+    $scope.status = [
+        {index:0,name:"opportunities"},
+        {index:1,name:"business"},
+        {index:2,name:"development"},
+        {index:3,name:"delivery"},
+        {index:4,name:"maintenance"},
+        {index:5,name:"closed"},
+        {index:6,name:"re-open"}
+    ];
+
+    $scope.searchName = "";
+
+    $scope.accountList = [];
+
+    $scope.selectFilter = function(index,id,event){
+        if(!$scope[index])
+            return;
+        let fIndex = $scope[index].indexOf(id);
+        if(fIndex >=0 ){
+            $scope[index].splice(fIndex,1);
+        }else{
+            $scope[index].push(id);
+        }
+        $scope.searchProject();
+        $scope.countProject();
+        $scope.$broadcast('filter refreshed',null);
+    };
+
+    $scope.onClick = function(event){
+        let target = event.target;
+        $scope.$broadcast('clicked',{target:target});
+    };
+
+    $scope.searchCompany = function(){
+        $scope.accountList = [];
+        $scope.companyRequesting = true;
+        let height = $scope.accountList.length*1.5;
+        let showBoard = $scope.searchName.length >0;
+        let element = document.getElementById('companySearchBoard');
+        if(element){
+            if(height <= 5)
+                height = 5;
+            $rootScope.$broadcast('floatClicked', {target:element,index:'account',status:showBoard,height:height,status:showBoard});
+        }
+        let request = {search:{name:{$regex:$scope.searchName,$options:"g"}},cond:{limit:10}};
+        dataManager.requestData('account','company search finished',request);
+    }
+
+    $scope.selectCompany = function(account,event){
+        $scope.company = account;
+        let element = document.getElementById('currentCompanyName');
+        if(element){
+            element.value = $scope.company.name;
+            $scope.search.account = $scope.company._id;
+        }
+        $rootScope.$broadcast('force close float', {index:'account'});
+        $scope.searchProject();
+        $scope.countProject();
+    };
+
+    $scope.clearCompany = function($event){
+        $scope.company = null;
+        if($scope.search.account !== undefined)
+            delete $scope.search.account;
+        let element = document.getElementById('currentCompanyName');
+        if(element)
+            element.value = "";
+        $scope.searchProject();
+        $scope.countProject();
+    };
+
+    $scope.search = {
+        owner:$scope.userId,
+        status:{$in:$scope.selectedStatus}
+    };
 
     $scope.logout = function(){
         dataManager.requestLogout({_id:$rootScope.userId});
@@ -83,7 +256,6 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         if(!data.success){
             alert(data.message);
         }else{
-            console.log('entered');
             $window.location.reload();
         }
     });
@@ -107,6 +279,24 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
     };
     $scope.goToProject = function(id){
         $window.location.href= '/project/info?id='+id;
+    }
+
+    $scope.searchProject = function(){
+        if($scope.requesting)
+            return;
+        $scope.requesting = true;
+        console.log($scope.search);
+        dataManager.requestData('project','projects received',
+            {search:$scope.search,cond:{sort:{schedule:1},
+                    skip:($scope.pageIndex.pageId-1)*25,limit:25},
+                populate:'account delivery'});
+    };
+
+    $scope.countProject = function(){
+        if($scope.counting)
+            return;
+        $scope.counting = true;
+        dataManager.countPage('project',$scope.search);
     }
 
     $scope.newProject = {
@@ -162,6 +352,15 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         dataManager.saveData('project','project added',updateQuery);
     }
 
+    $scope.switchFilter = function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        let element = document.getElementById('filterBoard');
+        if(element){
+            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:14});
+        }
+    };
+
     $scope.$on('project added',function(event,data){
         if(!data.success){
             alert(data.message);
@@ -188,7 +387,42 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         }
     });
 
+    $scope.$on('projects received',function(event,data){
+        $scope.requesting = false;
+        if(data.success){
+            $scope.contents.entries = data.result;
+        }else{
+            alert(data.message);
+        }
+    });
+
+    $scope.$on('countReceived',function(event,data){
+        $scope.counting = false;
+        if(data.success){
+           $scope.maxCount = data.maxCount;
+            $scope.pageIndex.pageMax = Math.ceil($scope.maxCount/25);
+            $scope.pageIndex.startIndex = $scope.pageIndex.pageId - 7;
+            if($scope.pageIndex.startIndex<1)
+                $scope.pageIndex.startIndex = 1;
+        }else{
+            alert(data.message);
+        }
+    });
+
+    $scope.$on('company search finished',function(event,data){
+        $scope.companyRequesting = false;
+        if(!data.success){
+            alert(data.message);
+        }else{
+            $scope.accountList = data.result;
+            let element = document.getElementById('companySearchBoard');
+            if(element)
+                element.style.height = (data.result.length*1+0.5)+'rem';
+        }
+    });
+
     $scope.initialize = function(){
+        $scope.maxCount = $scope.contents.maxCount;
         $scope.pageIndex.pageMax = Math.ceil($scope.contents.maxCount/25);
         let pageId = 1;
         let index = window.location.search.indexOf('pid=');
@@ -203,5 +437,8 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         $scope.pageIndex.startIndex = $scope.pageIndex.pageId - 7;
         if($scope.pageIndex.startIndex<1)
             $scope.pageIndex.startIndex = 1;
+        $scope.search.owner = $scope.userId;
+        $scope.searchProject();
+        $scope.countProject();
     }
 });

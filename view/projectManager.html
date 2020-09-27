@@ -37,13 +37,13 @@
     .topBtnRow{
         display:flex;
         flex-direction:row;
-        margin-left:auto;
-        margin-right:8rem;
         margin-top:1rem;
     }
 </style>
 <body ng-app="dashboard"
-      ng-controller="projectDashboard">
+      ng-controller="projectDashboard"
+      ng-click="onClick($event)"
+>
 <info-receiver  ng-init="contents = '<%= encodeURIComponent(JSON.stringify(contents)) %>';
                          userId ='<%= user._id %>'"></info-receiver>
 <div id="header">
@@ -56,7 +56,30 @@
     </div>
 </div>
 <div id="main">
-    <div class="topBtnRow"><button ng-click="addProject()" class="addDocBtn">添加项目</button></div>
+    <div class="topBtnRow">
+        <button id="statusButton" class="header_button" ng-click="switchFilter($event)" style="margin-left:4rem;height:2rem;margin-top:auto;margin-bottom:auto;">STATUS</button>
+        <div style="position:relative;margin:auto;margin-left:0.5rem;">
+            <input id="currentCompanyName" placeholder="company name" ng-model="searchName" ng-change="searchCompany()" style="padding-left:4px;">
+            <button style="position:absolute;right:5px; top:2px;" class="closeBtnInline" ng-show="company !== null" ng-click="clearCompany()"><i class="fas fa-times-circle"></i></button>
+        </div>
+        <button ng-click="addProject()" class="addDocBtn" style="margin-right:8rem;">添加项目</button>
+    </div>
+    <div style="height:1rem;position:relative;">
+        <div id="filterBoard" class="float-board" index="status" style="margin-left:4rem;width:10rem;margin-top:-8px;">
+            <button ng-repeat="stat in status"
+                    class="filter-check"
+                    id="{{stat.index}}" index="selectedStatus"
+                    ng-click="selectFilter('selectedStatus',stat.index,$event)">
+                <span>{{stat.name}}</span>
+                <i class="fas fa-check" style="margin-left:auto;margin-right:0.5rem;"></i>
+            </button>
+        </div>
+        <div id="companySearchBoard" class="float-board" index="account" style="margin-left:0;margin-top:0;padding-left:5px;">
+            <i class="fa fa-spinner fa-spin" style="margin:auto;" ng-show="companyRequesting"></i>
+            <button ng-repeat="account in accountList" ng-click="selectCompany(account,$event)">{{account.name}}</button>
+        </div>
+    </div>
+    <div style="margin-left:4rem;pointer-events:auto;height:1.5rem;">Total: {{maxCount}} Records</div>
     <table id="projectTable">
         <tr><td>Account</td><td>End Customer</td><td>Project name</td>
             <td>priority</td><td>schedule</td><td>product</td><td>owner</td><td>status</td><td>established</td></tr>
@@ -65,7 +88,6 @@
             ng-mouseleave="hoverPlink($event,false)"
             ng-click="goToProject(entry._id)"
             project-status schedule="{{entry.schedule}}" status="{{entry.status}}">
-            <a href="{{'/pm/info?id='+entry._id}}">
                 <td>{{entry.account | account}}</td>
                 <td>{{entry.endCustomer | account}}</td>
                 <td>{{entry.name}}</td>
@@ -75,8 +97,8 @@
                 <td>{{entry.owner.name }} </td>
                 <td>{{entry.status | status }} </td>
                 <td>{{entry.date | date:'&y/&m/&d'}}</td>
-            </a>
         </tr>
+        <tr ng-show="contents.entries.length ===0"><td colspan="9" style="text-align:center;">no projects found</td></tr>
     </table>
     <div class="pageCount" style="margin-top:auto;margin-bottom:1.5rem;display:flex;flex-direction:row;padding-top:3rem;">
         <div ng-if="pageIndex.startIndex>1"><button ng-click="pageIndex.goToPage(1)">1</button></div>

@@ -231,7 +231,7 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
     $scope.initialize = function(){
         let data = {};
         let regExp = new RegExp("R&D","i");
-        data.search = {department:{$regex: {value:"R&D",cond:"i"}}};
+        data.search = {department:{$regex: "R&D",$options:"i"}};
         data.cond = {sort:{name:1}};
         dataManager.requestData('user','developers received',data);
         dataManager.requestData('version','versions received',{search:{project:$rootScope.project._id},populate:'position'});

@@ -96,13 +96,14 @@ let handler = {
         pageId--;
         let render = {};
         render.contents = {};
-        let owner = {owner:req.session.user._id};
+        let search = {owner:req.session.user._id};
         if(req.session.user.title === 'CEO')
-            owner = {};
-        projectModel.find(owner,null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
+            search = {};
+        search.status = {$in:[1,2,3,4,6]};
+        projectModel.find(search,null,{sort:{schedule:1},limit:25,skip:pageId*25}).populate('account endCustomer contacts delivery suppliers owner').exec()
             .then(function(entries){
                 render.contents.entries = entries;
-                return projectModel.countDocuments(owner).exec();
+                return projectModel.countDocuments(search).exec();
             })
             .then(function(count){
                 render.contents.maxCount = count;
@@ -339,12 +340,16 @@ let handler = {
             search = received.search;
         let tableId = received.index;
         if(!tableList[tableId]){
-            handler.renderError(res,'no valid tableId received');
+            response.message = 'no valid tableId received';
+            response.success = false;
+            handler.sendResult(res,response);
             return;
         }
         tableList[tableId].countDocuments(search,function(err,result){
             if(err){
-                handler.renderError(res,JSON.stringify(err));
+                response.message = err.message;
+                response.success = false;
+                handler.sendResult(res,response);
             }else{
                 response.maxCount = result;
                 response.message = "";
@@ -460,16 +465,6 @@ let handler = {
             message:"unknown failure"
         };
 
-        for(let attr in search){
-            if(!(typeof search[attr] == 'object'))
-                continue;
-            for(let index in search[attr]){
-                if(index == "$regex"){
-                    search[attr][index] = new RegExp(search[attr][index].value, search[attr][index].cond);
-                }
-            }
-        }
-
         tableList[tableId].countDocuments(search).exec()
             .then(function(count){
                 response.count = count;
@@ -562,7 +557,6 @@ let handler = {
 
 
     upload:function(req,res){
-        console.log('entered');
         let files = req.files;
         if(req.files[0]){
             let receivedStr = req.body.data;

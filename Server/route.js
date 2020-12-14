@@ -73,6 +73,20 @@ let handler = {
         res.send(LZString.compressToBase64(JSON.stringify(data)));
     },
 
+    sendError:function(res,response,err){
+        if(response.sent)
+            return;
+        response.sent = true;
+        response.message = err;
+        res.send(LZString.compressToBase64(JSON.stringify(response)));
+    },
+
+    checkOwner:function(req,res){
+        let user = req.session.user;
+        if(user.title !== 'Program Manager')
+            return false;
+    },
+
     index:function(req,res){
         if(!req.session.user){
             res.render('login.html', {});
@@ -326,6 +340,65 @@ let handler = {
             });
     },
 
+    deleteDoc:function(req,res) {
+
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent: false,
+            failedLink: [],
+            message: "unknown failure"
+        };
+
+        let id = received._id;
+        if(!handler.checkOwner(req)){
+            handler.sendError(res,response,'you are not authorized to perform this action');
+            return;
+        }
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            handler.sendError(res, response, "no valid document id received");
+            return;
+        }
+
+        docModel.findOne({_id: id}).exec()
+            .then(function (doc) {
+                 if (!doc) {
+                    handler.sendError(res, response, 'no document found matching this id');
+                } else {
+                    let link = [];
+                    link.push(doc.link);
+                    if (doc.history) {
+                        for (let i = 0; i < doc.history.length; ++i)
+                            link.push(doc.history[i].link);
+                    }
+                    for (let i = 0; i < link.length; ++i) {
+                        let path = systemSetting.DocLocalPath;
+                        if (path.charAt(path.length - 1) !== '/')
+                            path += '/';
+                        try {
+                            fs.unlinkSync(path + link[i])
+                        } catch (e) {
+                            console.log(e);
+                            response.failedLink.push(link[i]);
+                        }
+                    }
+                    return docModel.deleteOne({_id: id}).exec();
+                }
+            })
+            .then(function (err, result) {
+                if (!err && result) {
+                    response.success = true;
+                } else {
+                    response.message = err ? err.message : 'failed due to unknown error';
+                }
+                handler.sendResult(res, response);
+            })
+            .catch(function (e) {
+                response.success = false;
+                response.message = e? e.message : 'failed due to unknown error';
+                handler.sendResult(res,response);
+            })
+    },
+
     count:function(req,res){
         let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let response = {
@@ -541,7 +614,6 @@ let handler = {
         }
 
         tableList[tableId].deleteMany(received.search,function(err,result){
-            console.log(err);
             if(err){
                 response.message = err.message;
                 response.success = false;
@@ -555,6 +627,54 @@ let handler = {
         })
     },
 
+    replaceUpload:function(req,res){
+        let response = {
+            sent:false,
+            success:false,
+            result: null,
+            message:""
+        };
+        let files = req.files;
+        if(req.files[0]) {
+            let receivedStr = req.body.data;
+            receivedStr = decodeURIComponent(req.body.data);
+            let received = JSON.parse(LZString.decompressFromBase64(receivedStr));
+            let search = received.search;
+            let original = received.original;
+            let link, originalLink;
+            link = originalLink = original.link;
+            let originalExt = link.substring(link.lastIndexOf('.'));
+            let ext = files[0].originalname.substring(files[0].originalname.lastIndexOf('.'));
+            if (originalExt !== ext) {
+                link = link.substring(0, link.indexOf(originalExt)) + ext;
+            }
+            let path = systemSetting.DocLocalPath;
+            if(path.charAt(path.length-1) !== '/')
+                path += '/';
+            fs.unlink(path+originalLink, function (err) {
+                if (err) {
+                    handler.sendError(res,response,err.message);
+                } else {
+                    fs.rename(files[0].path, link, function (err) {
+                        if (err)
+                            handler.sendError(res,response,err.message);
+                        else {
+                            if(link !== originalLink){
+                                req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
+                                handler.save(req, res);
+                            }else{
+                                response.result  = {_id:received.search._id,link:link};
+                                response.success =true;
+                                handler.sendResult(res,response);
+                            }
+                        }
+                    })
+                }
+            });
+        }else{
+            handler.sendError(res,response,'something went wrong when processing the file upload replacement');
+        }
+    },
 
     upload:function(req,res){
         let files = req.files;
@@ -562,10 +682,9 @@ let handler = {
             let receivedStr = req.body.data;
             receivedStr = decodeURIComponent(req.body.data);
             let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
-            let type = req.body.type || received.type || 10;
+            let type = req.body.type || received.type || received.search.type || 10;
             if(typeof type !== 'number')
                 type = Number(type);
-			type--;
 			let project = received.project || null;
             let prefixList = ['Legal','Legal','Legal','Royalty','Payments','reference','Payments','','','','Release'];
             let typeList = ['NDA','SOW','SLA','Royalty','invoice','reference','receipt','','','',''];
@@ -588,7 +707,8 @@ let handler = {
             let path = systemSetting.DocLocalPath;
             if(path.charAt(path.length-1) !== '/')
                 path += '/';
-            let projectLink = received.project? "projects/"+received.project : 'accounts/'+received.account;
+            let search = received.search || received;
+            let projectLink = search.project? "projects/"+search.project : 'accounts/'+search.account;
             projectLink += '/';
             if (!fs.existsSync(path+projectLink+prefix)){
                 fs.mkdirSync(path+projectLink+prefix,{recursive:true});
@@ -604,7 +724,9 @@ let handler = {
                 }else{
                     updateLink = projectLink+prefix+newLink;
                 }
-                if(received.search)
+                if(received.updateExpr)
+                    received.updateExpr.link = updateLink;
+                else if(received.search)
                     received.search.link = updateLink;
                 else
                     received.link = updateLink;
@@ -810,6 +932,8 @@ router.post('/aggregate/:tableId',handler.aggregate);
 router.post('/save/:tableId',handler.save);
 router.post('/delete/:tableId',handler.delete);
 router.post('/upload/:tableId',handler.upload);
+router.post('/deleteDoc/',handler.deleteDoc);
+router.post('/replaceUpload/:tableId',handler.replaceUpload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
 router.post('/login/',handler.login);
@@ -848,8 +972,9 @@ module.exports = function(app){
     app.use('/',router);
 
     app.get('*', function(req, res){
+        res.status(404);
         res.render('error.html', {
-            title: '出错啦!',
+            title: 'Error not found!',
             message:'对不起，我们没有找到该网页。<br>该网页或许尚在施工中，敬请期待。'
         })
     });

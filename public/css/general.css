@@ -434,6 +434,7 @@ body{
 
 .closeButtonInline:hover{
     color:rgba(152,75,67,1);
+    cursor:pointer;
 }
 
 .header_button{
@@ -528,3 +529,13 @@ body{
     cursor:pointer;
 }
 
+.printBtn{
+    font-size:0.8rem;border:none;background:none;
+    color:mediumblue;
+}
+
+.printBtn:hover{
+    color:blue;
+    cursor:pointer;
+    text-decoration:underline;
+}

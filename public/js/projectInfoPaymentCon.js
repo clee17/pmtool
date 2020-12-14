@@ -40,6 +40,19 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
                 if($scope.invoiceList[i]._id === newInvoice)
                     $scope.newPayment.invoiceList.push($scope.invoiceList[i]);
             }
+        }else if(sign === 'doc'){
+            let newDoc = $scope.newPayment.doc;
+            for(let i=0; i<$scope.docs.length;++i){
+                if($scope.docs[i]._id === newDoc){
+                    $scope.newPayment.docList.push($scope.docs[i]);
+                }
+            }
+        }else if(sign === 'payment'){
+            let newPayment = $scope.newPayment.payment;
+            for(let i=0; i<$scope.payments.length;++i){
+                if($scope.payments[i]._id === newPayment)
+                    $scope.newPayment.paymentList.push($scope.payments[i]);
+            }
         }
     }
 
@@ -49,6 +62,14 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             let list = $scope.newPayment.invoiceList;
             for(let i=0; i<list.length;++i){
                 if(list[i]._id === newInvoice)
+                    return true;
+            }
+            return false;
+        }else if(sign === 'doc'){
+            let newDoc = $scope.newPayment.doc;
+            let list = $scope.newPayment.docList;
+            for(let i=0; i<list.length;++i){
+                if(list[i]._id === newDoc)
                     return true;
             }
             return false;
@@ -171,10 +192,15 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
         updateQuery.project = $rootScope.project._id;
         updateQuery.account = $rootScope.project.account._id;
         updateQuery.invoice = updateQuery.invoice === '0' ? null : updateQuery.invoice;
-        updateQuery.doc = updateQuery.doc === '0' ? null : updateQuery.doc;
         updateQuery.populate = 'invoice account';
+        
         delete updateQuery.invoice;
         delete updateQuery.doc;
+        delete updateQuery.payment;
+        delete updateQuery.docList;
+        delete updateQuery.paymentList;
+        delete updateQuery.invoiceList;
+        console.log(updateQuery);
         dataManager.saveData('payment','payment added', updateQuery);
     });
 
@@ -227,7 +253,7 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
                     project: $rootScope.project._id,
                     payment: $scope.newPayment._id,
                     doc: $scope.newPayment.invoiceList[i]._id,
-                    type: 0
+                    type: 2
                 }
                 dataManager.saveData('paymentDocs','payment doc added', invoice);
             }
@@ -276,7 +302,7 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             '<option value="3">Partly Paid</option>' +
             '</select></td></tr>' +
             '<tr ng-show="newPayment.status !== \'0\'"><td>Invoice</td><td>' +
-            '<select ng-model="newPayment.invoice" ng-options="invoice._id as invoice.name for invoice in invoiceList"></select> ' +
+            '<select ng-model="newPayment.invoice" ng-options="invoice._id as invoice.name for invoice in invoiceList" style="max-width:10rem;"></select> ' +
             '<button ng-click="addPaymentDoc(\'invoice\')" ng-show="newPayment.invoice !== \'0\'" ng-disabled="paymentDocExisted(\'invoice\')">ADD</button></td></tr>'+
             '<tr ng-show="newPayment.status !== \'0\' && newPayment.invoiceList.length >= 1"><td colspan="2" style="padding-left:0.8rem;">' +
             '<div ng-repeat="inv in newPayment.invoiceList track by $index" style="display:flex;flex-direction:row;">' +
@@ -284,7 +310,7 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             '<a href="{{ inv | docLink:\'2\'}}" target="_blank" style="margin-left:0.8rem;">+</a>' +
             '<button style="margin-left:auto;margin-right:1.5rem;" class="closeButtonInline" ng-click="deletePaymentDoc(\'invoiceList\',inv._id)"><i class="fas fa-times-circle"></i></button></div></tr>'+
             '<tr><td>docs</td><td>' +
-            '<select ng-model="newPayment.doc" ng-options="doc._id as doc.name for doc in docs"></select></td></tr>'+
+            '<select ng-model="newPayment.doc" ng-options="doc._id as doc.name for doc in docs" style="max-width:10rem;"></select>'+
             '<button ng-click="addPaymentDoc(\'doc\')" ng-show="newPayment.doc !== \'0\'" ng-disabled="paymentDocExisted(\'doc\')">ADD</button></td></tr>'+
             '<tr ng-show="newPayment.docList.length >= 1"><td colspan="2" style="padding-left:0.8rem;">' +
             '<div ng-repeat="doc in newPayment.docList track by $index" style="display:flex;flex-direction:row;">' +
@@ -292,7 +318,7 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             '<a href="{{ doc | docLink:\'2\'}}" target="_blank" style="margin-left:0.8rem;">+</a>' +
             '<button style="margin-left:auto;margin-right:1.5rem;" class="closeButtonInline" ng-click="deletePaymentDoc(\'docList\',doc._id)"><i class="fas fa-times-circle"></i></button></div></tr>'+
             '<tr ng-show="newPayment.status >= 2"><td>payments</td><td>' +
-            '<select ng-model="newPayment.payment" ng-options="payment._id as payment.title for payment in paymentList"></select></td></tr>'+
+            '<select ng-model="newPayment.payment" ng-options="payment._id as payment.title for payment in paymentList" style="max-width:10rem;"></select>'+
             '<button ng-click="addPaymentDoc(\'payment\')" ng-show="newPayment.payment !== \'0\'" ng-disabled="paymentDocExisted(\'payment\')">ADD</button></td></tr>'+
             '<tr ng-show="newPayment.status >= 2 && newPayment.paymentList.length >= 1"><td colspan="2" style="padding-left:0.8rem;">' +
             '<div ng-repeat="payment in newPayment.paymentList track by $index" style="display:flex;flex-direction:row;">' +
@@ -351,7 +377,6 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
                 $scope.docs = [
                     {_id:"0",name:"NO DOCUMENT"}
                 ];
-            $scope.docs = $scope.docs.concat(data.result);
         }
     });
 

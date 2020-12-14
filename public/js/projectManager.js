@@ -154,7 +154,7 @@ app.directive('projectStatus',function(){
     }
 })
 
-app.controller("projectDashboard",function($scope,$rootScope,dataManager,$location,$window){
+app.controller("projectDashboard",function($scope,$rootScope,dataManager,$location,$window,$filter,$cookies){
     $scope.pageIndex = {
         startIndex:1,
         pageId:1,
@@ -167,10 +167,6 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
     }
 
     $scope.company = null;
-
-    $scope.selectedStatus = [
-        0,1,2,3,4,6
-    ];
 
     $scope.status = [
         {index:0,name:"opportunities"},
@@ -185,6 +181,81 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
     $scope.searchName = "";
 
     $scope.accountList = [];
+
+    $scope.printHTML = function(){
+        $scope.printing = true;
+        let Id = [];
+        for(let i=0; i<$scope.contents.entries.length;++i){
+            let entry = $scope.contents.entries[i];
+        }
+        dataManager.requestData('projectComment',)
+    };
+
+    $scope.$on('print comments received',function(event,data){
+        let doc = new jsPDF('p','pt',[480,860]);
+        if(!data.success){
+            alert(data.message);
+            return;
+        }
+        let table = document.getElementById('projectTable');
+        var options = {
+            pagesplit:true,
+            background:'#FFFFFF'
+        };
+        if(!table)
+            return;
+        let entries = $scope.contents.entries;
+
+        let y= 15;
+        let x = 15;
+        doc.setTextColor(0,75,151);
+        doc.setFontSize(8);
+        for(let i=0; i<entries.length;++i){
+            let entry = entries[i];
+            let dash  = '        ';
+            let newText = (i+1)+'. '+ (entry.account? entry.account.name : '                 ');
+            newText += dash +entry.name;
+            newText += dash+entry.priority;
+            newText += dash+'status:'+$filter('status')(entry.status);
+            newText += dash+'established:'+$filter('date')(entry.date,"&y/&m/&d");
+            doc.textWithLink(newText,x,y,{pageNumber:i+2});
+            y+= 10;
+        }
+
+
+        for(let i=0; i<entries.length;++i){
+            doc.addPage();
+            let entry = entries[i];
+            y=25;
+            doc.setTextColor(76,76,76);
+            doc.setFontSize(12);
+            let newText = entry.name+'_'+(entry.delivery?entry.delivery.name:'product to be updated')+'          by '+(entry.account?entry.account.name :'');
+            doc.text(newText,x,y)
+            let dim = doc.getTextDimensions(newText);
+            dim.y +=12;
+            y+=12;
+            let url = 'http://192.168.0.239:4000/project/info?id='+entry._id;
+            doc.setFontSize(8);
+            doc.setTextColor(0,75,151);
+            doc.textWithLink(url,x,y,{ url: url });
+        }
+
+        let twoDigit = function(str){
+            if(typeof str !== 'string')
+                str = str.toString();
+            if(str.length <2)
+                return '0'+str;
+            else
+                return str;
+
+        }
+        let date = new Date(Date.now());
+        let name = 'projects_report_';
+        name += date.getFullYear() + '/'+twoDigit(date.getMonth())+'/'+twoDigit(date.getDate());
+        name += '_'+twoDigit(date.getHours())+':' +twoDigit(date.getMinutes())+':' + twoDigit(date.getSeconds());
+        name += '.pdf';
+        doc.save(name);
+    });
 
     $scope.selectFilter = function(index,id,event){
         if(!$scope[index])
@@ -220,6 +291,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         dataManager.requestData('account','company search finished',request);
     }
 
+
     $scope.selectCompany = function(account,event){
         $scope.company = account;
         let element = document.getElementById('currentCompanyName');
@@ -241,11 +313,6 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             element.value = "";
         $scope.searchProject();
         $scope.countProject();
-    };
-
-    $scope.search = {
-        owner:$scope.userId,
-        status:{$in:$scope.selectedStatus}
     };
 
     $scope.logout = function(){
@@ -285,11 +352,11 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         if($scope.requesting)
             return;
         $scope.requesting = true;
-        console.log($scope.search);
+        $cookies.putObject('projectsearchcond',$scope.search);
         dataManager.requestData('project','projects received',
             {search:$scope.search,cond:{sort:{schedule:1},
                     skip:($scope.pageIndex.pageId-1)*25,limit:25},
-                populate:'account delivery'});
+                populate:'account delivery owner'});
     };
 
     $scope.countProject = function(){
@@ -437,6 +504,14 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         $scope.pageIndex.startIndex = $scope.pageIndex.pageId - 7;
         if($scope.pageIndex.startIndex<1)
             $scope.pageIndex.startIndex = 1;
+        let searchCond = $cookies.getObject('projectsearchcond');
+        $scope.search = searchCond || {};
+        $scope.selectedStatus = [
+            0,1,2,3,4,6
+        ];
+        if(searchCond)
+            $scope.selectedStatus =  JSON.parse(JSON.stringify(searchCond.status.$in));
+        $scope.search.status = {$in:$scope.selectedStatus};
         $scope.search.owner = $scope.userId;
         $scope.searchProject();
         $scope.countProject();

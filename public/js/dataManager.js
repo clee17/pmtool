@@ -26,6 +26,11 @@ app.service("dataManager",function($http,$rootScope){
                 });
     };
 
+    manager.replaceFile = function(tableId,symbol,data){
+        let url = '/replaceUpload/'+tableId;
+       manager.uploadFile(url,symbol,data);
+    };
+
     manager.requestLogin = function(info){
         manager.request('/login/',"loginComplete",info);
     }
@@ -81,4 +86,7 @@ app.service("dataManager",function($http,$rootScope){
         manager.request('/getInfo/products','dataReceived',{index:"products",condition:condition});
     };
 
+    manager.deleteDoc = function(id){
+        manager.request('/deleteDoc/','document deleted',{_id:id});
+    };
 });

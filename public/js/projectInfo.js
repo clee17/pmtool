@@ -213,23 +213,3 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         $rootScope.$broadcast($rootScope.submitType+'CancelDoc');
     }
 });
-
-app.directive('historyDocList',function($compile){
-    return{
-        restrict:"A",
-        scope:{
-            draft:'@'
-        },
-        link:function(scope,element,attr){
-            scope.drafts = JSON.parse(scope.draft);
-            if(scope.drafts.length  === 0)
-                element.html('<button class="simpleBtnRight">ADD</button>')
-            else {
-                scope.drafts = JSON.parse(scope.draft);
-                let innerHTML = "<div ng-repeat='draft in drafts'>{{draft.name}} {{draft.date | date:'&y/&m/&d'}}&nbsp&nbsp<a href=\"{{draft | docLink:'1'}}\" target='_blank'>+Go+</a></div>"
-                let node = $compile(innerHTML)(scope);
-                element.html('');
-                element.append(node);
-            }
-        }}
-});

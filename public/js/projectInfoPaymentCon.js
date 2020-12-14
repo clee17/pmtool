@@ -220,8 +220,6 @@ app.controller("paymentCon",function($scope,$rootScope,$compile,$filter,dataMana
             if(insert)
                 $scope.payments.push(data.result);
             dataManager.deleteMany('paymentDocs','paymentDoc refreshed', {search:{project:$rootScope.project._id,payment:data.result._id},index:'paymentDocs'});
-            dataManager.deleteMany('paymentCash','paymentCash refreshed', {search:{project:$rootScope.project._id,payment:data.result._id},index:'paymentDocs'});
-
         }
     });
 

@@ -311,8 +311,8 @@
                 <td>{{payment.amount}} {{payment.currency | currency}}</td>
                 <td payment-status status="{{payment.status}}" style="text-align:center;">{{payment.status | payStatus}}</td>
                 <td content-format contents="{{payment.comment}}"></td>
-                <td doc-link  contents="{{payment.invoice}}" type="invoice" style="text-align:center;min-width:5rem;"></td>
-                <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:center;"></td>
+                <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:left;min-width:5rem;"></td>
+                <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:left;"></td>
                 <td style="display:flex;flex-direction:row;">
                     <button ng-click="edit(payment)" style="margin-left:2rem;" class="linkBtn">EDIT</button>
                     <button ng-click="delete(payment)" class="linkBtn" style="margin-left:1rem;">DELETE</button></td>

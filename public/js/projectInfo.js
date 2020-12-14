@@ -46,7 +46,11 @@ app.directive('docLink',function($compile,$rootScope){
                 let node = $compile('<b>no updates</b>')(scope);
                 element.append(node);
             } else{
-                let innerHTML = '<div ng-repeat="item in itemList"><a href="{{item | docLink:\'1\'}}" target="_blank"><img src="{{item | docIcon}}" style="width:1.2rem;"></a></td></tr></div>';
+                let innerHTML = '<div ng-repeat="item in itemList" style="margin-bottom:2px;">' +
+                    '<a href="{{item | docLink:\'1\'}}" target="_blank">' +
+                    '<img src="{{item | docIcon}}" style="width:1.2rem;">' +
+                    '<span style="max-width:6rem;margin-left:4px;">{{item.name}}</span>'+
+                    '</a></td></tr></div>';
                 let node = $compile(innerHTML)(scope);
                 element.html('');
                 element.append(node);

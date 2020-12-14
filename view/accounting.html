@@ -234,7 +234,7 @@
     <div id="leftColumn" ng-controller="leftController">
         <button ng-repeat="option in options" ng-click="changePage(option.id)" ng-disabled="option.id === pageIndex">{{option.name}}</button>
     </div>
-    <div id="main_area" ng-controller="mainController" style="display:flex;flex-direction:column;display:flex;flex:1;">
+    <div id="main_area" ng-controller="mainController" style="display:flex;flex-direction:column;flex:1;">
         <div style="display:flex;flex-direction:row;padding-left:4rem;min-height:2rem;border-bottom:solid 1px rgba(205,205,205,1);">
             <button id="statusButton" class="header_button" ng-click="switchFilter($event)">STATUS</button>
             <div style="position:relative;margin-left:0.5rem;margin-top:auto;margin-bottom:auto;">

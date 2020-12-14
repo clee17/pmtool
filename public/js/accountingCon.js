@@ -291,6 +291,41 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
         $scope.refreshPage();
      });
 
+    $scope.getAggregates = function(tableName){
+        let data = [];
+        if(tableName === 'payment'){
+            console.log($scope.search);
+            data = [
+                { $sort:{date:-1}},
+                { $skip:20*($scope.pid -1)},
+                { $limit:20},
+                { $lookup:{ from: "project",localField:"project",foreignField:"_id",as:"project"}},
+                {$unwind: {path: "$project", preserveNullAndEmptyArrays: true } },
+                { $lookup:{  from: "account",localField:"account",foreignField:"_id",as:"account"}},
+                {$unwind: {path: "$account", preserveNullAndEmptyArrays: true } },
+                {$lookup:{  from: "paymentDocs",
+                        let: {paymentId: "$_id"},
+                        pipeline: [
+                            {$match:{ type:1,$expr:{$eq:["$$paymentId","$payment"]}}},
+                            {$lookup:{from:'doc',localField:'doc',foreignField:"_id",as:"doc"}},
+                            {$unwind: {path: "$doc", preserveNullAndEmptyArrays: true } },
+                        ],
+                        as: "invoices"}},
+                {$lookup:{  from: "paymentDocs",
+                        let: {paymentId: "$_id"},
+                        pipeline: [
+                            {$match:{type:1,$expr:{$eq:["$$paymentId","$payment"]}}},
+                            {$lookup:{from:'doc',localField:'doc',foreignField:"_id",as:"doc"}},
+                            {$unwind: {path: "$doc", preserveNullAndEmptyArrays: true } },
+                        ],
+                        as: "documents"}}
+            ];
+            if($scope.search !== {})
+                data.unshift({$match:$scope.search});
+        }
+        return data;
+    }
+
     $scope.refreshPage = function(){
         $scope.requesting = true;
         let element = document.getElementById('main_records');
@@ -299,7 +334,8 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
         let tableName = $scope.main_pageIndex;
         if(tableName === 'collection')
             tableName = 'accounting_'+tableName;
-        dataManager.requestData(tableName,'results received',{populate:'project account',search:$scope.search,cond:{sort:{date:-1},skip:20*($scope.pid-1),limit:20},requestingId:$scope.requestingId});
+        let aggregate = $scope.getAggregates(tableName);
+        dataManager.requestAggregateData(tableName,'results received',aggregate,$scope.requestingId);
         dataManager.countPage(tableName,{search:$scope.search});
     }
 

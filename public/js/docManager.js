@@ -62,7 +62,7 @@ var submitDoc = function(){
 
     element = document.getElementById('typeSelect');
     if(element)
-        result.type = Number(element.value)+1;
+        result.type = Number(element.value);
 
     element = document.getElementById('fileUpload');
     if(element && result.type === 0 && element && element.files.length === 0){

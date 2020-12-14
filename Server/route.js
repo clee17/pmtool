@@ -686,7 +686,7 @@ let handler = {
             if(typeof type !== 'number')
                 type = Number(type);
 			let project = received.project || null;
-            let prefixList = ['Legal','Legal','Legal','Royalty','Payments','reference','Payments','','','','Release'];
+            let prefixList = ['Legal','Legal','Legal','Finance','Finance','Reference','Finance','','','','Release'];
             let typeList = ['NDA','SOW','SLA','Royalty','invoice','reference','receipt','','','',''];
             let prefix = prefixList[type] || '';
             let typeIndicator = typeList[type] || '';

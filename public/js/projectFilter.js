@@ -213,7 +213,7 @@ app.filter('linkDocument',function($rootScope){
 app.filter('linkIcon',function(){
     return function(link){
         let fileTypes = [
-            {type:'excel',link:['csv','xlsl','xls']},
+            {type:'excel',link:['csv','xlsx','xls']},
             {type:'pdf',link:['pdf']},
             {type:'word',link:['doc']},
             {type:'ppt',link:['ppt']},

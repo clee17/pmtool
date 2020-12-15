@@ -27,6 +27,7 @@
     <script src="/js/projectInfoCommentCon.js"></script>
     <script src="/js/projectInfoPaymentCon.js"></script>
     <script src="/js/projectInfoReleaseCon.js"></script>
+    <script src="/js/projectInfoPurchaseCon.js"></script>
 </head>
 
 <body ng-app="dashboard"
@@ -134,6 +135,7 @@
     <div tab-button>bugfix</div>
     <div tab-button>contracts</div>
     <div tab-button>payment</div>
+    <div tab-button>purchase order</div>
 </div>
 
 <div  class="mainContents">
@@ -321,7 +323,7 @@
     </div>
 
 
-    <div ng-show="currentPage=='purchase'" style="display:flex;flex-direction:column;" ng-controller="purchaseCon">
+    <div ng-show="currentPage === 'purchase order'" style="display:flex;flex-direction:column;" ng-controller="purchaseCon">
         <div style="margin-left:auto;margin-right:2rem;font-family:Arial,serif;">
             <button  class="simpleBtn" ng-click="showCover('Purchase')">Add Purchase Order</button>
         </div>
@@ -332,7 +334,7 @@
             </td></tr>
             <tr><td colspan="4">&nbsp</td></tr>
             <tr ng-repeat="PO in POs">
-                <td>{{PO.number}}</td>
+                <td>{{PO.index}}</td>
                 <td>{{PO.date | date:'&y/&m/&d &h:&i:&s'}}</td>
                 <td>{{PO.amount}}</td>
                 <td>{{PO.price}} {{PO.currency | currency}}</td>

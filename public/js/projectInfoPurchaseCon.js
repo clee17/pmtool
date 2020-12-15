@@ -144,7 +144,7 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
     });
 
     $scope.$on('editPaymentCancelDoc',function(){
-        $scope.resetPayment();
+        $scope.resetPO();
         delete $scope.newPayment._id;
         cancelDoc();
     })
@@ -247,7 +247,7 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
                 }
                 dataManager.saveData('paymentDocs','payment doc added', invoice);
             }
-            $scope.resetPayment();
+            $scope.resetPO();
             cancelDoc();
         }
     })
@@ -426,7 +426,7 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
                     ],
                     as: "payment"}}
         ];
-        $scope.resetPayment();
+        $scope.resetPO();
         dataManager.requestAggregateData('payment','payments requested', data);
         dataManager.requestData('docs','docs requested', {project:$rootScope.project._id, type: {$in:[2,3,4]}});
         dataManager.requestData('collection','collection requested',{account:$rootScope.project.account});

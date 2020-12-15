@@ -319,6 +319,30 @@
             </tr>
         </table>
     </div>
+
+
+    <div ng-show="currentPage=='purchase'" style="display:flex;flex-direction:column;" ng-controller="purchaseCon">
+        <div style="margin-left:auto;margin-right:2rem;font-family:Arial,serif;">
+            <button  class="simpleBtn" ng-click="showCover('Purchase')">Add Purchase Order</button>
+        </div>
+        <table class="dataListTable" style="margin-left:auto;margin-right:auto;margin-top:2rem;">
+            <tr><td>PO</td><td>DATE</td></td><td>Amount</td><td style="text-align:center;">Price</td><td>comment</td></tr>
+            <tr ng-show="POs.length ===0"><td colspan="8" style="text-align:center;">
+                <b>No purchase orders found under this project</b>
+            </td></tr>
+            <tr><td colspan="4">&nbsp</td></tr>
+            <tr ng-repeat="PO in POs">
+                <td>{{PO.number}}</td>
+                <td>{{PO.date | date:'&y/&m/&d &h:&i:&s'}}</td>
+                <td>{{PO.amount}}</td>
+                <td>{{PO.price}} {{PO.currency | currency}}</td>
+                <td>{{PO.comment}}</td>
+                <td style="display:flex;flex-direction:row;">
+                    <button ng-click="edit(payment)" style="margin-left:2rem;" class="linkBtn">EDIT</button>
+                    <button ng-click="delete(payment)" class="linkBtn" style="margin-left:1rem;">DELETE</button></td>
+            </tr>
+        </table>
+    </div>
 </div>
 
 <div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;">

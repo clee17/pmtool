@@ -315,9 +315,9 @@
                 <td content-format contents="{{payment.comment}}"></td>
                 <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:left;min-width:5rem;"></td>
                 <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:left;"></td>
-                <td style="display:flex;flex-direction:row;">
-                    <button ng-click="edit(payment)" style="margin-left:2rem;" class="linkBtn">EDIT</button>
-                    <button ng-click="delete(payment)" class="linkBtn" style="margin-left:1rem;">DELETE</button></td>
+                <td style="display:flex;flex-direction:column;text-align:center;">
+                    <button ng-click="edit(payment)" class="linkBtn">EDIT</button>
+                    <button ng-click="delete(payment)" class="linkBtn" styler="margin-top:0.5rem;">DELETE</button></td>
             </tr>
         </table>
     </div>

@@ -260,6 +260,7 @@ var changeAccount = function(target){
                 obj.options.length = 0;
                 if(received.result.length ===0){
                     obj.options.add(new Option("当前客户没有项目","1")); //这个兼容IE与firefox
+                    obj.options.add(new Option("客户通用文档","2")); //这个兼容IE与firefox
                 }else{
                     obj.options.add(new Option("请选择客户项目","1")); //这个兼容IE与firefox
                     obj.options.add(new Option("客户通用文档","2")); //这个兼容IE与firefox

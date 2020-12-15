@@ -130,7 +130,6 @@
                     <select id="customerSelect" onchange="changeAccount(this)" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:88;">
                     <option value="1">请选择客户</option>
                     <option value="0">没有客户</option>
-
                         <% for(var i=0;i<accounts.length;++i){ %>
                     <option value="<%- accounts[i]._id %>"><%- accounts[i].name %></option>
                     <% } %>

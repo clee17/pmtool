@@ -2,6 +2,7 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
     $scope.POs = [];
     $scope.addPO = null;
     $scope.deletePO = null;
+    $scope.newPO = null;
 
     $scope.resetPO =function(){
         $scope.newPayment = {
@@ -118,9 +119,9 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
     };
 
     $scope.showCover = function(type){
-        if($scope.addPayment){
-            $scope.newPayment = JSON.parse(JSON.stringify($scope.addPayment));
-            $scope.addPayment = null;
+        if($scope.addPO){
+            $scope.newPO = JSON.parse(JSON.stringify($scope.addPO));
+            $scope.addPO = null;
         }
         $scope.showCoverContents(type);
     }

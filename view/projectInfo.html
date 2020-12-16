@@ -307,14 +307,14 @@
             </td></tr>
             <tr><td colspan="4">&nbsp</td></tr>
             <tr ng-repeat="payment in payments">
-                <td>{{payment.account.name}}</td>
-                <td>{{payment.PO}}</td>
-                <td>{{payment.date | date:'&y/&m/&d &h:&i:&s'}}</td>
-                <td>{{payment.amount}} {{payment.currency | currency}}</td>
-                <td payment-status status="{{payment.status}}" style="text-align:center;">{{payment.status | payStatus}}</td>
-                <td content-format contents="{{payment.comment}}"></td>
-                <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:left;min-width:5rem;"></td>
-                <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:left;"></td>
+                <td style="width:8rem;">{{payment.account.name}}</td>
+                <td style="width:8rem;">{{payment.PO}}</td>
+                <td style="width:8.5rem;">{{payment.date | date:'&y/&m/&d &h:&i:&s'}}</td>
+                <td style="width:4.5rem;">{{payment.amount}} {{payment.currency | currency}}</td>
+                <td payment-status status="{{payment.status}}" style="text-align:center;width:4rem;">{{payment.status | payStatus}}</td>
+                <td content-format contents="{{payment.comment}}" style="width:10rem;"></td>
+                <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:left;min-width:10rem;"></td>
+                <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:left;min-width:10rem;"></td>
                 <td style="display:flex;flex-direction:column;text-align:center;">
                     <button ng-click="edit(payment)" class="linkBtn">EDIT</button>
                     <button ng-click="delete(payment)" class="linkBtn" styler="margin-top:0.5rem;">DELETE</button></td>

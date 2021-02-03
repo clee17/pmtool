@@ -110,9 +110,8 @@ var fileUpload = function(result){
     let element = document.getElementById('fileUpload');
     if(element)
         files = element.files;
-    console.log(result);
     if(files.length>0){
-        let formData = new FormData()
+        let formData = new FormData();
         formData.append('file', files[0]);
         formData.append('origin','1');
         formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(result))));

@@ -734,6 +734,7 @@ let handler = {
 					received.search.type = type;
 				else if(type <10)
 					received.type = type;
+				received.updateExpr.date = Date.now();
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
                 handler.save(req,res);
             });

@@ -111,6 +111,8 @@ var fileUpload = function(result){
     if(element)
         files = element.files;
     if(files.length>0){
+        result.type = result.type.toString();
+        console.log(result.type);
         let formData = new FormData();
         formData.append('file', files[0]);
         formData.append('origin','1');

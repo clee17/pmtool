@@ -63,6 +63,19 @@
         </div>
         <div style="width:100%;"><div>FTP:</div><div upload-account account="{{project.FTP}}"></div></div>
         <div style="width:100%;"><div>Address:</div><div address-format account="{{project.address}}"></div></div>
+        <div style="width:100%;"><div>Account Docs:</div><button class="simpleBtn" style="font-weight:bold;margin-left:4rem;" ng-click="addReferenceDoc()">ADD</button></div>
+        <div style="width:100%">
+            <table class="dataListTable" style="margin-left:8rem;">
+                <tr ng-if="companyDocs.length === 0"><td colspan="4"><b>No Account Docs</b></td></tr>
+                <tr ng-repeat="cd in companyDocs">
+                    <td style="min-width:12rem;">{{cd.name}}</td>
+                    <td>{{cd.date | date:'&y-&m-&d'}}</td>
+                    <td content-format contents="{{cd.description}}" style="padding-left:1.5rem;"></td>
+                    <td content-format contents="{{cd.reference}}" style="padding-left:1.5rem;"></td>
+                    <td><div doc-source doc="cd"></div></td>
+                </tr>
+            </table>
+        </div>
         <div style="width:100%;"><div>Reference:</div><button class="simpleBtn" style="font-weight:bold;margin-left:4rem;" ng-click="addReferenceDoc()">ADD</button></div>
         <div style="width:100%">
             <table class="dataListTable" style="margin-left:8rem;">
@@ -139,7 +152,7 @@
 </div>
 
 <div  class="mainContents">
-    <div ng-show="currentPage==='comments'" style="display:flex;flex-direction:column;" id="commentPanel" ng-controller="commentCon">
+    <div ng-show="currentPage === 'comments'" style="display:flex;flex-direction:column;" id="commentPanel" ng-controller="commentCon">
         <div ng-repeat="comment in comments" style="padding-top:1rem;padding-bottom:1rem;border-bottom:1px solid lightgray">
             <div style="display:flex;flex-direction:row;" class="subRow">
                 <div>提交人：{{comment.user.name}}</div>
@@ -181,7 +194,7 @@
         </div>
     </div>
 
-    <div ng-show="currentPage==='release history'" style="display:flex;flex-direction:column;" ng-controller="releaseCon">
+    <div ng-show="currentPage === 'release history'" style="display:flex;flex-direction:column;" ng-controller="releaseCon">
         <button style="margin-left:auto;margin-right:2rem;margin-bottom:1.5rem;" class="simpleBtn" ng-click="showCover('release')">ADD RELEASE</button>
         <table style="margin-left:auto;margin-right:auto;" class="dataListTable">
             <tr>
@@ -203,7 +216,7 @@
                 <td valign="top" style="text-align:center">
                     <a href="{{release | positionAndLink}}" target="_blank"><img src="{{release | positionAndLinkIcon}}" style="width:1.2rem;"></a>
                 </td>
-                <td></td> 
+                <td></td>
                 <td valign="top"><button class="inlineBtn" style="transform:scale(1.5);width:1.5rem;" ng-click="expandData($event,release.description)"><i class="fa fa-angle-down"></i></button></td>
         </tr>
         </table>

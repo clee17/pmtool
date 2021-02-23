@@ -243,6 +243,14 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
         }
     });
 
+    $scope.$on('company docs requested',function(event,data){
+        if(!data.success){
+            alert(data.message);
+        }else{
+            $scope.companyDocs  = data.result;
+        }
+    });
+
     $scope.initialize = function(){
         $scope.resetStatus();
         $scope.resetReference();
@@ -252,6 +260,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$compile,$window,d
         let project = [null];
         project.push($rootScope.project._id);
         dataManager.requestData('docs','reference requested',{type:5,account:accountId,project:{$in:project}});
+        dataManager.requestData('docs','company docs requested',{account:accountId,project:null});
         dataManager.requestData('version','current release received',{search:search,cond:cond});
         setTimeout(function(){
             $scope.initialized = true;

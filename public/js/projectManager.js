@@ -176,7 +176,6 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         {index:4,name:"maintenance"},
         {index:5,name:"closed"},
         {index:6,name:"re-open"},
-        {index:7,name:"mass production"},
     ];
 
     $scope.searchName = "";

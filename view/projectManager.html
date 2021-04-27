@@ -89,7 +89,7 @@
     <div style="margin-left:4rem;pointer-events:auto;height:1.5rem;" id="testDiv">Total: {{maxCount}} Records</div>
     <table id="projectTable">
         <tr><td>Account</td><td>Project name</td>
-            <td>priority</td><td>schedule</td><td>product</td><td>owner</td><td>status</td><td>established</td></tr>
+            <td>priority</td><td>schedule</td><td>product</td><td>MP</td><td>owner</td><td>status</td><td>established</td></tr>
         <tr ng-repeat="entry in contents.entries"
             ng-mouseover="hoverPlink($event,true)"
             ng-mouseleave="hoverPlink($event,false)"
@@ -100,6 +100,7 @@
                 <td>{{entry.priority}}</td>
                 <td>{{entry.schedule | date:"&y/&m/&d"}}</td>
                 <td>{{entry.delivery.description}}</td>
+                <td>{{entry | MP}}</td>
                 <td>{{entry.owner.name }} </td>
                 <td>{{entry.status | status }} </td>
                 <td>{{entry.date | date:'&y/&m/&d'}}</td>

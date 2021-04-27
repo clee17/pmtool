@@ -34,6 +34,15 @@ app.filter('date',function($filter){
     }
 });
 
+app.filter('MP',function($filter){
+    return function(entry){
+        if(entry.status >= 7 || entry.MP)
+            return 'MP';
+        else
+            return '';
+    }
+});
+
 app.filter('dueBy',function($filter){
     return function(entry,type){
         if(!entry)

@@ -27,10 +27,12 @@ var efforts = require('./../data/model/efforts'),
     developerLogModel = require('../data/model/developerLog'),
     userModel = require('./../data/model/user'),
     docModel = require('./../data/model/doc'),
+    attachModel = require('./../data/model/docAttach'),
     QAModel = require('./../data/model/QA'),
     versionModel = require('./../data/model/version'),
     versionTaskModel = require('./../data/model/versionTask'),
     contactsModel = require('./../data/model/contacts');
+
 
 let tableList = {
     "efforts":efforts,
@@ -59,6 +61,13 @@ let SETTING = fs.readFileSync(path.join(dataDir,'/setting.json'),'utf8');
 
 var systemSetting = JSON.parse(SETTING);
 
+var systemPath = systemSetting.DocLocalPath;
+if(systemPath.charAt(systemPath.length-1) !== '/')
+    systemPath += '/';
+if (!fs.existsSync(systemPath+'attachments/')){
+    fs.mkdirSync(systemPath+'attachments/',{recursive:true});
+};
+
 let handler = {
     renderError:function(res,message){
         res.render('error.html',{title:"错误信息",message:message});
@@ -77,6 +86,8 @@ let handler = {
         if(response.sent)
             return;
         response.sent = true;
+        if(typeof err != 'string')
+            err = JSON.stringify(err);
         response.message = err;
         res.send(LZString.compressToBase64(JSON.stringify(response)));
     },
@@ -259,6 +270,15 @@ let handler = {
             .catch(function(err){
                 res.render('tutorial.html',{title:"PM教程",contents:err});
             });
+    },
+
+    requireManager:function(req,res){
+        let page = req.params.page;
+        if(!req.session.user){
+            res.render('login.html', {});
+        }else{
+            res.render('require', {user:req.session.user});
+        }
     },
 
     QAManager:function(req,res){
@@ -555,16 +575,19 @@ let handler = {
             })
     },
 
-    save:function(req,res){
+    save:function(req,res,response){
         let receivedStr = req.body.data;
         receivedStr = decodeURIComponent(req.body.data);
         let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
         let tableId = req.params.tableId;
+
         if(!tableList[tableId]){
             handler.renderError(res,'no valid tableId received');
             return;
         }
-        let response = {
+
+        if(!response)
+           response = {
             sent:false,
             index:tableId,
             result:[],
@@ -676,7 +699,7 @@ let handler = {
         }
     },
 
-    upload:function(req,res){
+    uploadGeneral:function(req,res){
         let files = req.files;
         if(req.files[0]){
             let receivedStr = req.body.data;
@@ -710,6 +733,7 @@ let handler = {
             let search = received.search || received;
             let projectLink = search.project? "projects/"+search.project : 'accounts/'+search.account;
             projectLink += '/';
+
             if (!fs.existsSync(path+projectLink+prefix)){
                 fs.mkdirSync(path+projectLink+prefix,{recursive:true});
             };
@@ -738,13 +762,66 @@ let handler = {
     				received.updateExpr.date = Date.now();
 				else if(received.search)
 				    received.search.date = Date.now();
-				else 
+				else
 				    received.date = Date.now();
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
                 handler.save(req,res);
             });
         }else
             throw Error('something went wrong when processing the file upload');
+    },
+
+    uploadAttach:function(req,res){
+        let receivedStr = req.body.data;
+        receivedStr = decodeURIComponent(req.body.data);
+        let received = JSON.parse(LZString.decompressFromBase64(receivedStr));
+
+        let response = {
+            sent:false,
+            maxCount:0,
+            message:"unknown failure"
+        };
+
+        let UploadExist = req.files && req.files.length > 0 ;
+        if(!UploadExist && req.body.saveRec){
+            handler.save(req,res);
+            return;
+        }else if(!UploadExist && !req.body.saveRec){
+            handler.sendError(res,response,'something went wrong when processing the file upload replacement');
+            return;
+        }
+
+        let bulkAttach = [];
+
+        console.log(req.files[0]);
+        for(let i=0;i<req.files.length;++i){
+            let insert =  {updateOne: {
+                        filter: {"name":req.files[i].originalname, "link":'attachments/'+req.files[i].filename},
+                        update: {"updatedAt":Date.now()},
+                        upsert: true}};
+            bulkAttach.push(insert);
+        }
+
+        attachModel.bulkWrite(bulkAttach,function(err,feedback){
+            let attachments = feedback.result.upserted;
+            if(err)
+                handler.sendError(res,response,err)
+            else if(req.body.saveRec){
+                received.attachments = [];
+                for(let i=0;i < attachments.length;++i){
+                    received.attachments.push(attachments[i]._id);
+                }
+                req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
+                response.attachments = attachments;
+                req.files = null;
+                handler.save(req,res,response);
+            }else{
+                response.attachments = attachments;
+                response.message = "";
+                response.success = true;
+                handler.sendResult(res,response);
+            }
+        });
     },
 
     developers:function(req,res){
@@ -922,6 +999,7 @@ router.get('/developer',handler.developer);
 router.get('/account',handler.account);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
+router.get('/requirement',handler.requireManager)
 router.get('/QAManager',handler.QAManager);
 router.get('/QATool',handler.QA);
 router.get('/QATool/:contentId',handler.QA);
@@ -931,13 +1009,15 @@ router.get('/doc',handler.docManager);
 router.get('/doc/:projectId/:docId',handler.doc);
 router.get('/fileserver/*',handler.fileserver)
 
+
 router.post('/countInfo/',handler.count);
 router.post('/vagueSearch/',handler.vague);
 router.post('/search/:tableId',handler.search);
 router.post('/aggregate/:tableId',handler.aggregate);
 router.post('/save/:tableId',handler.save);
 router.post('/delete/:tableId',handler.delete);
-router.post('/upload/:tableId',handler.upload);
+router.post('/upload/general/:tableId',handler.uploadGeneral);
+router.post('/upload/attach/:tableId',handler.uploadAttach);
 router.post('/deleteDoc/',handler.deleteDoc);
 router.post('/replaceUpload/:tableId',handler.replaceUpload);
 router.post('/getInfo/developers',handler.developers);
@@ -948,7 +1028,8 @@ router.post('/pwdReset/',handler.pwd);
 
 
 module.exports = function(app){
-    let objMulter = multer({dest:systemSetting.DocLocalPath});
+    let generalMulter = multer({dest:systemPath+'temp/'});
+    let attachMulter = multer({dest:systemPath+'attachments/'});
     app.use('/lib',express.static(path.join(basedir,"/public/lib")));
     app.use('/js',express.static(path.join(basedir,"/public/js")));
     app.use('/css',express.static(path.join(basedir,"/public/css")));
@@ -956,11 +1037,11 @@ module.exports = function(app){
     app.use('/assets',express.static(systemSetting.DocLocalPath));
     app.use('/fontawesome',express.static(path.join(basedir,"/public/fontawesome")));
 
-    app.use(objMulter.any());
+    app.use('/upload/general/',generalMulter.any());
+    app.use('/upload/attach/',attachMulter.any());
     app.use(cookie());
 
     redisClient.on("error",function(error){
-         console.log(error);
     });
 
     app.use(session({

@@ -161,7 +161,7 @@ app.controller("docCon",function($scope,$rootScope,$compile,$http,dataManager) {
             formData.append('file', files[0]);
             formData.append('origin','1');
             formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(saveQuery))));
-            dataManager.uploadFile('/upload/docs', 'new contract saved',formData);
+            dataManager.uploadFile('/upload/general/docs', 'new contract saved',formData);
         }else{
             dataManager.saveData('docs','new contract saved', saveQuery);
         }

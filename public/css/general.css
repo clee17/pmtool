@@ -265,6 +265,7 @@ body{
 
 .simpleBtn:hover{
     color:red;
+    cursor:pointer;
 }
 
 .simpleBtnRight{
@@ -293,6 +294,7 @@ body{
     padding-bottom:0.2rem;
 }
 
+
 .singleLine{
     margin-left:2rem;
     text-overflow:ellipsis;
@@ -312,6 +314,8 @@ body{
 
 .inlineBtn:hover{
     color:lightgray;
+    cursor:pointer;
+
 }
 
 .linkBtn{
@@ -538,4 +542,16 @@ body{
     color:blue;
     cursor:pointer;
     text-decoration:underline;
+}
+
+.backGrayBtn{
+    border-radius:5px;
+    background:rgba(1,1,1,0);
+    transition:background 0.1s;
+
+}
+
+.backGrayBtn:hover{
+    background:rgba(211,211,211,0.4);
+    cursor:pointer;
 }

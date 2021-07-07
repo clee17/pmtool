@@ -159,6 +159,12 @@
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | status}}</div>
             </div>
+            <div style="display:flex;flex-direction:row;min-height:1rem;margin-left:1.5rem;margin-right:1.5rem;" class="subRow">
+                <span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
+                    <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
+                     <span style="max-width:6rem;">{{attach.name}}</span>
+                </span>
+            </div>
             <div style="padding-left:2rem;padding-right:2rem;padding-top:0.5rem;" content-format contents="{{comment.comment}}">{{comment.comment}}</div>
         </div>
         <div style="margin:auto;" ng-show="requesting"> <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i></div>
@@ -187,6 +193,19 @@
                 <option value="4">maintenance</option>
                 <option value="7">mass production</option>
             </select>
+        </div>
+        <div style="display:flex;flex-direction:row;">
+            <div style="flex:1;display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;">
+                <span ng-repeat="attach in attachments" style="margin-right:0.5rem;">
+                     <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
+                     <span style="max-width:6rem;">{{attach.name}}</span>
+                     <button  class="closeBtnInline" ng-click="deleteAttach(attach)"><i class="fas fa-times-circle"></i></button>
+                </span>
+            </div>
+            <div style="display:flex;flex-direction:row;margin-left:auto;border-radius:3px; background:rgba(230,230,230,0.8);padding:0.5rem;margin-right:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
+            <input  id="attachUpload" style="margin-left:auto;" type=file>
+            <button ng-click="uploadAttach()" style="margin-left:0.5rem;">Upload</button>
+            </div>
         </div>
         <textarea ng-model="commentSubmit.contents" ng-disabled="!updatable()"></textarea>
         <div style="display:flex;flex-direction:row;">

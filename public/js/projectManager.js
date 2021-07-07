@@ -424,7 +424,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         event.stopPropagation();
         let element = document.getElementById('filterBoard');
         if(element){
-            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:16});
+            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:14});
         }
     };
 

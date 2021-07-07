@@ -179,9 +179,9 @@ app.controller("releaseCon",function($scope,$rootScope,$compile,dataManager) {
                 formData.append('file', files[0]);
                 formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(dataDetail))));
                 formData.append('origin','1');
-                formData.append('type','11');
+                formData.append('type','10');
                 formData.append('filename',$scope.updateSave.version.main+'.'+$scope.updateSave.version.update+'.'+$scope.updateSave.version.fix);
-                dataManager.uploadFile('/upload/version','version saved',formData)
+                dataManager.uploadFile('/upload/general/version','version saved',formData)
             }
         }
     });

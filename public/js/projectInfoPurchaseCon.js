@@ -1,86 +1,40 @@
-app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataManager) {
+app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,$timeout,dataManager) {
     $scope.POs = [];
     $scope.addPO = null;
     $scope.deletePO = null;
     $scope.newPO = null;
 
     $scope.resetPO =function(){
-        $scope.newPayment = {
+        $scope.newPO = {
             index:"",
             amount:"",
             price:"0",
             comment:"",
-            currency:"0"
+            currency:"0",
+            docs:[]
         };
     };
 
-    $scope.deletePaymentDoc = function(sign,id){
-        let list = $scope.newPayment[sign];
-        for(let i=0; i<list.length;++i){
-            if(!list[i])
-                continue;
-            if(list[i]._id === id){
-                list.splice(i,1);
-                i--;
-            }
-        }
-    };
-
-    $scope.addPaymentDoc = function(sign){
-        if(sign === 'invoice'){
-            let newInvoice = $scope.newPayment.invoice;
-            for(let i=0; i<$scope.invoiceList.length;++i){
-                if($scope.invoiceList[i]._id === newInvoice)
-                    $scope.newPayment.invoiceList.push($scope.invoiceList[i]);
-            }
-        }else if(sign === 'doc'){
-            let newDoc = $scope.newPayment.doc;
-            for(let i=0; i<$scope.docs.length;++i){
-                if($scope.docs[i]._id === newDoc){
-                    $scope.newPayment.docList.push($scope.docs[i]);
-                }
-            }
-        }else if(sign === 'payment'){
-            let newPayment = $scope.newPayment.payment;
-            for(let i=0; i<$scope.payments.length;++i){
-                if($scope.payments[i]._id === newPayment)
-                    $scope.newPayment.paymentList.push($scope.payments[i]);
-            }
-        }
+    $scope.newDocument = {
+        name:"",
+        type:"0",
+        description:"",
+        source:"0",
+        reference:"",
+        link:""
     }
 
-    $scope.paymentDocExisted = function(sign){
-        if(sign === 'invoice'){
-            let newInvoice = $scope.newPayment.invoice;
-            let list = $scope.newPayment.invoiceList;
-            for(let i=0; i<list.length;++i){
-                if(list[i]._id === newInvoice)
-                    return true;
-            }
-            return false;
-        }else if(sign === 'doc'){
-            let newDoc = $scope.newPayment.doc;
-            let list = $scope.newPayment.docList;
-            for(let i=0; i<list.length;++i){
-                if(list[i]._id === newDoc)
-                    return true;
-            }
-            return false;
-        }
-    };
 
-
-
-    $scope.$watch('newPayment',function(){
-        if($rootScope.submitType === 'payment')
-            $scope.addPayment = JSON.parse(JSON.stringify($scope.newPayment));
+    $scope.$watch('newPO',function(){
+        if($rootScope.submitType === 'purchase')
+            $scope.addPO = JSON.parse(JSON.stringify($scope.newPO));
 
         let element = document.getElementById('coverDetail');
         if(element){
             let height = element.style.height;
             height = height.substring(0,height.indexOf('rem'));
             if(Number(height)>=20)
-                element.style.height = (22+$scope.newPayment.invoiceList.length*1.5+$scope.newPayment.docList.length * 1.5+$scope.newPayment.paymentList.length*1.5)+'rem';
+                element.style.height = '18rem';
         }
     },true);
 
@@ -114,9 +68,6 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
         showPageCover(8);
     }
 
-    $scope.addPaymentInvoice = function(payment){
-
-    };
 
     $scope.showCover = function(type){
         if($scope.addPO){
@@ -276,48 +227,108 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
         }
     });
 
-    $scope.$on('paymentCancelDoc',function(){
+    $scope.$on('PurchaseCancelDoc',function(){
         cancelDoc();
     });
+
+    $scope.cancelNewDocument = function(){
+        let element = document.getElementById('documentLayer');
+        if(!element)
+            return;
+        element.style.opacity = '0';
+        $timeout(function(){
+            let element = document.getElementById('documentLayer');
+            if(!element)
+                return;
+            document.body.removeChild(element);
+            $scope.documentLayerbooted = false;
+        },400);
+    }
+
+    $scope.submitNewDocument =function(){
+        let newDcoument = JSON.parse(JSON.stringify($scope.newDocument));
+        newDocument.source = Number(newDocument.source);
+        if(newDocument.source === 0){
+           $rootScope.uploadDoc(newDocument);
+        }else{
+            $rootScope.saveDoc(newDocument);
+        }
+    }
+
+
+
+    $scope.addNewDocument = function(signal){
+        if($scope.documentLayerbooted)
+            return;
+        $scope.newDocumentSignal = signal;
+        let layer = document.createElement('div');
+        $scope.documentLayerbooted = true;
+        layer.style.display = 'flex';
+        layer.style.width = '100%';
+        layer.style.height = '0';
+        layer.style.position = 'fixed';
+        layer.style.left = '0';
+        layer.style.top = '0';
+        layer.style.transition = 'opacity 0.2s,height 0.2s';
+        layer.style.background = 'rgba(185,185,185,0.6)';
+        layer.style.opacity = '0';
+        layer.id = 'documentLayer';
+        let newDocument = '<div style="margin:auto;display:flex;flex-direction:column;background:white;width:24rem;height:22rem;border-radius:1.2rem;">' +
+            '<table class="pageCoverTable" style="margin-left:2rem;margin-right:auto;margin-top:2rem;">' +
+            '<tr><td>文件名称</td><td style="padding-left:2rem;"><input id="nameInput" ng-model="newDocument.name" style="width:12rem;"></td></tr>'+
+            '<tr><td>文件类型</td><td style="padding-left:2rem;">' +
+            '<select ng-model="newDocument.type">' +
+            '<option value="0">NDA(保密协议)</option>' +
+            '<option value="1">SOW(工作内容确认书)</option>' +
+            '<option value="2">SLA(合同与合同修订)</option>' +
+            '<option value="3">Royalty(季度产量报告)</option>' +
+            '<option value="4">Invoice(财务收据)</option>' +
+            '<option value="6">Payment(入账凭证)</option>' +
+            '<option value="5">reference(参考文章)</option></select></td></tr>'+
+            '<tr><td>文件描述</td><td style="padding-left:2rem;"><textarea ng-model="newDocument.description" style="height:4rem;width:12rem;"></textarea></td> </tr>' +
+            '<tr><td>文件来源</td><td style="padding-left:2rem;"><select id="sourceSelect"  ng-model="newDocument.source">' +
+                '<option value="0">assets</option>' +
+                '<option value="1">online</option>' +
+                '<option value="2">fileserver</option></select></td></tr>' +
+            '<tr><td>文件地址</td><td style="padding-left:2rem;">' +
+            '<input id="linkInput" ng-model="newDocument.link" ng-show="newDocument.source === \'1\' || newDocument.source === \'2\' ">' +
+            '<form encType="multipart/form-data" action="/upload/docs" ng-show="newDocument.source == \'0\' ">' +
+            '<input id="fileName" style="display:none;">' +
+            '<input id="fileUpload" style="display:block;" type="file">' +
+            '<input id="fileSubmit" style="display:none;" type="submit" value="Submit">' +
+            '</form></td></tr>'+
+            '<tr><td>参考信息</td><td style="padding-left:2rem;"><textarea id="referenceInput" style="height:4rem;width:12rem;"></textarea></td></tr>' +
+            '</table>' +
+            '<div style="margin-left:auto;margin-right:auto;margin-top:1rem;"><button style="margin-right:3rem;" ng-click="submitNewDocument()">确定</button><button ng-click="cancelNewDocument()">取消</button></div>'
+            '</div>';
+        let node = $compile(newDocument)($scope);
+        document.body.appendChild(layer);
+        layer = angular.element(layer);
+        layer.append(node);
+        $timeout(function(){
+            let element = document.getElementById('documentLayer');
+            if(!element)
+                return;
+            element.style.opacity = '1';
+            element.style.height = '100%';
+        },100)
+    };
 
     $scope.showCoverContents = function(type){
         $rootScope.submitType = type;
         let innerHTML = '<table class="pageCoverTable">'+
-            '<tr><td>amount:</td><td><input type="number" ng-model="newPayment.amount" style="width:6rem;margin-right:0.5rem;">' +
-            '<select  ng-model="newPayment.currency" ng-options="currency.value as currency.icon for currency in currencies"></select>'+
-            '<tr><td>PO:</td><td><input style="width:12rem" ng-model="newPayment.PO"></td></tr>'+
-            '<tr><td>status:</td><td><select ng-model="newPayment.status">' +
-            '<option value="0">PO Received</option>' +
-            '<option value="1">invoice issued</option>' +
-            '<option value="2">Paid</option>' +
-            '<option value="3">Partly Paid</option>' +
-            '</select></td></tr>' +
-            '<tr ng-show="newPayment.status !== \'0\'"><td>Invoice</td><td>' +
-            '<select ng-model="newPayment.invoice" ng-options="invoice._id as invoice.name for invoice in invoiceList" style="max-width:10rem;"></select> ' +
-            '<button ng-click="addPaymentDoc(\'invoice\')" ng-show="newPayment.invoice !== \'0\'" ng-disabled="paymentDocExisted(\'invoice\')">ADD</button></td></tr>'+
-            '<tr ng-show="newPayment.status !== \'0\' && newPayment.invoiceList.length >= 1"><td colspan="2" style="padding-left:0.8rem;">' +
-            '<div ng-repeat="inv in newPayment.invoiceList track by $index" style="display:flex;flex-direction:row;">' +
-            '<span>{{$index + 1}}</span><span style="max-width:12rem;height:1.2rem;" class="singleLine">{{inv.name}}</span>' +
-            '<a href="{{ inv | docLink:\'2\'}}" target="_blank" style="margin-left:0.8rem;">+</a>' +
-            '<button style="margin-left:auto;margin-right:1.5rem;" class="closeButtonInline" ng-click="deletePaymentDoc(\'invoiceList\',inv._id)"><i class="fas fa-times-circle"></i></button></div></tr>'+
-            '<tr><td>docs</td><td>' +
-            '<select ng-model="newPayment.doc" ng-options="doc._id as doc.name for doc in docs" style="max-width:10rem;"></select>'+
-            '<button ng-click="addPaymentDoc(\'doc\')" ng-show="newPayment.doc !== \'0\'" ng-disabled="paymentDocExisted(\'doc\')">ADD</button></td></tr>'+
-            '<tr ng-show="newPayment.docList.length >= 1"><td colspan="2" style="padding-left:0.8rem;">' +
-            '<div ng-repeat="doc in newPayment.docList track by $index" style="display:flex;flex-direction:row;">' +
-            '<span>{{$index + 1}}</span><span style="max-width:12rem;height:1.2rem;" class="singleLine">{{doc.name}}</span>' +
-            '<a href="{{ doc | docLink:\'2\'}}" target="_blank" style="margin-left:0.8rem;">+</a>' +
-            '<button style="margin-left:auto;margin-right:1.5rem;" class="closeButtonInline" ng-click="deletePaymentDoc(\'docList\',doc._id)"><i class="fas fa-times-circle"></i></button></div></tr>'+
-            '<tr ng-show="newPayment.status >= 2"><td>payments</td><td>' +
-            '<select ng-model="newPayment.payment" ng-options="payment._id as payment.title for payment in paymentList" style="max-width:10rem;"></select>'+
-            '<button ng-click="addPaymentDoc(\'payment\')" ng-show="newPayment.payment !== \'0\'" ng-disabled="paymentDocExisted(\'payment\')">ADD</button></td></tr>'+
-            '<tr ng-show="newPayment.status >= 2 && newPayment.paymentList.length >= 1"><td colspan="2" style="padding-left:0.8rem;">' +
-            '<div ng-repeat="payment in newPayment.paymentList track by $index" style="display:flex;flex-direction:row;">' +
-            '<span>{{$index + 1}}</span><span style="max-width:12rem;height:1.2rem;" class="singleLine">{{payment.name}}</span>' +
-            '<a href="{{ doc | docLink:\'2\'}}" target="_blank" style="margin-left:0.8rem;">+</a>' +
-            '<button style="margin-left:auto;margin-right:1.5rem;" class="closeButtonInline" ng-click="deletePaymentDoc(\'paymentList\',payment._id)"><i class="fas fa-times-circle"></i></button></div></tr>'+
-            '<tr><td>Description</td><td></td></tr>'+
-            '<tr><td colspan="2"><textarea style="margin-left:2rem;width:16rem;" ng-model="newPayment.comment"></textarea></td></tr>'
+            '<tr><td>PO number:</td><td><input style="width:12rem" ng-model="newPO.index"></td></tr>'+
+            '<tr><td>amount:</td><td><input type="number" ng-model="newPO.amount" style="width:6rem;margin-right:0.5rem;">' +
+            '<tr><td>Price:</td><td><input type="number" ng-model="newPO.price" style="width:6rem;margin-right:0.5rem;">' +
+            '<select ng-model="newPO.currency" ng-options="currency.value as currency.icon for currency in currencies"></select></td></tr>'+
+            '<tr><td>Documents:</td><td style="text-align:right;"><button style="margin-right:2rem;" ng-click="addNewDocument()">ADD</button></td></tr>'+
+            '<tr><td colspan="2" style="display:flex;flex-direction:column;padding-left:1.5rem;">' +
+            '<div ng-show="newPO.docs.length ===0">no documents</div>'+
+            '<div ng-repeat="doc in newPO.docs"><img src="{{doc | docIcon}}" style="width:1.2rem;"><span>{{doc.name}}</span></div>' +
+            '</td></tr>'+
+            '<tr><td>comment:</td><td></td></tr>'+
+            '<tr><td colspan="2"><textarea style="margin-left:2rem;width:16rem;height:5rem;" ng-model="newPO.comment"></textarea></td></tr>'+
+            '</td></tr>'
         '</table>';
         let element = document.getElementById('coverDetail');
         if(element){
@@ -326,7 +337,7 @@ app.controller("purchaseCon",function($scope,$rootScope,$compile,$filter,dataMan
             element.html('');
             element.append(node);
         }
-        showPageCover(22+$scope.newPayment.invoiceList.length*1.5+$scope.newPayment.docList.length * 1.5);
+        showPageCover(22 + $scope.newPO.docs.length*1.5);
     };
 
 

@@ -180,7 +180,7 @@ app.directive('deliveryInfo',function(){
 
 app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManager){
     let pageId = $location.search().pid;
-    $rootScope.pageList = ['comments','release history','bugfix','contracts','payment'];
+    $rootScope.pageList = ['comments','release history','bugfix','contracts','payment','purchase order'];
     if(!pageId)
         pageId = 1;
     else
@@ -213,7 +213,55 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         }
     };
 
+    $rootScope.uploadDoc = function(doc){
+
+    };
+
+    $rootScope.saveDoc = function(doc){
+
+    }
+
     $rootScope.cancelDoc = function(){
         $rootScope.$broadcast($rootScope.submitType+'CancelDoc');
+    }
+
+    let renameAttach = function(blob,filename){
+        console.log(blob);
+        console.log(filename);
+        if (window.navigator.msSaveOrOpenBlob) {
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            const link = document.createElement('a');
+            const body = document.querySelector('body');
+
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+
+            // fix Firefox
+            link.style.display = 'none';
+            body.appendChild(link);
+
+            link.click();
+            body.removeChild(link);
+
+            window.URL.revokeObjectURL(link.href);
+        }
+    };
+
+    $rootScope.openAttach = function(link,name){
+        if($rootScope.openAttaching)
+            return;
+        $rootScope.openAttaching = true;
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/assets/'+link, true);
+        xhr.responseType = 'blob';
+        xhr.onload = () => {
+            $rootScope.openAttaching = false;
+            if (xhr.status === 200) {
+                renameAttach(xhr.response,name);
+            }
+        };
+
+        xhr.send();
     }
 });

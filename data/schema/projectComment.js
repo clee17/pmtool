@@ -7,4 +7,5 @@ module.exports = new mongoose.Schema({
     date:{type:Date,default:Date.now()},
     schedule:{type:Date,default:Date.now()},
     comment:{type:String,default:""},
+    attachments:[{type:mongoose.Schema.ObjectId,ref:'attach',default:null}],
 });

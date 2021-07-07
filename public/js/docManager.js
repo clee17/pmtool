@@ -127,7 +127,7 @@ var fileUpload = function(result){
                     failUpload(received);
             }
         }
-        xmlhttp.open("POST", "/upload/docs");
+        xmlhttp.open("POST", "/upload/general/docs");
         xmlhttp.send(formData);
     }else{
         alert('Something is wrong, please try upload again');

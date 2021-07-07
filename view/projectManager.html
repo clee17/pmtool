@@ -65,10 +65,11 @@
     </div>
     <div class="topBtnRow">
         <button id="statusButton" class="header_button" ng-click="switchFilter($event)" style="margin-left:4rem;height:2rem;margin-top:auto;margin-bottom:auto;">STATUS</button>
-        <div style="position:relative;margin:auto;margin-left:0.5rem;">
+        <div style="position:relative;margin:auto;margin-left:0.5rem;margin-right:0;">
             <input id="currentCompanyName" placeholder="company name" ng-model="searchName" ng-change="searchCompany()" style="padding-left:4px;">
             <button style="position:absolute;right:5px; top:2px;" class="closeBtnInline" ng-show="company !== null" ng-click="clearCompany()"><i class="fas fa-times-circle"></i></button>
         </div>
+        <div style="position:relative;margin:auto;margin-left:0.5rem;"><button></button></div>
         <button ng-click="addProject()" class="addDocBtn" style="margin-right:8rem;">添加项目</button>
     </div>
     <div style="height:1rem;position:relative;">

@@ -23,7 +23,6 @@ var showPageCover = function(size,width){
             else
                 elements[0].style.width = '24rem';
         }
-
     },10);
 }
 

@@ -1,6 +1,8 @@
 app.controller("commentCon",function($scope,$rootScope,$location,$window,dataManager) {
     $scope.comments = [];
     $scope.contacts = [];
+    $scope.attachIndex= 0;
+    $scope.attachments = [];
     $scope.userInfo = $rootScope.user;
     $scope.page = 1;
     $scope.pageId = 1;
@@ -44,6 +46,10 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         }else{
             $scope.maxCount = data.count;
             $scope.setPageID();
+            for(let i=0;i<data.result.length;++i){
+                if(!data.result[i])
+                    data.result[i] = [];
+            }
             $scope.comments =  data.result;
         }
     });
@@ -64,7 +70,6 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         if(element)
             element.value = $scope.scheduleNow.getFullYear()+'-'+(month)+'-'+day;
     }
-
 
     $scope.updateProject = function(dateNow){
         let date = new Date(dateNow);
@@ -94,6 +99,35 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         }
     }
 
+    $scope.uploadAttach = function(){
+        let upload = document.getElementById('attachUpload');
+        if(!upload)
+            return;
+        let files = [];
+        if(upload && upload.files)
+            files = upload.files;
+        if(files.length<=0){
+            alert('to upload an attachment, you must select a file');
+            return;
+        }
+        let newAttach = {
+            index:$scope.attachIndex++,
+            name:files[0].name,
+            link:files[0].name,
+            data:files[0]
+        }
+        $scope.attachments.push(newAttach);
+        upload.outerHTML= upload.outerHTML;
+    }
+
+    $scope.deleteAttach = function(file){
+         $scope.attachments.forEach(function(item,index){
+             if(file.index == item.index){
+                 $scope.attachments.splice(index,1);
+                 return;
+             }
+         })
+    };
 
     $scope.submitComment = function(){
         if($scope.commentSubmit.contents.length < 10){
@@ -101,6 +135,7 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
             return;
         }
         $scope.commentSubmit.saving = true;
+
         let data = {
             date:new Date(Date.now()),
             comment: $scope.commentSubmit.contents,
@@ -114,14 +149,15 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         data.schedule.setHours(new Date(Date.now()).getHours());
         data.schedule.setMinutes(new Date(Date.now()).getMinutes());
         data.schedule.setSeconds(new Date(Date.now()).getSeconds());
-        if($scope.projectUpdate.status !== $rootScope.project.status.toString())
-            data.comment += '\n\n <b style="color:darkred">The status of the project has been changed from '
-                +getCurrentStatus($rootScope.project.status)+
-                ' to ' +
-                getCurrentStatus($scope.projectUpdate.status)+'</b>';
         data.status = $rootScope.project.status;
-        data.populate = 'user';
-        dataManager.saveData("projectComment","project comment saved", data);
+        data.populate = 'user attachments';
+        let formData = new FormData();
+        for(let i=0;i<$scope.attachments.length;++i){
+            formData.append('file',$scope.attachments[i].data);
+        }
+        formData.append('saveRec',true);
+        formData.append('data',encodeURIComponent(LZString.compressToBase64(JSON.stringify(data))));
+        dataManager.uploadFile("/upload/attach/projectComment","project comment saved", formData);
     };
 
 
@@ -147,9 +183,13 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         }
     });
 
+    $scope.$on('upload attach',function(event,data){
+
+    });
+
     $scope.initialize = function(){
         $scope.projectUpdate.status = $rootScope.project.status.toString();
-        dataManager.requestData('projectComment','comments received',{populate:'user',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*($scope.pageId-1),limit:35}});
+        dataManager.requestData('projectComment','comments received',{populate:'user attachments',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*($scope.pageId-1),limit:35}});
         if($rootScope.project.account)
             dataManager.requestData('contacts','contacts received',{populate:'company',search:{company:$rootScope.project.account._id},cond:{sort:{name:1}}});
         else

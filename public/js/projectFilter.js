@@ -224,7 +224,7 @@ app.filter('linkIcon',function(){
         let fileTypes = [
             {type:'excel',link:['csv','xlsx','xls']},
             {type:'pdf',link:['pdf']},
-            {type:'word',link:['doc']},
+            {type:'word',link:['doc','docx']},
             {type:'ppt',link:['ppt']},
             {type:'apk',link:['apk']},
             {type:'zip',link:['zip','rar']},

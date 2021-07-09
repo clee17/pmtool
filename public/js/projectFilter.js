@@ -68,7 +68,7 @@ app.filter('status',function(){
         else if (status === 3)
             return 'Delivery';
         else if (status === 4)
-            return 'Maintenance';
+            return 'MP';
         else if (status === 5)
             return 'closed';
         else if (status === 6)

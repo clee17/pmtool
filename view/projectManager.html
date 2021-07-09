@@ -101,7 +101,7 @@
                 <td>{{entry.priority}}</td>
                 <td>{{entry.schedule | date:"&y/&m/&d"}}</td>
                 <td>{{entry.delivery.description}}</td>
-                <td style="text-align:center;"><span style="background:green;border-radius:5px;font-weight:bold;padding:3px;color:white;font-size:0.8rem;">YES</span></td>
+                <td style="text-align:center;" project-maintenance projectId="{{entry._id}}"></td>
                 <td>{{entry.owner.name }} </td>
                 <td>{{entry.status | status }} </td>
                 <td>{{entry.date | date:'&y/&m/&d'}}</td>

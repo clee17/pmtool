@@ -9,6 +9,27 @@ app.directive('infoReceiver',function($rootScope){
     }
 });
 
+
+
+app.directive('projectMaintenance',function(){
+    return{
+        restrict:"A",
+        scope: {
+            projectId:"@",
+        },
+        link:function(scope,element, attr){
+          scope.$on('refreshMaintenance',function(event,data){
+              for(let i=0; i<data.length;++i){
+                  if(data[i]._id === scope.projectId)
+                      element.html('<span style="background:green;border-radius:5px;font-weight:bold;padding:3px;color:white;font-size:0.8rem;">{{entry | maintenance}}</span>');
+                  else
+                      element.html('');
+              }
+          })
+        }
+    }
+})
+
 app.directive('filterCheck',function(){
     return{
         restrict:"C",

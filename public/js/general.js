@@ -42,5 +42,6 @@ var countryCodes = [
     {code:"81", country:"Japan"},
     {code:"55", country:"Brazil"},
     {code:"31", country:"Netherlands"},
-    {code:"1", country:"united States"}
+    {code:"1", country:"united States"},
+    {code:"972", country:"Israel"}
     ];

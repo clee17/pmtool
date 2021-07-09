@@ -228,6 +228,7 @@ app.filter('linkIcon',function(){
             {type:'ppt',link:['ppt']},
             {type:'apk',link:['apk']},
             {type:'zip',link:['zip','rar']},
+            {type:'msg',link:['msg']},
         ];
         let index = link.lastIndexOf('.');
         if(index >=0){

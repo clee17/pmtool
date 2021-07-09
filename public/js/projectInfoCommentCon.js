@@ -13,7 +13,7 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
         if(index <= $scope.page && index >=1 ){
             $scope.pageId = index;
             $scope.reqeusting = true;
-            dataManager.requestData('projectComment','comments received',{populate:'user',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*($scope.pageId-1),limit:35}});
+            dataManager.requestData('projectComment','comments received',{populate:'user attachments',search:{project:$rootScope.project._id},cond:{sort:{date:1},skip:35*($scope.pageId-1),limit:35}});
         }
     }
 

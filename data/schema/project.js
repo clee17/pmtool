@@ -11,6 +11,6 @@ module.exports = new mongoose.Schema({
     schedule:{type:Date,default:Date.now()},
     contacts:[{type:mongoose.Schema.ObjectId,ref:'contacts',default:null}],
     delivery:{type:mongoose.Schema.ObjectId,ref:'delivery',default:null},
-    status: {type:Number,default:0}, // 0 opportunities, 1, evaluation, 2, development, 3 delivery 4 maintenance
+    status: {type:Number,default:0}, // 0 opportunities, 1, evaluation, 2, development, 3 delivery 4 MP
     suppliers:[{type:mongoose.Schema.ObjectId,ref:'account',default:null}]
 });

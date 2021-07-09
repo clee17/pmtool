@@ -113,7 +113,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         {index:1,name:"business"},
         {index:2,name:"development"},
         {index:3,name:"delivery"},
-        {index:4,name:"maintenance"},
+        {index:4,name:"MP"},
         {index:5,name:"closed"},
         {index:6,name:"re-open"},
     ];
@@ -446,6 +446,8 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             $scope.pageIndex.startIndex = 1;
         let searchCond = $cookies.getObject('projectsearchcond');
         $scope.search = searchCond || {};
+        if($scope.search.account)
+            delete $scope.search.account;
         $scope.selectedStatus = [
             0,1,2,3,4,6
         ];

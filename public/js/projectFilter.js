@@ -450,3 +450,62 @@ app.directive('docSource',function($compile){
 });
 
 
+app.directive('floatBoard',function(){
+    return{
+        restrict:"C",
+        scope:{
+            index:"@"
+        },
+        link:function(scope,element,attr){
+            scope.clicked = false;
+            scope.$on('floatClicked',function(event,data){
+                if(data.index === scope.index) {
+                    scope.clicked = !scope.clicked;
+                    if(data.status)
+                        scope.clicked=  data.status;
+                    let height = scope.clicked ? data.height + 'rem' : '0';
+                    let opacity = scope.clicked ? '1' : '0';
+                    element.css('height', height);
+                    element.css('opacity', opacity);
+                    scope.refresh();
+                }
+
+            });
+
+            // click to close the panel;
+            scope.$on('clicked',function(event,data){
+                if(scope.clicked){
+                    let target =data.target;
+                    let hide = true;
+                    while(target){
+                        if(target === element[0])
+                            hide = false;
+                        target= target.parentElement;
+                    }
+                    if(hide){
+                        element.css('height',0);
+                        element.css('opacity',0);
+                        scope.clicked = false;
+                    }
+                    scope.refresh();
+                }
+
+            });
+
+            // Finish on the click issue
+            scope.$on('force close float',function(event,data){
+                if(data.index === scope.index) {
+                    scope.clicked = false;
+                    element.css('height', '0');
+                    element.css('opacity', '0');
+                    scope.refresh();
+                }
+            })
+
+            // finish on
+            scope.refresh = function(){
+                scope.$emit('float status changed',{index:scope.index, status:scope.clicked});
+            }
+
+        }}
+})

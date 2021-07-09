@@ -31,7 +31,8 @@ var efforts = require('./../data/model/efforts'),
     QAModel = require('./../data/model/QA'),
     versionModel = require('./../data/model/version'),
     versionTaskModel = require('./../data/model/versionTask'),
-    contactsModel = require('./../data/model/contacts');
+    contactsModel = require('./../data/model/contacts'),
+    taskModel = require('./../data/model/tasks');
 
 
 let tableList = {
@@ -50,7 +51,8 @@ let tableList = {
     "docs":docModel,
     "payment":paymentModel,
     "paymentDocs":paymentDocModel,
-    'position':positionModel
+    'position':positionModel,
+    "tasks":taskModel,
 };
 
 let router = express.Router();
@@ -272,12 +274,12 @@ let handler = {
             });
     },
 
-    requireManager:function(req,res){
+    taskManager:function(req,res){
         let page = req.params.page;
         if(!req.session.user){
             res.render('login.html', {});
         }else{
-            res.render('require', {user:req.session.user});
+            res.render('taskManager', {user:req.session.user});
         }
     },
 
@@ -337,7 +339,7 @@ let handler = {
                 res.render('docManager.html',render);
             })
             .catch(function (err) {
-                console.log(err);
+
                 render.err = err;
                 render.title = err.message;
                 render.message =err.message;
@@ -575,7 +577,7 @@ let handler = {
             })
     },
 
-    save:function(req,res,response){
+    save:function(req,res,next){
         let receivedStr = req.body.data;
         receivedStr = decodeURIComponent(req.body.data);
         let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
@@ -586,13 +588,14 @@ let handler = {
             return;
         }
 
-        if(!response)
-           response = {
+        let response = {
             sent:false,
             index:tableId,
             result:[],
-            message:"unknown failure"
-        };
+            message:"unknown failure"}
+
+        if(req.body.response)
+            response = req.body.response;
 
         let populate = '';
         let search = received._id? {_id:received._id} : received;
@@ -610,8 +613,7 @@ let handler = {
 
         tableList[tableId].findOneAndUpdate(search,update,{upsert:true,setDefaultsOnInsert:true,new:true},function(err,result){
             if(err){
-                response.message = typeof err != 'string' ? JSON.stringify(err):err;
-                handler.sendResult(res,response);
+                handler.sendError(res,response,err);
             }else{
                 response.result = JSON.parse(JSON.stringify(result));
                 response.message = "";
@@ -793,7 +795,6 @@ let handler = {
 
         let bulkAttach = [];
 
-        console.log(req.files[0]);
         for(let i=0;i<req.files.length;++i){
             let insert =  {updateOne: {
                         filter: {"name":req.files[i].originalname, "link":'attachments/'+req.files[i].filename},
@@ -812,9 +813,10 @@ let handler = {
                     received.attachments.push(attachments[i]._id);
                 }
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
+                req.body.resposne = response;
                 response.attachments = attachments;
                 req.files = null;
-                handler.save(req,res,response);
+                handler.save(req,res);
             }else{
                 response.attachments = attachments;
                 response.message = "";
@@ -999,7 +1001,7 @@ router.get('/developer',handler.developer);
 router.get('/account',handler.account);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
-router.get('/requirement',handler.requireManager)
+router.get('/tasks',handler.taskManager)
 router.get('/QAManager',handler.QAManager);
 router.get('/QATool',handler.QA);
 router.get('/QATool/:contentId',handler.QA);

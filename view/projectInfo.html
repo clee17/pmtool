@@ -332,19 +332,18 @@
             <button  class="simpleBtn" ng-click="showCover('payment')">Add payment</button>
             <a class="simpleBtn" href="/accounting/payment" target="_blank" style="text-decoration:none;margin-left:1.5rem;">View more</a>
         </div>
-        <table class="dataListTable" style="margin-left:auto;margin-right:auto;margin-top:2rem;">
-            <tr><td>PAYER</td><td>PO</td><td>DATE</td></td><td>PAYMENT</td><td style="text-align:center;">STATUS</td><td>COMMENT</td><td>INVOICE</td><td>DOC</td><td></td></tr>
+        <table class="dataListTable" style="margin-left:auto;margin-right:auto;margin-top:2rem;font-size:0.9rem;">
+            <tr><td>PO</td><td>DATE</td></td><td>PAYMENT</td><td style="text-align:center;">STATUS</td><td>COMMENT</td><td>INVOICE</td><td>DOC</td><td></td></tr>
             <tr ng-show="payments.length ===0"><td colspan="8" style="text-align:center;">
                 <b>No Payments Record for this project</b>
             </td></tr>
             <tr><td colspan="4">&nbsp</td></tr>
             <tr ng-repeat="payment in payments">
-                <td style="width:8rem;">{{payment.account.name}}</td>
-                <td style="width:8rem;">{{payment.PO}}</td>
+                <td style="width:6rem;">{{payment.PO}}</td>
                 <td style="width:8.5rem;">{{payment.date | date:'&y/&m/&d &h:&i:&s'}}</td>
                 <td style="width:4.5rem;">{{payment.amount}} {{payment.currency | currency}}</td>
                 <td payment-status status="{{payment.status}}" style="text-align:center;width:4rem;">{{payment.status | payStatus}}</td>
-                <td content-format contents="{{payment.comment}}" style="width:10rem;"></td>
+                <td content-format contents="{{payment.comment}}" style="width:18rem;"></td>
                 <td doc-link contents="{{payment.invoice}}" type="invoice" style="text-align:left;min-width:10rem;"></td>
                 <td doc-link contents="{{payment.doc}}" type="doc" style="text-align:left;min-width:10rem;"></td>
                 <td style="display:flex;flex-direction:column;text-align:center;">

@@ -55,7 +55,6 @@
         margin-left:0.8rem;
         margin-top:auto;
         margin-bottom:0.2rem;
-
     }
 </style>
 <body ng-app="dashboard"
@@ -86,7 +85,7 @@
                 <td>{{entry.priority}}</td>
                 <td>{{entry.schedule | date:"&y/&m/&d"}}</td>
                 <td>{{entry.delivery.description}}</td>
-                <td> {{entry.status | status }} </td>
+                <td>{{entry.status | status }} </td>
                 <td>{{entry.date | date:'&y/&m/&d'}}</td>
             </a>
         </tr>

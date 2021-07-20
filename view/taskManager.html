@@ -292,7 +292,7 @@
                 <td class="dateInfo">{{task.version | objectify}}</td>
                 <td class="descInfo">{{task.description}}</td>
                 <td>{{task.updatedAt | date:"&y/&m/&d"}}</td>
-                <td class="descInfo" log-analysis logs="{{task.log}}"></td>
+                <td class="descInfo" log-analysis logs="{{task.log}}" style="overflow:auto;max-width:12rem;min-width:16rem;"></td>
                 <td>{{task.product | productinfo}}</td>
             </tr>
             </table>
@@ -325,6 +325,8 @@
                     <select ng-disabled="savingTask" ng-model="newTask.type" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:99;">
                         <option value="0">Issue</option>
                         <option value="1">Requirement</option>
+                        <option value="2">release</option>
+                        <option value="3">QA</option>
                         <option ng-repeat="account in Accounts" value="account._id">{{account.name}}</option>
                     </select>
                 </td></tr>

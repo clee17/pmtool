@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%- title %></title>
+    <base href="/">
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/projectInfo.css" rel="stylesheet" type="text/css"/>
+    <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <script src="/lib/lz-string.min.js"></script>
+    <script src="/lib/angular.min.js"></script>
+    <script>
+        var app = angular.module("dashboard",[]);
+        app.config(function($locationProvider){
+            $locationProvider.html5Mode(true);
+        });
+    </script>
+    <script src="/js/general.js"></script>
+    <script src="/js/doc.js"></script>
+    <script src="/js/dataManager.js"></script>
+    <script src="/js/projectFilter.js"></script>
+    <script src="/js/taskInfoCon.js"></script>
+</head>
+
+<body ng-app="dashboard"
+      ng-controller="rootCon">
+<info-receiver  ng-init="user = '<%= encodeURIComponent(JSON.stringify(user)) %>';
+                         createdAt = '<%= encodeURIComponent(JSON.stringify(createdAt)) %>';
+                         id = '<%- id %>';
+                         status = '<%- status %>';
+                         schedule = '<%= encodeURIComponent(JSON.stringify(schedule)) %>'"></info-receiver>
+<div id="header">
+    <div id="headerButtons">
+        <a href="/account" target="_blank">ACCOUNT</a>
+        <a href="/tutorial" target="_blank">REFERENCE</a>
+    </div>
+</div>
+<div id="statusBar" style="display:flex;flex-direction:row;">
+    <a href="/tasks" target="_self" style="margin-right:0.5rem;">BACK</a>
+    <span> >  Created On {{ create | date:'&y/&m/&d'}} by <%- submitter.name %></span>
+    <button style="margin-left:auto;">CLOSE</button>
+    <button style="margin-left:0.5rem;margin-right:2rem;">NEW</button>
+</div>
+<div class="mainContents" style="display:flex;flex-direction:column;" ng-controller="infoCon">
+    <div style="font-size:1.5rem;font-weight:bold;"><%- title %></div>
+    <div style="min-height:1rem;">
+          <span ng-repeat="attach in task.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
+              <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
+              <span style="max-width:6rem;">{{attach.name}}</span>
+          </span>
+    </div>
+    <div style="margin-top:0.5rem;" style="min-height:5rem;"><%- description %></div>
+
+<!--    补充说明-->
+    <div style="display:flex;flex-direction:row;"><button style="margin-left:auto" ng-click="switchAddDesc()">补充说明</button></div>
+    <div ng-show="addingDesc" style="display:flex;flex-direction:column;border:solid 1px rgba(152,75,67,1);border-radius:5px;padding:1.5rem;margin-top:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
+        <div style="display:flex;flex-direction:row;">
+            <div style="margin-left:1rem;">提交人：{{user.name}}</div>
+        </div>
+        <div style="display:flex;flex-direction:row;margin-bottom:0.5rem;">
+            <div style="flex:1;display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;">
+                <span ng-repeat="attach in attachments['0']" style="margin-right:0.5rem;">
+                     <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
+                     <span style="max-width:6rem;">{{attach.name}}</span>
+                     <button  class="closeBtnInline" ng-click="deleteAttach(attach,0)"><i class="fas fa-times-circle"></i></button>
+                </span>
+            </div>
+            <div style="display:flex;flex-direction:row;margin-left:auto;border-radius:3px; background:rgba(230,230,230,0.8);padding:0.5rem;margin-right:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
+                <input  id="attachUpload0" style="margin-left:auto;" type=file>
+                <button ng-click="uploadAttach(0,null,'description')" style="margin-left:0.5rem;">Upload</button>
+            </div>
+        </div>
+        <textarea style="min-height:6rem;" ng-model="comment[0]" ng-disabled="!updatable()"></textarea>
+        <div style="display:flex;flex-direction:row;">
+            <button class="submitButton" ng-click="submitComment(0)" ng-disabled="!updatable()">提交</button>
+        </div>
+    </div>
+
+    <div ng-repeat="desc in addDescription">{{desc.contents}}</div>
+    <!--    End  补充说明-->
+
+
+    <div style="margin:1.5rem;margin-left:0;margin-right:0;border-bottom:solid 1px rgba(205,205,205,1);"></div>
+
+
+<!--    评论内容-->
+    <div style="display:flex;flex-direction:column;min-height:6rem;flex:1;margin-left:1.5rem;">
+        <div ng-show="comments.length === 0" style="margin:auto;color:rgba(140,140,140,0.8);font-size:2rem;">NO COMMENT NOW</div>
+        <div ng-repeat="comment in comments">
+            <div style="display:flex;flex-direction:row;" class="subRow">
+                <div>提交人：{{comment.user.name}}</div>
+                <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
+                <div>status：{{comment.status | taskStatus}}</div>
+            </div>
+            <div style="min-height:1rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
+              <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
+              <span style="max-width:6rem;">{{attach.name}}</span>
+          </span></div>
+            <div style="padding-left:2rem;padding-right:2rem;padding-top:0.5rem;" content-format contents="{{comment.comment}}">{{comment.comment}}</div>
+            <div style="margin:1rem;border-bottom:solid 1px rgba(205,205,205,1);"></div>
+        </div>
+    </div>
+
+    <div class="pageCount" style="margin-top:1rem;margin-bottom:0.5rem;" ng-show="commentPage.maxCount >0 ">
+        <div ng-if="commentPage.startIndex>1"><button ng-click="goToCommentPage(1)">1</button></div>
+        <div ng-if="commentPage.startIndex>2">…</div>
+        <div ng-repeat="x in [].constructor(7) track by $index">
+            <button ng-if="$index+commentPage.startIndex <= commentPage.page"
+                    ng-click="goToCommentPage($index+ commentPage.startIndex)"
+                    ng-disabled="commentPage.pageId - commentPage.startIndex === $index">{{$index+commentPage.startIndex}}</button></div>
+        <div ng-if="commentPage.startIndex+7 < commentPage.pageMax">…</div>
+        <div ng-if="commentPage.startIndex+7 <= commentPage.page">
+            <button ng-click="goToCommentPage(commentPage.pageMax)">{{commentPage.pageMax}}</button>
+        </div>
+    </div>
+
+
+<!--    底部新评论-->
+    <div style="display:flex;flex-direction:column;padding:1.5rem;margin-top:2rem;">
+        <div style="display:flex;flex-direction:row;">
+            <div style="margin-left:1rem;">提交人：{{user.name}}</div>
+            <div style="margin-left:4rem;">schedule：</div>
+            <input ng-disabled="!updatable(1)" type="date" id="commentTime">
+            <div style="margin-left:4rem;">status：</div>
+            <select ng-disabled="!updatable(1)" ng-model="taskStatus">
+                <option value="0">Verifying</option>
+                <option value="1">Engineer Assigned</option>
+                <option value="2">QA</option>
+                <option value="3">Feedback </option>
+                <option value="4">CLOSED</option>
+            </select>
+        </div>
+        <div style="display:flex;flex-direction:row;margin-bottom:0.5rem;">
+            <div style="flex:1;display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;">
+                <span ng-repeat="attach in attachments['1']" style="margin-right:0.5rem;">
+                     <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
+                     <span style="max-width:6rem;">{{attach.name}}</span>
+                     <button  class="closeBtnInline" ng-click="deleteAttach(attach,1)"><i class="fas fa-times-circle"></i></button>
+                </span>
+            </div>
+            <div style="display:flex;flex-direction:row;margin-left:auto;border-radius:3px; background:rgba(230,230,230,0.8);padding:0.5rem;margin-right:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
+                <input  id="attachUpload1" style="margin-left:auto;" type=file>
+                <button ng-click="uploadAttach(1,null,'comment')" style="margin-left:0.5rem;">Upload</button>
+            </div>
+        </div>
+        <textarea style="min-height:6rem;" ng-model="comment[1]" ng-disabled="!updatable(1)"></textarea>
+        <div style="display:flex;flex-direction:row;">
+            <button class="submitButton" ng-click="submitComment(1)" ng-disabled="!updatable(1)" style="margin-left:auto;margin-right:3rem;">提交</button>
+        </div>
+    </div>
+<!--   END 底部新评论-->
+</div>
+
+</body>
+</html>

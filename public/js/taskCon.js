@@ -53,11 +53,12 @@ app.directive('logAnalysis',function($filter){
                 let info = "";
                 for (let i = 0; i < logs.length; ++i) {
                     let log = logs[i];
-                    let date = $filter('date')(log.createdAt);
+                    let date = $filter('date')(log.date,'&y-&m-&d');
                     let contents = log.comment;
-                    info += date;
+                    info += ' <div style="max-width:25rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >'+date;
                     info +="&nbsp&nbsp&nbsp";
                     info += contents;
+                    info += '</div>';
                 }
                 element.html(info);
             }
@@ -207,7 +208,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
             { $sort:{schedule:-1}},
             { $skip:35*($rootScope.pid -1)},
             { $limit:35},
-            {$lookup:{from: "commentTask",
+            {$lookup:{from: "taskComment",
                     let: {taskId: "$_id"},
                     pipeline: [
                         {$match:{ $expr:{$eq:["$$taskId","$task"]}}},

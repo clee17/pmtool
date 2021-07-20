@@ -21,6 +21,7 @@ app.filter('date',function($filter){
         let hour = date.getHours();
         let minutes = date.getMinutes();
         let seconds = date.getSeconds();
+
         type = type.replace(/&y/,year.toString());
         type = type.replace(/&m/,month.toString());
         type = type.replace(/%m/,$filter('month')(month));

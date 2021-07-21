@@ -32,7 +32,8 @@ var efforts = require('./../data/model/efforts'),
     versionModel = require('./../data/model/version'),
     versionTaskModel = require('./../data/model/versionTask'),
     contactsModel = require('./../data/model/contacts'),
-    taskModel = require('./../data/model/tasks');
+    taskModel = require('./../data/model/tasks'),
+    taskCommentModel = require('./../data/model/taskComment');
 
 
 let tableList = {
@@ -53,6 +54,7 @@ let tableList = {
     "paymentDocs":paymentDocModel,
     'position':positionModel,
     "tasks":taskModel,
+    "taskComment":taskCommentModel
 };
 
 let router = express.Router();
@@ -281,6 +283,49 @@ let handler = {
         }else{
             res.render('taskManager', {user:req.session.user});
         }
+    },
+
+
+    taskInfo:function(req,res){
+        if(!req.session.user){
+            res.render('login.html',{});
+            return;
+        }
+        let id = req.query.id;
+        if(!id || !id.match(/^[0-9a-fA-F]{24}$/)){
+            res.render('taskInfo.html',{title:'未知的项目',header:'请输入有效的项目id'});
+            return;
+        }
+
+        taskModel.findOne({_id:id}).populate('submitter').exec()
+            .then(function (task) {
+                task.user =  req.session.user;
+                res.render('taskInfo.html',task);
+            })
+            .catch(function(err){
+                res.render('error.html',{title:"错误信息",message:JSON.stringify(err)});
+            })
+    },
+
+    taskComment:function(req,res){
+        if(!req.session.user){
+            res.render('login.html',{});
+            return;
+        }
+        let id = req.query.id;
+        if(!id || !id.match(/^[0-9a-fA-F]{24}$/)){
+            res.render('taskInfo.html',{title:'未知的项目',header:'请输入有效的项目id'});
+            return;
+        }
+
+        taskModel.findOne({_id:id}).populate('submitter').exec()
+            .then(function (task) {
+                task.user =  req.session.user;
+                res.render('taskInfo.html',task);
+            })
+            .catch(function(err){
+                res.render('error.html',{title:"错误信息",message:JSON.stringify(err)});
+            })
     },
 
     QAManager:function(req,res){
@@ -591,6 +636,7 @@ let handler = {
         let response = {
             sent:false,
             index:tableId,
+            info:received.info || null,
             result:[],
             message:"unknown failure"}
 
@@ -781,9 +827,9 @@ let handler = {
         let response = {
             sent:false,
             maxCount:0,
-            message:"unknown failure"
+            message:"unknown failure",
+            info: received.info || null
         };
-
         let UploadExist = req.files && req.files.length > 0 ;
         if(!UploadExist && req.body.saveRec){
             handler.save(req,res);
@@ -794,6 +840,8 @@ let handler = {
         }
 
         let bulkAttach = [];
+
+
 
         for(let i=0;i<req.files.length;++i){
             let insert =  {updateOne: {
@@ -808,9 +856,13 @@ let handler = {
             if(err)
                 handler.sendError(res,response,err)
             else if(req.body.saveRec){
-                received.attachments = [];
+                let attachlist = received.attachments;
+                if(!attachlist)
+                    attachlist = received.updateExpr.attachments;
+                if(!attachlist)
+                    received.attachments = [];
                 for(let i=0;i < attachments.length;++i){
-                    received.attachments.push(attachments[i]._id);
+                    attachlist.push(attachments[i]._id);
                 }
                 req.body.data = encodeURIComponent(LZString.compressToBase64(JSON.stringify(received)));
                 req.body.resposne = response;
@@ -1002,6 +1054,7 @@ router.get('/account',handler.account);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
 router.get('/tasks',handler.taskManager)
+router.get('/task/info',handler.taskInfo);
 router.get('/QAManager',handler.QAManager);
 router.get('/QATool',handler.QA);
 router.get('/QATool/:contentId',handler.QA);
@@ -1016,6 +1069,7 @@ router.post('/countInfo/',handler.count);
 router.post('/vagueSearch/',handler.vague);
 router.post('/search/:tableId',handler.search);
 router.post('/aggregate/:tableId',handler.aggregate);
+
 router.post('/save/:tableId',handler.save);
 router.post('/delete/:tableId',handler.delete);
 router.post('/upload/general/:tableId',handler.uploadGeneral);
@@ -1024,6 +1078,7 @@ router.post('/deleteDoc/',handler.deleteDoc);
 router.post('/replaceUpload/:tableId',handler.replaceUpload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
+router.post('/getInfo/taskComment/',handler.taskComment);
 router.post('/login/',handler.login);
 router.post('/logout/',handler.logout);
 router.post('/pwdReset/',handler.pwd);

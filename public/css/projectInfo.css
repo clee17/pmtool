@@ -78,16 +78,6 @@ body{
     overflow:hidden;
 }
 
-#submitButton{
-    margin-left:auto;
-    margin-top:0.8rem;
-    margin-right:2rem;
-    padding:5px;
-    padding-left:0.5rem;
-    padding-right:0.5rem;
-    border-radius:5px;
-}
-
 #commentPanel >textarea {
     resize:none;
     margin-top:1rem;

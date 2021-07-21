@@ -159,7 +159,7 @@
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | status}}</div>
             </div>
-            <div style="display:flex;flex-direction:row;min-height:1rem;margin-left:1.5rem;margin-right:1.5rem;" class="subRow">
+            <div style="display:flex;flex-direction:row;min-height:1rem;margin-left:1.5rem;margin-right:1.5rem;padding:0.5rem;" class="subRow">
                 <span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
                     <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
                      <span style="max-width:6rem;">{{attach.name}}</span>

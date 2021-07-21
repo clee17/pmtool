@@ -8,10 +8,10 @@ module.exports = new mongoose.Schema({
     type:{type:Number,default:0}, //0 new feature; 1, issue; 2, QA submission
     status:{type:Number,default:0},//review & QA; 2 engineer Assigned; 3. Verification. 4. Pending; 5 Closed
     submitter:{type:mongoose.Schema.ObjectId,ref:'user',default:null},
-    account: {type:mongoose.Schema.ObjectId,ref:'account',default:null},
-    project: {type:mongoose.Schema.ObjectId,ref:'project',default:null},
-    version:{type:mongoose.Schema.ObjectId,ref:'version',default:null},
-    product:{type:mongoose.Schema.ObjectId,ref:'product',default:null}
+    account: [{type:mongoose.Schema.ObjectId,ref:'account',default:null}],
+    project: [{type:mongoose.Schema.ObjectId,ref:'project',default:null}],
+    version:[{type:mongoose.Schema.ObjectId,ref:'version',default:null}],
+    product:[{type:mongoose.Schema.ObjectId,ref:'product',default:null}]
 },{
     timestamps:{createdAt:true,updatedAt:true}
 });

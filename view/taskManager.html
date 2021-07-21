@@ -273,7 +273,7 @@
             <table class="entryTable">
             <tr style="font-weight:bold;">
                 <td class="dateInfo">Submitted</td>
-                <td  class="dateInfo">Due</td>
+                <td  class="dateInfo">Schedule</td>
                 <td>Account</td>
                 <td>Project</td>
                 <td>Version</td>
@@ -288,7 +288,7 @@
                 ng-click="goToTask(task._id)"
                 task-status schedule="{{task.schedule}}" status="{{task.status}}">
                 <td class="dateInfo">{{task.createdAt | date:"&y/&m/&d"}}</td>
-                <td class="dateInfo">{{task.dueOn | date:"&y/&m/&d"}}</td>
+                <td class="dateInfo">{{task.schedule | date:"&y/&m/&d"}}</td>
                 <td class="listInfo" info-list info="{{task.account}}"></td>
                 <td class="listInfo" info-list info="{{task.project}}"></td>
                 <td class="dateInfo" info-list info="{{task.version}}" ></td>

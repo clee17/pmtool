@@ -239,7 +239,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
                     let: {taskId: "$_id"},
                     pipeline: [
                         {$match:{ $expr:{$eq:["$$taskId","$task"]}}},
-                        {$sort:{createdAt:-1}},
+                        {$sort:{date:-1}},
                         {$limit:5},
                     ],
                     as: "log"}},

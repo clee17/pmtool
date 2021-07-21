@@ -14,7 +14,7 @@ module.exports = new mongoose.Schema({
     project: [{type:mongoose.Schema.ObjectId,ref:'project',default:null}],
     version:[{type:mongoose.Schema.ObjectId,ref:'version',default:null}],
     product:[{type:mongoose.Schema.ObjectId,ref:'product',default:null}],
-
+    attachments:[{type:mongoose.Schema.ObjectId,ref:'attachments',default:null}]
 },{
     timestamps:{createdAt:true,updatedAt:true}
 });

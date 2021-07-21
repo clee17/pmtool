@@ -7,7 +7,6 @@ app.directive('infoReceiver',function($rootScope){
             $rootScope.user = JSON.parse(decodeURIComponent(scope.user));
             $rootScope.taskId = scope.id;
             $rootScope.taskStatus = scope.status;
-
             $rootScope.initialize();
         }
     }
@@ -226,6 +225,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         '1':$scope.addingComment
     };
     $scope.description = {};
+    $scope.status = $rootScope.taskStatus;
 
     $scope.switchAddDesc = function(){
         $scope.addingDesc = !$scope.addingDesc;
@@ -312,9 +312,6 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         let element = document.getElementById('commentTime');
         if(element)
             $scope.tempSchedule = new Date(element.value);
-        $scope.tempSchedule.setHours(new Date(Date.now()).getHours());
-        $scope.tempSchedule.setMinutes(new Date(Date.now()).getMinutes());
-        $scope.tempSchedule.setSeconds(new Date(Date.now()).getSeconds());
         let formData = new FormData();
         let attachments = $scope.attachments[index.toString()];
         for(let i=0;i<attachments.length;++i){
@@ -333,16 +330,18 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             $scope.comments.push(data.result);
             $scope.comment['1'] = "";
             $scope.attachments['1'].length = 0;
-            dataManager.updateData('tasks',"task schedule updated",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule}});
+            dataManager.updateData('tasks',"task info updated",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule,status:Number($scope.status)}});
         }
     });
 
 
-    $scope.$on('task schedule updated',function(event,data){
+    $scope.$on('task info updated',function(event,data){
+        $scope.tempSchedule = null;
         if(!data.success){
-            alert(data.message)
+            alert(data.message);
         }else{
-            $rootScope.schedule = data.result.schedule;
+            $rootScope.taskStatus = $scope.status;
+            $rootScope.schedule = new Date(data.result.schedule);
             $scope.refreshCommentData();
         }
     });

@@ -163,7 +163,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
     $rootScope.savingTask = false;
     $rootScope.accounts = [];
     $scope.tasks = [];
-    $rootScope.search = {status:{$in:[]},pid:1};
+    $rootScope.search = {status:{$in:[]},type:{$in:[]},pid:1};
 
     $scope.onClick = function(event){
         let target = event.target;
@@ -231,8 +231,11 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
 
     $rootScope.loadSearch = function(){
         let statusCondition = $cookies.getObject('tasksearchstatuscond');
-        let condition = statusCondition || {$in:[0,1,2,3]};
-        $rootScope.search.status = condition;
+        let typeCondition = $cookies.getObject('tasksearchtypecond');
+        let status = statusCondition || {$in:[0,1,2,3]};
+        let type = typeCondition || {$in:[0,1,2,3]};
+        $rootScope.search.status = status;
+        $rootScope.search.type = type;
     }
 
     $rootScope.loadTask = function(){
@@ -317,6 +320,8 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
                 $scope.search[index] = data[index];
             if(index ==='status')
                 $cookies.putObject('tasksearchstatuscond',data[index]);
+            if(index === 'type')
+                $cookies.putObject('tasksearchtypecond',data[index]);
         }
         $rootScope.refresh();
     })
@@ -345,41 +350,89 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
         {name:"CLOSED",index:4},
         {name:"PENDING",index:5},
     ];
+    $scope.types = [
+        {name:"ISSUE",index:0},
+        {name:"REQUIREMENT",index:1},
+        {name:"RELEASE",index:2},
+        {name:"QA",index:3},
+    ];
+
     $scope.selectedStatus = [];
+    $scope.selectedTypes = [];
 
     $scope.company = null;
     $scope.project = null;
 
-    $scope.switchFilter = function(event){
+    $scope.switchFilter = function(event,index){
         event.preventDefault();
         event.stopPropagation();
 
-        let element = document.getElementById('filterBoard');
-        if(element){
-            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:$scope.status.length*2});
+        let indexes = ['status','types'];
+        let elements = document.getElementsByClassName('filterBoard');
+        if(elements.length> index){
+            $rootScope.$broadcast('floatClicked', {target:elements[index],index:indexes[index],height:$scope[indexes[index]].length*2});
         }
     }
 
 
-    $scope.selectStat = function(index,id,event){
+    $scope.selectFilter = function(index,id,event,signal){
         if(!$scope[index])
             return;
         let fIndex = $scope[index].indexOf(id);
-        if(fIndex >=0 ){
+        if(fIndex >=0){
             $scope[index].splice(fIndex,1);
         }else{
             $scope[index].push(id);
         }
-        $scope.$emit("refresh page after search", {status:{$in:$scope.selectedStatus}});
-        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus});
+        $scope.$emit("refresh page after search", {status:{$in:$scope.selectedStatus},type:{$in:$scope.selectedTypes}});
+        $scope.$broadcast('filter refreshed', {selected:$scope[index],index:signal});
+        $scope.refreshSearches();
     };
 
+    $scope.refreshSearches = function(){
+        $scope.refreshStatusButton();
+        $scope.refreshTypeButton();
+    }
+
+    $scope.refreshStatusButton = function(){
+        let statusButton = document.getElementById('statusButton');
+        if($scope.selectedStatus.length >0 && statusButton){
+            statusButton.style.color = "rgba(152,75,67,1)";
+            statusButton.style.border= "solid 2px rgba(152,75,67,1)";
+            statusButton.style.fontWeight = "bold";
+        }else{
+            statusButton.style.border = "solid 1px rgba(185,185,185,1)";
+            statusButton.style.color = "inherit";
+            statusButton.style.fontWeight = "normal";
+        }
+    }
+
+    $scope.refreshTypeButton =function(){
+        let typeButton = document.getElementById('typeButton');
+        if($scope.selectedTypes.length >0 && typeButton){
+            typeButton.style.color = "rgba(152,75,67,1)";
+            typeButton.style.border= "solid 2px rgba(152,75,67,1)";
+            typeButton.style.fontWeight = "bold";
+        }else{
+            typeButton.style.border = "solid 1px rgba(185,185,185,1)";
+            typeButton.style.color = "inherit";
+            typeButton.style.fontWeight = "normal";
+        }
+    }
 
     $scope.$on('refresh filter',function(evetnt,data){
-        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus});
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus,index:'status'});
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedTypes,index:'types'});
     })
 
-    $scope.selectedStatus = $rootScope.search.status.$in;
+    $scope.initialize = function(){
+        $scope.selectedStatus = $rootScope.search.status.$in;
+        $scope.selectedTypes = $rootScope.search.type.$in;
+        $scope.refreshSearches();
+    }
+
+    $scope.initialize();
+
 });
 
 app.controller("funcCon",function($scope,$rootScope,$location,$window,dataManager){

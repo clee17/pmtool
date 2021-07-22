@@ -34,25 +34,6 @@
         cursor:pointer;
     }
 
-    .header_button{
-        background:none;
-        border:solid 1px rgba(185,185,185,1);
-        color:inherit;
-        transition:background 0.25s, border-bottom 0.15s;
-        border-radius:5px;
-        padding:0.3rem;
-        margin-top:0.3rem;
-        margin-bottom:0.3rem;
-
-    }
-
-    .header_button:hover{
-        background:rgba(215,215,215,0.4);
-        color:rgba(152,75,67,1);
-        border: solid 1px rgba(152,75,67,1);
-        cursor:pointer;
-    }
-
     #projectTable{
         margin-left:auto;
         margin-right:auto;
@@ -168,25 +149,8 @@
         flex-direction:row;
     }
 
-    #filterBoard{
+    .filterBoard{
         width:10rem;
-    }
-
-    #filterBoard>button{
-        height:2rem;
-        line-height:2rem;
-    }
-
-    #filterBoard >button i{
-        margin-right:1.5rem;
-        margin-left:auto;
-        line-height:2rem;
-    }
-
-    #filterBoard >button:hover{
-        background:rgba(152,75,67,0.4);
-        color:rgba(152,75,67,1);
-        cursor:pointer;
     }
 
     #companySearchBoard {
@@ -249,8 +213,8 @@
 <!--        头部搜索条件filter栏-->
         <div style="width:100%;display:flex;flex-direction:column;" ng-controller="searchCon">
             <div  style="display:flex;flex-direction:row;padding-left:4rem;min-height:2rem;border-bottom:solid 1px rgba(205,205,205,1);">
-                <button id="statusButton" class="header_button" ng-click="switchFilter($event)">STATUS</button>
-
+                <button id="statusButton" class="header_button" ng-click="switchFilter($event,0)">STATUS</button>
+                <button id="typeButton" class="header_button" ng-click="switchFilter($event,1)" style="margin-left:1rem;">TASK TYPE</button>
                 <div style="position:relative;margin-left:0.5rem;margin-top:auto;margin-bottom:auto;">
                     <input id="currentCompanyName" placeholder="company name" ng-model="searchName" ng-change="searchCompany()">
                     <button style="position:absolute;right:5px; top:4px;" class="closeBtn" ng-show="company !== null" ng-click="clearCompany()"><i class="fas fa-times-circle"></i></button>
@@ -258,12 +222,22 @@
 
             </div>
             <div style="height:1rem;position:relative;padding-left:4rem;">
-                <div id="filterBoard" class="float-board" index="status">
+                <div class="filterBoard float-board" index="status">
                     <button ng-repeat="stat in status"
                             id="{{stat.index}}" index="status"
                             class="filter-check"
-                            ng-click="selectStat('selectedStatus',stat.index,$event)">
+                            ng-click="selectFilter('selectedStatus',stat.index,$event,'status')">
                         <span>{{stat.name}}</span>
+                        <i class="fas fa-check" style="margin-left:auto;margin-right:0.5rem;"></i>
+                    </button>
+                </div>
+
+                <div class="filterBoard float-board" index="types" style="left:9rem;">
+                    <button ng-repeat="type in types"
+                            id="{{type.index}}" index="types"
+                            class="filter-check"
+                            ng-click="selectFilter('selectedTypes',type.index,$event,'types')">
+                        <span>{{type.name}}</span>
                         <i class="fas fa-check" style="margin-left:auto;margin-right:0.5rem;"></i>
                     </button>
                 </div>

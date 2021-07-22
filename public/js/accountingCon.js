@@ -303,9 +303,9 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
     $scope.switchFilter = function(event){
         event.preventDefault();
         event.stopPropagation();
-        let element = document.getElementById('filterBoard');
-        if(element){
-            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:8});
+        let elements = document.getElementsByClassName('filterBoard');
+        if(elements.length >0){
+            $rootScope.$broadcast('floatClicked', {target:elements[0],index:'status',height:8});
         }
     }
 

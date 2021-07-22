@@ -31,24 +31,6 @@
         cursor:pointer;
     }
 
-    .header_button{
-        background:none;
-        border:solid 1px rgba(185,185,185,1);
-        color:inherit;
-        transition:background 0.25s, border-bottom 0.15s;
-        border-radius:5px;
-        padding:0.3rem;
-        margin-top:0.3rem;
-        margin-bottom:0.3rem;
-
-    }
-
-    .header_button:hover{
-        background:rgba(215,215,215,0.4);
-        color:rgba(152,75,67,1);
-        border: solid 1px rgba(152,75,67,1);
-        cursor:pointer;
-    }
 
     #projectTable{
         margin-left:auto;
@@ -167,25 +149,8 @@
         flex-direction:row;
     }
 
-    #filterBoard{
+    .filterBoard{
         width:10rem;
-    }
-
-    #filterBoard>button{
-        height:2rem;
-        line-height:2rem;
-    }
-
-    #filterBoard >button i{
-        margin-right:1.5rem;
-        margin-left:auto;
-        line-height:2rem;
-    }
-
-    #filterBoard >button:hover{
-        background:rgba(152,75,67,0.4);
-        color:rgba(152,75,67,1);
-        cursor:pointer;
     }
 
     #companySearchBoard {
@@ -243,7 +208,7 @@
             </div>
         </div>
         <div style="height:1rem;position:relative;padding-left:4rem;">
-            <div id="filterBoard" class="float-board" index="status">
+            <div class="filterBoard float-board" index="status">
                 <button ng-repeat="stat in status" ng-click="selectStat(stat.index,$event)">{{stat.name}}</button>
             </div>
             <div id="companySearchBoard" class="float-board" index="account" >

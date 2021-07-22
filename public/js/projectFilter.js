@@ -554,6 +554,8 @@ app.directive('filterCheck',function(){
             };
 
             scope.$on('filter refreshed',function(event,data){
+                if(data.index !== scope.index)
+                    return;
                 scope.isChecked(data.selected);
             });
 

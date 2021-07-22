@@ -30,39 +30,6 @@ app.directive('projectMaintenance',function(){
     }
 })
 
-app.directive('filterCheck',function(){
-    return{
-        restrict:"C",
-        scope:{
-            index:"@",
-            id:"@",
-        },
-        link:function(scope,element,attr){
-            scope.isChecked = function(){
-                let rootScope = scope.$parent.$parent;
-                if(typeof scope.id !== 'number')
-                    scope.id = Number(scope.id);
-                if(rootScope[scope.index].indexOf(scope.id) >=0){
-                    let children = element.children();
-                   children[1].style.display = 'inline-block';
-                   element.css('color','rgba(152,75,67,1)');
-                }else{
-                    element.css('color','inherit');
-                    let children = element.children();
-                    children[1].style.display = 'none';
-                }
-
-            };
-
-            scope.isChecked();
-
-            scope.$on('filter refreshed',function(event,data){
-                scope.isChecked();
-            });
-        }
-    }
-})
-
 app.directive('projectStatus',function(){
     return{
         restrict:"A",
@@ -476,6 +443,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             $scope.selectedStatus =  JSON.parse(JSON.stringify(searchCond.status.$in));
         $scope.search.status = {$in:$scope.selectedStatus};
         $scope.search.owner = $scope.userId;
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus});
         $scope.searchProject();
         $scope.countProject();
     }

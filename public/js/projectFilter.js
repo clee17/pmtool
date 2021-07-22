@@ -79,6 +79,23 @@ app.filter('status',function(){
     }
 });
 
+app.filter('taskStatus',function(){
+    return function(status){
+        if(status === 0)
+            return 'Review';
+        else if (status === 1)
+            return 'Engineer';
+        else if (status === 2)
+            return 'QA';
+        else if (status === 3)
+            return 'Feedback';
+        else if (status === 4)
+            return 'CLOSED';
+        else if (status === 5)
+            return 'Pending';
+    }
+});
+
 app.filter('account',function(){
     return function(account){
         if(account)
@@ -510,4 +527,37 @@ app.directive('floatBoard',function(){
             }
 
         }}
+})
+
+
+
+app.directive('filterCheck',function(){
+    return{
+        restrict:"C",
+        scope:{
+            index:"@",
+            id:"@",
+        },
+        link:function(scope,element,attr){
+            scope.isChecked = function(selected){
+                if(typeof scope.id !== 'number')
+                    scope.id = Number(scope.id);
+                if(selected.indexOf(scope.id) >=0){
+                    let children = element.children();
+                    children[1].style.display = 'inline-block';
+                    element.css('color','rgba(152,75,67,1)');
+                }else{
+                    element.css('color','inherit');
+                    let children = element.children();
+                    children[1].style.display = 'none';
+                }
+            };
+
+            scope.$on('filter refreshed',function(event,data){
+                scope.isChecked(data.selected);
+            });
+
+            scope.$emit('refresh filter', {});
+        }
+    }
 })

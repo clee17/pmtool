@@ -86,23 +86,6 @@ app.directive('deliveryInfo',function(){
 })
 
 
-app.filter('taskStatus',function(){
-    return function(status){
-        if(status === 0)
-            return 'Review';
-        else if (status === 1)
-            return 'Engineer Assigned';
-        else if (status === 2)
-            return 'QA';
-        else if (status === 3)
-            return 'Feedback';
-        else if (status === 4)
-            return 'CLOSED';
-        else if (status === 5)
-            return 'Pending';
-    }
-});
-
 app.filter('buttonStatus',function(){
     return function(status){
         if(status === 4)

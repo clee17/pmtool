@@ -39,6 +39,7 @@ app.filter('productinfo',function(){
     }
 })
 
+
 app.directive('logAnalysis',function($filter){
     return{
         restrict:"A",
@@ -98,7 +99,7 @@ app.directive('infoList',function(){
     }
 });
 
-app.directive('taskStatus',function(){
+app.directive('taskRecord',function(){
     return{
         restrict:"A",
         scope: {
@@ -107,45 +108,50 @@ app.directive('taskStatus',function(){
         },
         link:function(scope,element, attr){
             let schedule = null;
-            if(schedule)
+            if(scope.schedule)
                 schedule  = new Date(scope.schedule);
             let dateNow = new Date(Date.now());
             scope.passed = schedule && schedule < dateNow ;
             scope.today = schedule && schedule.getFullYear()==dateNow.getFullYear() && schedule.getMonth() == dateNow.getMonth() && schedule.getDate() == dateNow.getDate();
-            if(scope.passed)
-                element.css('color','rgba(233,51,32,1)');
-            else if(scope.today)
-                element.css('color','rgba(53,42,131,1)');
-            if(scope.status === '5')
-                element.css('color','rgba(185,185,185,1)');
+
+            scope.checkClosed = function(){
+                if(scope.status === '4' || scope.status === '5'){
+                    element.css('background','lightgray');
+                    element.css('cursor','pointer');
+                }
+            };
+
+            scope.regular = function(){
+                if(scope.today)
+                    element.css('color','rgba(53,42,131,1)');
+                else if(scope.passed)
+                    element.css('color','rgba(233,51,32,1)');
+                else
+                    element.css('color','rgba(65,65,65,1)');
+            };
+
+            scope.isClosed = function(){
+                return scope.status === '4' || scope.status === '5';
+            }
+
+            scope.checkClosed();
+            scope.regular();
+
             element
                 .on('mouseover',function(){
-                    if(scope.status === '5'){
-                        element.css('color','rgba(145,145,145,1)');
-                        element.css('cursor','pointer');
-                        return;
-                    }
-                    if(scope.passed)
-                        element.css('color','rgba(152,75,67,1)');
-                    else if(scope.today){
+                    if(scope.isClosed())
+                        element.css('background','rgba(185,185,185,1)');
+                    else if(scope.today && !scope.isClosed()) {
                         element.css('color','rgba(99,80,242,1)');
-                    }
+                    }else if(scope.passed && !scope.isClosed())
+                        element.css('color','rgba(152,75,67,1)');
                     else
                         element.css('color','rgba(185,185,185,1)')
                     element.css('cursor','pointer');
                 })
                 .on('mouseleave',function(){
-                    if(scope.status === '5'){
-                        element.css('color','rgba(185,185,185,1)');
-                        element.css('cursor','auto');
-                        return;
-                    }
-                    if(scope.passed)
-                        element.css('color','rgba(233,51,32,1)');
-                    else if(scope.today)
-                        element.css('color','rgba(53,42,131,1)');
-                    else
-                        element.css('color','rgba(65,65,65,1)');
+                    scope.checkClosed();
+                    scope.regular();
                     element.css('cursor','default');
                 })
         }
@@ -153,12 +159,11 @@ app.directive('taskStatus',function(){
 })
 
 
-app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManager){
+app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,dataManager){
     $rootScope.savingTask = false;
-    $rootScope.pid = 1;
     $rootScope.accounts = [];
     $scope.tasks = [];
-    $rootScope.search = {};
+    $rootScope.search = {status:{$in:[]},pid:1};
 
     $scope.onClick = function(event){
         let target = event.target;
@@ -168,14 +173,6 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
     $rootScope.submitDoc = function(){
        $rootScope.$broadcast($rootScope.submitType,null);
     };
-
-    $rootScope.uploadDoc = function(doc){
-
-    };
-
-    $rootScope.saveDoc = function(doc){
-
-    }
 
     $rootScope.cancelDoc = function(){
         $rootScope.$broadcast($rootScope.submitType+'CancelDoc');
@@ -229,16 +226,22 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
         },200);
     }
 
-
-
     dataManager.requestData('account','account received',{search:{},cond:{sort:{name:1}}});
 
 
-    $scope.loadTask = function(){
+    $rootScope.loadSearch = function(){
+        let statusCondition = $cookies.getObject('tasksearchstatuscond');
+        let condition = statusCondition || {$in:[0,1,2,3]};
+        $rootScope.search.status = condition;
+    }
+
+    $rootScope.loadTask = function(){
+        let search = JSON.parse(JSON.stringify($rootScope.search));
+        delete search.pid;
         let request = [
-            { $match: {}},
+            { $match: search},
             { $sort:{schedule:1}},
-            { $skip:35*($rootScope.pid -1)},
+            { $skip:35*($rootScope.search.pid -1)},
             { $limit:35},
             {$lookup:{from: "taskComment",
                     let: {taskId: "$_id"},
@@ -256,6 +259,14 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
 
         dataManager.requestAggregateData('tasks','tasks received', request);
     };
+
+    $rootScope.loadPage = function(){
+        if($rootScope.countingPage)
+            return;
+        $rootScope.countingPage = true;
+        dataManager.countPage('tasks',$rootScope.search);
+    }
+
 
     $scope.$on('account received',function(event,data){
         if(!data.success){
@@ -288,7 +299,29 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
         }
     })
 
-    $scope.loadTask();
+
+    $scope.initialize = function(){
+        $scope.loadSearch();
+        $scope.loadTask();
+        $scope.loadPage();
+    }
+
+    $rootScope.refresh = function(){
+        $scope.loadTask();
+        $scope.loadPage();
+    }
+
+    $scope.$on('refresh page after search',function(event,data){
+        for(var index in data){
+            if($scope.search[index])
+                $scope.search[index] = data[index];
+            if(index ==='status')
+                $cookies.putObject('tasksearchstatuscond',data[index]);
+        }
+        $rootScope.refresh();
+    })
+
+    $scope.initialize();
 
 });
 
@@ -305,11 +338,14 @@ app.controller("entryCon",function($scope,$rootScope,$location,$window,dataManag
 
 app.controller("searchCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.status = [
-        {name:"REVIEW",index:0},
-        {name:"WORKING",index:1},
+        {name:"VERIFYING",index:0},
+        {name:"ENGINEER",index:1},
         {name:"VERIFICATION",index:2},
-        {name:"CLOSED",index:3},
+        {name:"FEEDBACK",index:3},
+        {name:"CLOSED",index:4},
+        {name:"PENDING",index:5},
     ];
+    $scope.selectedStatus = [];
 
     $scope.company = null;
     $scope.project = null;
@@ -320,9 +356,30 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
 
         let element = document.getElementById('filterBoard');
         if(element){
-            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:8});
+            $rootScope.$broadcast('floatClicked', {target:element,index:'status',height:$scope.status.length*2});
         }
     }
+
+
+    $scope.selectStat = function(index,id,event){
+        if(!$scope[index])
+            return;
+        let fIndex = $scope[index].indexOf(id);
+        if(fIndex >=0 ){
+            $scope[index].splice(fIndex,1);
+        }else{
+            $scope[index].push(id);
+        }
+        $scope.$emit("refresh page after search", {status:{$in:$scope.selectedStatus}});
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus});
+    };
+
+
+    $scope.$on('refresh filter',function(evetnt,data){
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus});
+    })
+
+    $scope.selectedStatus = $rootScope.search.status.$in;
 });
 
 app.controller("funcCon",function($scope,$rootScope,$location,$window,dataManager){
@@ -339,14 +396,9 @@ app.controller("funcCon",function($scope,$rootScope,$location,$window,dataManage
 });
 
 app.controller("pageCon",function($scope,$rootScope,dataManager){
-    $rootScope.pid = 1;
+    $scope.pid = $rootScope.search.pid;
     $scope.maxCount = 0;
     $scope.maxPage = 1;
-
-    $scope.refreshPageCount = function(){
-        $scope.requesting = true;
-        dataManager.countPage('tasks',$rootScope.search);
-    }
 
     $scope.goToPage = function(index){
         if($scope.requesting)
@@ -357,7 +409,7 @@ app.controller("pageCon",function($scope,$rootScope,dataManager){
         if(end>0)
             path = path.substring(0,end);
         $window.history.pushState(path+'?pid='+$scope.pid);
-        $scope.refreshPage();
+        $scope.$emit('refresh page after search', {pid:$scope.pid});
     }
 
     $scope.$on('countReceived',function(event,data){
@@ -367,8 +419,6 @@ app.controller("pageCon",function($scope,$rootScope,dataManager){
         }else
             alert(data.message);
     });
-
-    $scope.refreshPageCount();
 });
 
 app.controller("newTaskCon",function($scope,$rootScope,$location,$window,dataManager){

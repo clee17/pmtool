@@ -55,6 +55,11 @@ app.directive('logAnalysis',function($filter){
                     let log = logs[i];
                     let date = $filter('date')(log.date,'&y-&m-&d');
                     let contents = log.comment;
+                    if(log.type ==2 && log.status ===4){
+                        contents = '<b style="color:rgba(152,75,67,1)">'+ log.user.name + "</b> reopened the task";
+                    }else if(log.type ===2){
+                        contents = '<b style="color:rgba(152,75,67,1)">'+ log.user.name + "</b> closed the task";
+                    }
                     info += ' <div style="max-width:25rem;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >'+date;
                     info +="&nbsp&nbsp&nbsp";
                     info += contents;
@@ -243,6 +248,8 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
                         {$limit:5},
                     ],
                     as: "log"}},
+            {$lookup:{from:'user',localField:'user',foreignField:"_id",as:"user"}},
+            {$unwind:{path: "$user", preserveNullAndEmptyArrays: true }},
             {$lookup:{from:'project',localField:'project',foreignField:"_id",as:"project"}},
             {$lookup:{from:'version',localField:'version',foreignField:"_id",as:"version"}},
             {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}}]

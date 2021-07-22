@@ -9,8 +9,9 @@
     <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
     <script src="/lib/lz-string.min.js"></script>
     <script src="/lib/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/angular-cookies@1.5.9/angular-cookies.min.js"></script>
     <script>
-        var app = angular.module('dashboard',[])
+        var app = angular.module('dashboard',['ngCookies'])
             .config(function($locationProvider) {
                 $locationProvider.html5Mode(true);
             });
@@ -238,7 +239,7 @@
     </div>
 </div>
 <div id="main" style="display:flex;flex-direction:row;">
-    <div id="main_area" style="display:flex;flex-direction:column;flex:1;">
+    <div id="main_area" style="display:flex;flex-direction:column;flex:1;max-width:100%;overflow:auto;">
 
 <!--        function board-->
         <div ng-controller="funcCon" style="display:flex;flex-direction:row;padding-top:0.5rem;">
@@ -258,7 +259,13 @@
             </div>
             <div style="height:1rem;position:relative;padding-left:4rem;">
                 <div id="filterBoard" class="float-board" index="status">
-                    <button ng-repeat="stat in status" ng-click="selectStat(stat.index,$event)">{{stat.name}}</button>
+                    <button ng-repeat="stat in status"
+                            id="{{stat.index}}" index="status"
+                            class="filter-check"
+                            ng-click="selectStat('selectedStatus',stat.index,$event)">
+                        <span>{{stat.name}}</span>
+                        <i class="fas fa-check" style="margin-left:auto;margin-right:0.5rem;"></i>
+                    </button>
                 </div>
 
                 <div id="companySearchBoard" class="float-board" index="account" >
@@ -272,30 +279,34 @@
         <div id="main_records" ng-controller="entryCon">
             <table class="entryTable">
             <tr style="font-weight:bold;">
-                <td class="dateInfo">Submitted</td>
-                <td  class="dateInfo">Schedule</td>
+                <td>due</td>
+                <td>Status</td>
                 <td>Account</td>
                 <td>Project</td>
                 <td>Version</td>
                 <td>Description</td>
-                <td  class="dateInfo">Updated</td>
+                <td  class="dateInfo">Schedule</td>
                 <td>Log</td>
                 <td>product</td>
+                <td class="dateInfo">Submitted</td>
+                <td  class="dateInfo">Updated</td>
             </tr>
             <tr ng-repeat="task in tasks"
                 ng-mouseover="hoverLink($event,true)"
                 ng-mouseleave="hoverLink($event,false)"
                 ng-click="goToTask(task._id)"
-                task-status schedule="{{task.schedule}}" status="{{task.status}}">
-                <td class="dateInfo">{{task.createdAt | date:"&y/&m/&d"}}</td>
-                <td class="dateInfo">{{task.schedule | date:"&y/&m/&d"}}</td>
+                task-record schedule="{{task.schedule}}" status="{{task.status}}">
+                <td class="dateInfo">{{task.dueOn | date:"&y/&m/&d"}}</td>
+                <td>{{task.status | taskStatus}}</td>
                 <td class="listInfo" info-list info="{{task.account}}"></td>
                 <td class="listInfo" info-list info="{{task.project}}"></td>
                 <td class="dateInfo" info-list info="{{task.version}}" ></td>
                 <td class="descInfo">{{task.description}}</td>
-                <td>{{task.updatedAt | date:"&y/&m/&d"}}</td>
+                <td class="dateInfo">{{task.schedule | date:"&y/&m/&d"}}</td>
                 <td class="descInfo" log-analysis logs="{{task.log}}" style="overflow:auto;max-width:12rem;min-width:16rem;font-size:0.85rem;"></td>
                 <td>{{task.product | productinfo}}</td>
+                <td class="dateInfo">{{task.createdAt | date:"&y/&m/&d"}}</td>
+                <td>{{task.updatedAt | date:"&y/&m/&d"}}</td>
             </tr>
             </table>
         </div>

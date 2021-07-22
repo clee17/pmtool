@@ -300,7 +300,7 @@ app.controller('mainController',function($scope,$rootScope,$compile,$timeout,dat
             alert(data.message);
     });
 
-    $scope.switchFilter = function(event){
+    $scope.switchFilter = function(event,index){
         event.preventDefault();
         event.stopPropagation();
         let elements = document.getElementsByClassName('filterBoard');

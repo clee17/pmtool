@@ -366,7 +366,6 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
     $scope.switchFilter = function(event,index){
         event.preventDefault();
         event.stopPropagation();
-
         let indexes = ['status','types'];
         let elements = document.getElementsByClassName('filterBoard');
         if(elements.length> index){

@@ -76,8 +76,8 @@
         <div class="filterBoard float-board" index="status" style="margin-left:4rem;width:10rem;margin-top:-8px;">
             <button ng-repeat="stat in status"
                     class="filter-check"
-                    id="{{stat.index}}" index="selectedStatus"
-                    ng-click="selectFilter('selectedStatus',stat.index,$event)">
+                    id="{{stat.index}}" index="status"
+                    ng-click="selectFilter('selectedStatus',stat.index,$event,'status')">
                 <span>{{stat.name}}</span>
                 <i class="fas fa-check" style="margin-left:auto;margin-right:0.5rem;"></i>
             </button>

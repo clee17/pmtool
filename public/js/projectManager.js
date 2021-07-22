@@ -185,7 +185,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         doc.save(name);
     });
 
-    $scope.selectFilter = function(index,id,event){
+    $scope.selectFilter = function(index,id,event,signal){
         if(!$scope[index])
             return;
         let fIndex = $scope[index].indexOf(id);
@@ -196,7 +196,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         }
         $scope.searchProject();
         $scope.countProject();
-        $scope.$broadcast('filter refreshed',null);
+        $scope.$broadcast('filter refreshed',{selected:$scope[index],index:signal});
     };
 
     $scope.onClick = function(event){
@@ -347,7 +347,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         dataManager.saveData('project','project added',updateQuery);
     }
 
-    $scope.switchFilter = function(event){
+    $scope.switchFilter = function(event,index){
         event.preventDefault();
         event.stopPropagation();
         let elements = document.getElementsByClassName('filterBoard');
@@ -443,8 +443,12 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
             $scope.selectedStatus =  JSON.parse(JSON.stringify(searchCond.status.$in));
         $scope.search.status = {$in:$scope.selectedStatus};
         $scope.search.owner = $scope.userId;
-        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus});
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus,index:'status'});
         $scope.searchProject();
         $scope.countProject();
     }
+
+    $scope.$on('refresh filter',function(event,data){
+        $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus,index:'status'});
+    })
 });

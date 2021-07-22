@@ -656,7 +656,7 @@ let handler = {
         if(update._id)
             delete update._id;
         if(update.populate)
-             update.populate;
+             delete update.populate;
 
 
         tableList[tableId].findOneAndUpdate(search,update,{upsert:true,setDefaultsOnInsert:true,new:true},function(err,result){

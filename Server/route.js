@@ -859,10 +859,10 @@ let handler = {
                 handler.sendError(res,response,err)
             else if(req.body.saveRec){
                 let attachlist = received.attachments;
-                if(!attachlist)
+                if(!attachlist && received.updateExpr)
                     attachlist = received.updateExpr.attachments;
-                if(!attachlist)
-                    received.attachments = [];
+                else if(!attachlist)
+                    attachlist = received.attachments = [];
                 for(let i=0;i < attachments.length;++i){
                     attachlist.push(attachments[i]._id);
                 }

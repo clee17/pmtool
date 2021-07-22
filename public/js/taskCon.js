@@ -246,10 +246,10 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,dataManage
                         {$match:{ $expr:{$eq:["$$taskId","$task"]}}},
                         {$sort:{date:-1}},
                         {$limit:5},
+                        {$lookup:{from:'user',localField:'user',foreignField:"_id",as:"user"}},
+                        {$unwind:{path: "$user", preserveNullAndEmptyArrays: true }},
                     ],
                     as: "log"}},
-            {$lookup:{from:'user',localField:'user',foreignField:"_id",as:"user"}},
-            {$unwind:{path: "$user", preserveNullAndEmptyArrays: true }},
             {$lookup:{from:'project',localField:'project',foreignField:"_id",as:"project"}},
             {$lookup:{from:'version',localField:'version',foreignField:"_id",as:"version"}},
             {$lookup:{from:'account',localField:'account',foreignField:"_id",as:"account"}}]

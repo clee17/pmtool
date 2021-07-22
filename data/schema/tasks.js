@@ -8,7 +8,7 @@ module.exports = new mongoose.Schema({
     children:[{type:mongoose.Schema.ObjectId,ref:'tasks',default:null}],
     parent:[{type:mongoose.Schema.ObjectId,ref:'tasks',default:null}],
     type:{type:Number,default:0}, //0 new feature; 1, issue; 2, QA submission
-    status:{type:Number,default:0},//0.review & QA; 2 engineer Assigned; 3. Verification. 4. feedback; 5 Closed; 6: pending
+    status:{type:Number,default:0},//0.review & QA; 1 engineer Assigned; 2. QA. 3. feedback; 4 Closed; 5: pending
     submitter:{type:mongoose.Schema.ObjectId,ref:'user',default:null},
     account: [{type:mongoose.Schema.ObjectId,ref:'account',default:null}],
     project: [{type:mongoose.Schema.ObjectId,ref:'project',default:null}],

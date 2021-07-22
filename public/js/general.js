@@ -1,7 +1,9 @@
 var cancelDoc = function(){
+    console.log('entered');
     let elements = document.getElementsByClassName('addDoc');
     if(elements.length>0)
         elements[0].style.height = '0';
+    console.log(elements);
     let topLayer = document.getElementById('pageCover');
     topLayer.style.display = 'none';
     setTimeout(function(){

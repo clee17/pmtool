@@ -89,17 +89,28 @@ app.directive('deliveryInfo',function(){
 app.filter('taskStatus',function(){
     return function(status){
         if(status === 0)
-            return 'Review & QA';
+            return 'Review';
         else if (status === 1)
             return 'Engineer Assigned';
         else if (status === 2)
-            return 'Verification';
+            return 'QA';
         else if (status === 3)
-            return 'Pending';
+            return 'Feedback';
         else if (status === 4)
-            return 'Closed';
+            return 'CLOSED';
+        else if (status === 5)
+            return 'Pending';
     }
 });
+
+app.filter('buttonStatus',function(){
+    return function(status){
+        if(status === 4)
+            return 'OPEN';
+        else
+            return 'CLOSE';
+    }
+})
 
 app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.addDescription = [];
@@ -109,6 +120,18 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         pageId:1,
         startIndex:1,
         maxCount:0
+    };
+
+    $scope.closeTask = function(){
+        if($rootScope.taskUpdating)
+            return;
+        $rootScope.taskUpdating = true;
+        if($rootScope.task.status === 4){
+            $scope.$broadcast('alertMessage',{message:"是否重开此任务?",info:{message:'openTask',type:1}});
+        }else{
+            $scope.$broadcast('alertMessage',{message:"是否确认关闭本任务?",info:{message:'closeTask',type:0}});
+        }
+
     };
 
     $rootScope.submitDoc = function(){
@@ -163,8 +186,10 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         xhr.send();
     }
 
-    $scope.refreshCommentData = function(){
+    $scope.refreshCommentData = function(data){
         let schedule = $rootScope.schedule;
+        if(data)
+            schedule = new Date(data.schedule);
         let day = ("0" + schedule.getDate()).slice(-2);
         let month = ("0" + (schedule.getMonth() + 1)).slice(-2);
         let element = document.getElementById('commentTime');
@@ -172,11 +197,38 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
             element.value = schedule.getFullYear()+'-'+(month)+'-'+day;
     }
 
+    $scope.refreshBackground = function(){
+        let element = document.getElementById("mainContents_0");
+        if(!element)
+            return;
+        if($rootScope.task.status === 4 || $rootScope.task.status === 5){
+            element.style.background ="rgba(235,235,235,1)";
+        }else{
+            element.style.background = "rgba(255,255,255,1)";
+        }
+    }
+
     $rootScope.initialize = function(){
         dataManager.requestData('tasks','task info received',{search:{_id:$rootScope.taskId},populate:'submitter'});
         dataManager.countPage('taskComment', {parent:null,type:1,task:$rootScope.taskId});
         $scope.refreshCommentData();
     }
+
+    $scope.$on('alertConfirmed',function(event,data){
+        let search = {
+            status:$rootScope.task.status,
+            task:$rootScope.taskId,
+            user:$rootScope.user._id,
+            date:Date.now()
+        }
+        if(data.type ===0){
+            dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4}, populate:'submitter'});
+        }else if(data.type ===1){
+            dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:0}, populate:'submitter'});
+        }
+    })
 
     $scope.$on('countReceived',function(event,data){
         if(data.success){
@@ -187,13 +239,20 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
     });
 
     $scope.$on('task info received',function(event,data) {
+        $scope.taskUpdating = false;
         if(!data.success){
             alert(data.message);
         }else{
-            $rootScope.task = data.result;
+            if(Array.isArray(data.result))
+                $rootScope.task = data.result[0];
+            else
+                $rootScope.task = data.result;
+            $rootScope.taskStatus = $rootScope.task.status.toString();
+            $rootScope.schedule = new Date($rootScope.task.schedule);
+            $scope.refreshBackground();
+            $scope.refreshCommentData();
         }
     });
-
 });
 
 app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManager){
@@ -232,6 +291,8 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     }
 
     $scope.updatable  = function(index){
+        if(!$rootScope.task || $rootScope.task.status === 4)
+            return false;
         if(!$scope.addingComment){
             if(index === 0)
                 return !$scope.addingDesc;
@@ -296,7 +357,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             search:{
                 date:new Date(Date.now()),
                 parent:parent,
-                status:$rootScope.taskStatus,
+                status:$scope.status,
                 type:index,
                 comment: contents,
                 user: $rootScope.user._id,
@@ -330,19 +391,38 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             $scope.comments.push(data.result);
             $scope.comment['1'] = "";
             $scope.attachments['1'].length = 0;
-            dataManager.updateData('tasks',"task info updated",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule,status:Number($scope.status)}});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule,status:Number($scope.status)},populate:'submitter'});
         }
     });
 
+    $scope.$on('task comment saved on index2',function(event,data){
+        console.log(data);
+        if(!data.success){
+            alert(data.message);
+        }else{
+            $scope.stringifyData(data.result);
+            $scope.comments.push(data.result);
+        }
+    });
 
-    $scope.$on('task info updated',function(event,data){
+    $scope.stringifyData = function(rec){
+
+        let current = new Date(rec.date);
+        current = current.getFullYear() + '/' + (current.getMonth()+1) + '/' + current.getDate();
+        if(rec.type === 2 && rec.status === 4){
+            rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> reopened the task on <b>"+current+"</b>" ;
+        }else if(rec.type===2){
+            rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> closed the task on <b>"+current+"</b>";
+        }
+    }
+
+
+    $scope.$on('task info received',function(event,data){
         $scope.tempSchedule = null;
         if(!data.success){
             alert(data.message);
         }else{
-            $rootScope.taskStatus = $scope.status;
-            $rootScope.schedule = new Date(data.result.schedule);
-            $scope.refreshCommentData();
+            $scope.refreshCommentData(data.result);
         }
     });
 
@@ -350,8 +430,15 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     $scope.$on("comments received",function(event,data){
         if(!data.success)
             alert(data.message);
-        else
-           $scope.comments = data.result;
+        else{
+            for(let i=0; i<data.result.length;++i) {
+                if(data.result[i].type >=2){
+                    $scope.stringifyData(data.result[i]);
+                }
+            }
+            $scope.comments = data.result;
+        }
+
     })
 
     $scope.initialize = function(){
@@ -359,4 +446,43 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     }
 
     $scope.initialize();
+});
+
+app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManager){
+    $scope.answering = false;
+    $scope.answerAlert = function(result){
+        $scope.answering = false;
+        if(result){
+            $scope.$emit('alertConfirmed',$scope.info);
+            $scope.info = null;
+            cancelDoc();
+        }else{
+            if($scope.info.type === 0)
+                $rootScope.taskUpdating = false;
+            cancelDoc();
+        }
+    };
+
+    $scope.$on('alertMessage',function(event,data){
+        if($scope.answering)
+            return;
+        let element = document.getElementById("alertTaskInfo");
+        if(!element)
+            return;
+        element.innerHTML = data.message;
+
+        $scope.info = data.info;
+        $scope.answering = true;
+
+        let topLayer = document.getElementById('pageCover');
+        if(topLayer)
+            topLayer.style.display = 'flex';
+
+        setTimeout(function() {
+            let element = document.getElementById("infoBoard");
+            if(element)
+              element.style.height = '15rem';
+              element.style.minWidth = '35rem';
+            },10);
+    })
 });

@@ -38,10 +38,10 @@
 <div id="statusBar" style="display:flex;flex-direction:row;">
     <a href="/tasks" target="_self" style="margin-right:0.5rem;">BACK</a>
     <span> >  Created On {{ create | date:'&y/&m/&d'}} by <%- submitter.name %></span>
-    <button style="margin-left:auto;">CLOSE</button>
-    <button style="margin-left:0.5rem;margin-right:2rem;">NEW</button>
+    <button style="margin-left:auto;" ng-disabled="taskUpdating" ng-click="closeTask()">{{ task.status | buttonStatus}}</button>
+    <button style="margin-left:0.5rem;margin-right:2rem;" ng-disabled="taskUpdating">LINK</button>
 </div>
-<div class="mainContents" style="display:flex;flex-direction:column;" ng-controller="infoCon">
+<div class="mainContents" id="mainContents_0" style="display:flex;flex-direction:column;" ng-controller="infoCon">
     <div style="font-size:1.5rem;font-weight:bold;"><%- title %></div>
     <div style="min-height:1rem;padding:0.5rem;">
           <span ng-repeat="attach in task.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
@@ -87,12 +87,12 @@
     <div style="display:flex;flex-direction:column;min-height:6rem;flex:1;margin-left:1.5rem;">
         <div ng-show="comments.length === 0" style="margin:auto;color:rgba(140,140,140,0.8);font-size:2rem;">NO COMMENT NOW</div>
         <div ng-repeat="comment in comments">
-            <div style="display:flex;flex-direction:row;" class="subRow">
+            <div style="display:flex;flex-direction:row;" class="subRow" ng-if="comment.type <2">
                 <div>提交人：{{comment.user.name}}</div>
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | taskStatus}}</div>
             </div>
-            <div style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
+            <div ng-if="comment.type <2" style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)" >
               <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
               <span style="max-width:6rem;">{{attach.name}}</span>
           </span></div>
@@ -128,6 +128,7 @@
                 <option value="2">QA</option>
                 <option value="3">Feedback </option>
                 <option value="4">CLOSED</option>
+                <option value="5">Pending</option>
             </select>
         </div>
         <div style="display:flex;flex-direction:row;margin-bottom:0.5rem;">
@@ -139,8 +140,8 @@
                 </span>
             </div>
             <div style="display:flex;flex-direction:row;margin-left:auto;border-radius:3px; background:rgba(230,230,230,0.8);padding:0.5rem;margin-right:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
-                <input  id="attachUpload1" style="margin-left:auto;" type=file>
-                <button ng-click="uploadAttach(1,null,'comment')" style="margin-left:0.5rem;">Upload</button>
+                <input  id="attachUpload1" ng-disabled="!updatable(1)" style="margin-left:auto;" type=file>
+                <button ng-click="uploadAttach(1,null,'comment')"  ng-disabled="!updatable(1)" style="margin-left:0.5rem;">Upload</button>
             </div>
         </div>
         <textarea style="min-height:6rem;" ng-model="comment[1]" ng-disabled="!updatable(1)"></textarea>
@@ -151,5 +152,63 @@
 <!--   END 底部新评论-->
 </div>
 
+
+<!--   Cover Page-->
+<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;" ng-controller="coverCon">
+    <div id="infoBoard" class="addTask addDoc" style="position:relative;">
+        <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);" ng-show="savingTask">
+            <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
+        </div>
+        <div style="margin:1rem;display:flex;flex-direction:column;display:none;" >
+            <table id="docDetail" class="displayTable" style="flex:1;margin-top:0.5rem;">
+                <tr><td colspan=2><input ng-model="newTask.title" placeholder="Task Title(mandatory)" style="min-width:30rem;" id="titleInput"></td></tr>
+                <tr><td>Type:</td><td>
+                    <select ng-disabled="savingTask" ng-model="newTask.type" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:99;">
+                        <option value="0">Issue</option>
+                        <option value="1">Requirement</option>
+                        <option value="2">release</option>
+                        <option value="3">QA</option>
+                        <option ng-repeat="account in Accounts" value="account._id">{{account.name}}</option>
+                    </select>
+                </td></tr>
+                <tr><td>Due On:</td><td><input  type="date" id="NewTaskDate" ng-model="newTask.dueOn"></td></tr>
+                <tr><td>Account:</td><td>
+                    <select ng-disabled="savingTask" ng-model="newTask.account" ng-change="loadProjects(target)" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:98;">
+                        <option value="0">Please select account</option>
+                        <option ng-repeat="account in accounts" value="{{account._id}}">{{account.name}}</option>
+                    </select>
+                </td></tr>
+                <tr><td>Project:</td><td>
+                    <select ng-disabled="savingTask" ng-change="loadVersions()" ng-model="newTask.project" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:97;">
+                        <option value="0">Please select project</option>
+                        <option ng-repeat="project in projects" value="{{project._id}}">{{project.name}}</option>
+                    </select>
+                </td></tr>
+                <tr><td style="min-width:7.5rem;width:7.5rem;">Found on Version:</td><td>
+                    <select ng-disabled="savingTask" ng-model="newTask.version" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:95;" onchange="this.size=0">
+                        <option value="0">Please select version</option>
+                        <option ng-repeat="version in versions" value="{{version._id}}">{{version | versionname}}</option>
+                    </select>
+                </td></tr>
+                <tr><td colspan="2">
+                    <textarea ng-disabled="savingTask" ng-model="newTask.description" style="min-height:8rem;min-width:30rem;border-radius:5px;"></textarea>
+                </td></tr>
+            </table>
+            <div style="display:flex;flex-direction:row;margin-top:1rem;">
+                <button style="margin-left:6rem;margin-right:auto;" ng-click="submitDoc()" ng-disabled="savingTask">提交</button>
+                <button style="margin-left:auto;margin-right:6rem;" ng-click="cancelAddDoc()" ng-disabled="savingTask">取消</button>
+            </div>
+        </div>
+        <div id="alertBoard">
+            <div id="alertTaskInfo" style="margin:2rem;"></div>
+            <div style="display:flex;flex-direction:row;margin-top:1rem;">
+                <button style="margin-left:6rem;margin-right:auto;" ng-click="answerAlert(true)" ng-disabled="savingTask">提交</button>
+                <button style="margin-left:auto;margin-right:6rem;" ng-click="answerAlert(false)" ng-disabled="savingTask">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--END COVER PAGE-->
 </body>
 </html>

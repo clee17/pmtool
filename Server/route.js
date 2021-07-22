@@ -647,15 +647,17 @@ let handler = {
         let search = received._id? {_id:received._id} : received;
         if(received.search)
             search = received.search;
+        if(received.populate){
+            populate = received.populate;
+        }
         let update = received;
         if(received.updateExpr)
             update = received.updateExpr;
         if(update._id)
             delete update._id;
-        if(update.populate){
-            populate = update.populate;
-            delete update.populate;
-        }
+        if(update.populate)
+             update.populate;
+
 
         tableList[tableId].findOneAndUpdate(search,update,{upsert:true,setDefaultsOnInsert:true,new:true},function(err,result){
             if(err){

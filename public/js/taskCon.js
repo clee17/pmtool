@@ -454,8 +454,8 @@ app.controller("newTaskCon",function($scope,$rootScope,$location,$window,dataMan
 
         updateTask.submitter = $rootScope.userId;
         updateTask.schedule = new Date(Date.now()+3*24*60*1000);
-        updateTask.populate = { path: 'project', select: {'name': 1,'_id': 1}};
+        let populate = { path: 'project', select: {'name': 1,'_id': 1}};
 
-        dataManager.saveData('tasks','task added',updateTask);
+        dataManager.saveData('tasks','task added', {search:updateTask,populate:populate});
     }
 });

@@ -169,15 +169,14 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         xhr.send();
     }
 
-    $scope.refreshCommentData = function(data){
-        let schedule = $rootScope.schedule;
-        if(data)
-            schedule = new Date(data.schedule);
+    $scope.refreshCommentData = function(){
+        let schedule = new Date($rootScope.task.schedule);
+        let year = schedule.getFullYear();
         let day = ("0" + schedule.getDate()).slice(-2);
         let month = ("0" + (schedule.getMonth() + 1)).slice(-2);
         let element = document.getElementById('commentTime');
         if(element)
-            element.value = schedule.getFullYear()+'-'+(month)+'-'+day;
+            element.value = year+'-'+month+'-'+day;
     }
 
     $scope.refreshBackground = function(){
@@ -194,7 +193,6 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
     $rootScope.initialize = function(){
         dataManager.requestData('tasks','task info received',{search:{_id:$rootScope.taskId},populate:'submitter'});
         dataManager.countPage('taskComment', {parent:null,type:1,task:$rootScope.taskId});
-        $scope.refreshCommentData();
     }
 
     $scope.$on('alertConfirmed',function(event,data){
@@ -223,6 +221,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
 
     $scope.$on('task info received',function(event,data) {
         $scope.taskUpdating = false;
+        $scope.tempSchedule = null;
         if(!data.success){
             alert(data.message);
         }else{
@@ -398,16 +397,6 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> closed the task on <b>"+current+"</b>";
         }
     }
-
-
-    $scope.$on('task info received',function(event,data){
-        $scope.tempSchedule = null;
-        if(!data.success){
-            alert(data.message);
-        }else{
-            $scope.refreshCommentData(data.result);
-        }
-    });
 
 
     $scope.$on("comments received",function(event,data){

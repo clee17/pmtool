@@ -253,13 +253,14 @@
         <div id="main_records" ng-controller="entryCon">
             <table class="entryTable">
             <tr style="font-weight:bold;">
-                <td>due</td>
+                <td>Due</td>
+                <td>Type</td>
                 <td>Status</td>
                 <td>Account</td>
                 <td>Project</td>
                 <td>Version</td>
                 <td>Description</td>
-                <td  class="dateInfo">Schedule</td>
+                <td class="dateInfo">Schedule</td>
                 <td>Log</td>
                 <td>product</td>
                 <td class="dateInfo">Submitted</td>
@@ -271,6 +272,7 @@
                 ng-click="goToTask(task._id)"
                 task-record schedule="{{task.schedule}}" status="{{task.status}}">
                 <td class="dateInfo">{{task.dueOn | date:"&y/&m/&d"}}</td>
+                <td task-type type="{{task.type}}"></td>
                 <td>{{task.status | taskStatus}}</td>
                 <td class="listInfo" info-list info="{{task.account}}"></td>
                 <td class="listInfo" info-list info="{{task.project}}"></td>
@@ -314,6 +316,8 @@
                         <option value="1">Requirement</option>
                         <option value="2">release</option>
                         <option value="3">QA</option>
+                        <option value="4">Documentation</option>
+                        <option value="5">Other</option>
                         <option ng-repeat="account in Accounts" value="account._id">{{account.name}}</option>
                     </select>
                 </td></tr>

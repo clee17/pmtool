@@ -152,8 +152,9 @@ app.directive('taskRecord',function(){
                     element.css('cursor','pointer');
                 })
                 .on('mouseleave',function(){
-                    scope.checkClosed();
-                    scope.regular();
+                    if(!scope.checkClosed()){
+                        scope.regular();
+                    }
                     element.css('cursor','default');
                 })
         }
@@ -357,6 +358,8 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
         {name:"REQUIREMENT",index:1},
         {name:"RELEASE",index:2},
         {name:"QA",index:3},
+        {name:"Documentation",index:4},
+        {name:"Other",index:5},
     ];
 
     $scope.selectedStatus = [];

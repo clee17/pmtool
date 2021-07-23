@@ -21,7 +21,11 @@
     <script src="/js/projectFilter.js"></script>
     <script src="/js/taskInfoCon.js"></script>
 </head>
-
+<style>
+    ul{
+        margin-left:2rem;
+    }
+</style>
 <body ng-app="dashboard"
       ng-controller="rootCon">
 <info-receiver  ng-init="user = '<%= encodeURIComponent(JSON.stringify(user)) %>';

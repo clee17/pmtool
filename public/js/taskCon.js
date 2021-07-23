@@ -118,7 +118,9 @@ app.directive('taskRecord',function(){
                 if(scope.status === '4' || scope.status === '5'){
                     element.css('background','lightgray');
                     element.css('cursor','pointer');
-                }
+                    return true;
+                }else
+                    return false;
             };
 
             scope.regular = function(){
@@ -134,8 +136,8 @@ app.directive('taskRecord',function(){
                 return scope.status === '4' || scope.status === '5';
             }
 
-            scope.checkClosed();
-            scope.regular();
+            if(!scope.checkClosed())
+                 scope.regular();
 
             element
                 .on('mouseover',function(){

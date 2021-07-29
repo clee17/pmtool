@@ -343,6 +343,15 @@ app.filter('trim',function($rootScope){
     }
 })
 
+app.filter('contentFormat',function(){
+    return function(contents){
+            let result = contents.replace(/\n/g,'<br>');
+            if(result.length === 0)
+                result = 'no info';
+            return result;
+        }
+});
+
 app.filter('countryCode',function($rootScope){
     return function(code){
         if(typeof code !== 'string')
@@ -443,6 +452,8 @@ app.directive('contentFormat',function(){
         }
     }
 });
+
+
 
 app.directive('docSource',function($compile){
     return{

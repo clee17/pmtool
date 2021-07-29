@@ -63,12 +63,13 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
     });
 
     $scope.refreshCommentData = function(){
-        $scope.scheduleNow = new Date($rootScope.schedule);
+        $scope.scheduleNow = new Date($rootScope.project.schedule);
+        let year = $scope.scheduleNow.getFullYear();
         let day = ("0" + $scope.scheduleNow.getDate()).slice(-2);
         let month = ("0" + ($scope.scheduleNow.getMonth() + 1)).slice(-2);
         let element = document.getElementById('commentTime');
         if(element)
-            element.value = $scope.scheduleNow.getFullYear()+'-'+(month)+'-'+day;
+            element.value = year+'-'+month+'-'+day;
     }
 
     $scope.updateProject = function(dateNow){

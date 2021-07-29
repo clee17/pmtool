@@ -42,41 +42,26 @@
 <div id="statusBar" style="display:flex;flex-direction:row;">
     <a href="/tasks" target="_self" style="margin-right:0.5rem;">BACK</a>
     <span> >  Created On {{ create | date:'&y/&m/&d'}} by <%- submitter.name %></span>
-    <button style="margin-left:auto;" ng-disabled="taskUpdating" ng-click="closeTask()">{{ task.status | buttonStatus}}</button>
+    <button style="margin-left:auto;" ng-disabled="taskUpdating || task.status>4" ng-click="closeTask()">{{ task.status | buttonStatus}}</button>
     <button style="margin-left:0.5rem;margin-right:2rem;" ng-disabled="taskUpdating">LINK</button>
 </div>
 <div class="mainContents" id="mainContents_0" style="display:flex;flex-direction:column;" ng-controller="infoCon">
     <div style="font-size:1.5rem;font-weight:bold;"><%- title %></div>
+    <div style="display:flex;flex-direction:row;"><button style="margin-left:auto" ng-disabled="taskUpdating" ng-click="switchAddDesc()">EDIT</button></div>
     <div style="min-height:1rem;padding:0.5rem;">
           <span ng-repeat="attach in task.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
               <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
               <span style="max-width:6rem;">{{attach.name}}</span>
           </span>
     </div>
-    <div style="margin-top:0.5rem;" style="min-height:5rem;"><%- description %></div>
+    <div style="margin-top:0.5rem;min-height:5rem;" ng-hide="addingDesc" id="description"><%- description %></div>
 
 <!--    补充说明-->
-    <div style="display:flex;flex-direction:row;"><button style="margin-left:auto" ng-click="switchAddDesc()">补充说明</button></div>
-    <div ng-show="addingDesc" style="display:flex;flex-direction:column;border:solid 1px rgba(152,75,67,1);border-radius:5px;padding:1.5rem;margin-top:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
+
+    <div ng-show="addingDesc" style="display:flex;flex-direction:column;border:solid 1px rgba(152,75,67,1);border-radius:5px;padding:1.5rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
+        <textarea style="min-height:6rem;" ng-disabled="taskUpdating" id="descriptionBox"></textarea>
         <div style="display:flex;flex-direction:row;">
-            <div style="margin-left:1rem;">提交人：{{user.name}}</div>
-        </div>
-        <div style="display:flex;flex-direction:row;margin-bottom:0.5rem;">
-            <div style="flex:1;display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;">
-                <span ng-repeat="attach in attachments['0']" style="margin-right:0.5rem;">
-                     <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
-                     <span style="max-width:6rem;">{{attach.name}}</span>
-                     <button  class="closeBtnInline" ng-click="deleteAttach(attach,0)"><i class="fas fa-times-circle"></i></button>
-                </span>
-            </div>
-            <div style="display:flex;flex-direction:row;margin-left:auto;border-radius:3px; background:rgba(230,230,230,0.8);padding:0.5rem;margin-right:2rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
-                <input  id="attachUpload0" style="margin-left:auto;" type=file>
-                <button ng-click="uploadAttach(0,null,'description')" style="margin-left:0.5rem;">Upload</button>
-            </div>
-        </div>
-        <textarea style="min-height:6rem;" ng-model="comment[0]" ng-disabled="!updatable()"></textarea>
-        <div style="display:flex;flex-direction:row;">
-            <button class="submitButton" ng-click="submitComment(0)" ng-disabled="!updatable()">提交</button>
+            <button class="submitButton" ng-click="submitDescription()" ng-disabled="taskUpdating">保存</button>
         </div>
     </div>
 
@@ -96,7 +81,7 @@
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | taskStatus}}</div>
             </div>
-            <div ng-if="comment.type <2" style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)" >
+            <div ng-if="comment.type <2" style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name,attach)" >
               <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
               <span style="max-width:6rem;">{{attach.name}}</span>
           </span></div>

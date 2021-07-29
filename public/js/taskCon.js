@@ -270,7 +270,9 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
         if($rootScope.countingPage)
             return;
         $rootScope.countingPage = true;
-        dataManager.countPage('tasks',$rootScope.search);
+        let search = JSON.parse(JSON.stringify($rootScope.search));
+        delete search.pid;
+        dataManager.countPage('tasks',search);
     }
 
 
@@ -460,19 +462,16 @@ app.controller("pageCon",function($scope,$rootScope,dataManager){
     $scope.goToPage = function(index){
         if($scope.requesting)
             return;
-        $scope.pid = index+1;
-        let path = $location.path();
-        let end = path.indexOf('?');
-        if(end>0)
-            path = path.substring(0,end);
-        $window.history.pushState(path+'?pid='+$scope.pid);
-        $scope.$emit('refresh page after search', {pid:$scope.pid});
+        $scope.pid = $rootScope.search.pid = index+1;
+        $rootScope.refresh();
     }
 
     $scope.$on('countReceived',function(event,data){
+        $rootScope.countingPage = false;
         if(data.success){
             $scope.maxCount = data.maxCount;
             $scope.maxPage = Math.ceil(data.maxCount/35);
+
         }else
             alert(data.message);
     });

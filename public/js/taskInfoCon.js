@@ -95,7 +95,7 @@ app.filter('buttonStatus',function(){
     }
 })
 
-app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManager){
+app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,dataManager){
     $scope.addDescription = [];
     $rootScope.maxCount = 0;
     $rootScope.commentPage = {
@@ -179,6 +179,12 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
             element.value = year+'-'+month+'-'+day;
     }
 
+    $scope.refreshTaskBasic  = function(){
+        let element = document.getElementById('description');
+        if(element)
+            element.innerHTML = $filter('contentFormat')($rootScope.task.description);
+    }
+
     $scope.refreshBackground = function(){
         let element = document.getElementById("mainContents_0");
         if(!element)
@@ -190,10 +196,40 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         }
     }
 
+    $scope.refreshPage = function(){
+        dataManager.countPage('taskComment', {task:$rootScope.taskId});
+    }
+
     $rootScope.initialize = function(){
         dataManager.requestData('tasks','task info received',{search:{_id:$rootScope.taskId},populate:'submitter'});
-        dataManager.countPage('taskComment', {parent:null,type:1,task:$rootScope.taskId});
+        $scope.refreshPage();
     }
+
+    $scope.updateTaskDescription = function(value){
+        if($scope.taskUpdating)
+            return;
+        $scope.taskUpdating = true;
+        let search = {
+            status:$rootScope.task.status,
+            task:$rootScope.taskId,
+            user:$rootScope.user._id,
+            date:Date.now()
+        }
+        dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:3,comment:$rootScope.task.comment},populate:'user attachments'});
+        dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{description:value}, populate:'submitter'});
+    }
+
+    $scope.submitDescription = function(){
+        let element = document.getElementById("descriptionBox");
+        if(!element)
+            return;
+        if(element.value === $rootScope.task.description){
+            $scope.switchAddDesc();
+        }else{
+            $scope.updateTaskDescription(element.value);
+        }
+
+    };
 
     $scope.$on('alertConfirmed',function(event,data){
         let search = {
@@ -233,6 +269,8 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
             $rootScope.schedule = new Date($rootScope.task.schedule);
             $scope.refreshBackground();
             $scope.refreshCommentData();
+            $scope.refreshTaskBasic();
+            $scope.refreshPage();
         }
     });
 });
@@ -270,6 +308,12 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 
     $scope.switchAddDesc = function(){
         $scope.addingDesc = !$scope.addingDesc;
+        if($scope.addingDesc)
+        {
+            let element = document.getElementById("descriptionBox");
+            if(element)
+                element.value = $rootScope.task.description;
+        }
     }
 
     $scope.updatable  = function(index){
@@ -282,6 +326,18 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
                 return true;
         }else{
             return false;
+        }
+    }
+
+    $scope.deleteAttach = function(attach,index){
+        let attachments = $scope.attachments[index.toString()];
+        if(!attachments)
+            return;
+        for(let i=0; i<attachments.length;++i){
+            if(attachments[i].index === attach.index){
+                attachments.splice(i,1);
+                break;
+            }
         }
     }
 
@@ -378,7 +434,6 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     });
 
     $scope.$on('task comment saved on index2',function(event,data){
-        console.log(data);
         if(!data.success){
             alert(data.message);
         }else{
@@ -388,14 +443,19 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     });
 
     $scope.stringifyData = function(rec){
-
         let current = new Date(rec.date);
         current = current.getFullYear() + '/' + (current.getMonth()+1) + '/' + current.getDate();
-        if(rec.type === 2 && rec.status === 4){
-            rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> reopened the task on <b>"+current+"</b>" ;
-        }else if(rec.type===2){
-            rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> closed the task on <b>"+current+"</b>";
+        if(rec.type === 2){
+            if(rec.status === 4){
+                rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> reopened the task on <b>"+current+"</b>" ;
+            }else{
+                rec.comment = '<b style="color:rgba(152,75,67,1)">'+ rec.user.name + "</b> closed the task on <b>"+current+"</b>";
+            }
+        }else if(rec.type === 3){
+            rec.description = rec.comment;
+            rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> changed the desciption on <b>"+current+"</b>" ;
         }
+
     }
 
 
@@ -412,6 +472,12 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         }
 
     })
+
+    $scope.$on('task info received',function(event,data){
+        if($scope.addingDesc){
+            $scope.switchAddDesc();
+        }
+    });
 
     $scope.initialize = function(){
         dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($rootScope.commentPage.pageId-1),limit:35}});

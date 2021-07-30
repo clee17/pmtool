@@ -8,6 +8,23 @@ app.directive('infoReceiver',function($rootScope){
     }
 });
 
+
+app.directive('infoFormat',function(){
+    return{
+        restrict:"EA",
+        scope:{
+            description:'@',
+            title:'@'
+        },
+        link:function(scope,element,attr){
+            let title =  '<b>'+scope.title+'</b><br>';
+            let result = scope.description.replace(/\n/g,'<br>');
+            element.html(title + result);
+        }
+    }
+});
+
+
 app.filter('versionname',function(){
     return function(version) {
         if(version.name && version.name.length >0)
@@ -115,11 +132,16 @@ app.directive('taskRecord',function(){
             scope.today = schedule && schedule.getFullYear()==dateNow.getFullYear() && schedule.getMonth() == dateNow.getMonth() && schedule.getDate() == dateNow.getDate();
 
             scope.checkClosed = function(){
-                if(scope.status === '4' || scope.status === '5'){
+                if(scope.status === '4' ){
                     element.css('background','lightgray');
                     element.css('cursor','pointer');
                     return true;
-                }else
+                }else if(scope.status === '5'){
+                    element.css('background','rgba(240,240,240,1)');
+                    element.css('cursor','pointer');
+                    return true;
+                }
+                else
                     return false;
             };
 
@@ -142,7 +164,7 @@ app.directive('taskRecord',function(){
             element
                 .on('mouseover',function(){
                     if(scope.isClosed())
-                        element.css('background','rgba(185,185,185,1)');
+                        element.css('background','rgba(205,205,205,1)');
                     else if(scope.today && !scope.isClosed()) {
                         element.css('color','rgba(99,80,242,1)');
                     }else if(scope.passed && !scope.isClosed())

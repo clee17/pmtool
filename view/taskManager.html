@@ -277,7 +277,7 @@
                 <td class="listInfo" info-list info="{{task.account}}"></td>
                 <td class="listInfo" info-list info="{{task.project}}"></td>
                 <td class="dateInfo" info-list info="{{task.version}}" ></td>
-                <td class="descInfo" content-format contents="{{task.description}}">{{task.description}}</td>
+                <td class="descInfo" info-format description="{{task.description}}" title="{{task.title}}" valign="top">{{task.description}}</td>
                 <td class="dateInfo">{{task.schedule | date:"&y/&m/&d"}}</td>
                 <td class="descInfo" log-analysis logs="{{task.log}}" style="overflow:auto;max-width:12rem;min-width:16rem;font-size:0.85rem;"></td>
                 <td>{{task.product | productinfo}}</td>

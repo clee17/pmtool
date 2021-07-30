@@ -114,8 +114,14 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         }else{
             $scope.$broadcast('alertMessage',{message:"是否确认关闭本任务?",info:{message:'closeTask',type:0}});
         }
-
     };
+
+    $scope.pendTask = function(){
+        if($rootScope.taskUpdating)
+            return;
+        $rootScope.taskUpdating = true;
+        $scope.$broadcast('alertMessage',{message:"是否确认挂起本任务?",info:{message:'pendTask',type:2}});
+    }
 
     $rootScope.submitDoc = function(){
         if($rootScope.submitType === 'projectActive'){
@@ -170,13 +176,18 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
     }
 
     $scope.refreshCommentData = function(){
-        let schedule = new Date($rootScope.task.schedule);
-        let year = schedule.getFullYear();
-        let day = ("0" + schedule.getDate()).slice(-2);
-        let month = ("0" + (schedule.getMonth() + 1)).slice(-2);
         let element = document.getElementById('commentTime');
-        if(element)
+        if(!element)
+            return;
+        if(!$rootScope.task.schedule){
+            element.value = "";
+        }else{
+            let schedule = new Date($rootScope.task.schedule);
+            let year = schedule.getFullYear();
+            let day = ("0" + schedule.getDate()).slice(-2);
+            let month = ("0" + (schedule.getMonth() + 1)).slice(-2);
             element.value = year+'-'+month+'-'+day;
+        }
     }
 
     $scope.refreshTaskBasic  = function(){
@@ -189,7 +200,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         let element = document.getElementById("mainContents_0");
         if(!element)
             return;
-        if($rootScope.task.status === 4 || $rootScope.task.status === 5){
+        if($rootScope.task.status === 4){
             element.style.background ="rgba(235,235,235,1)";
         }else{
             element.style.background = "rgba(255,255,255,1)";
@@ -224,7 +235,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         if(!element)
             return;
         if(element.value === $rootScope.task.description){
-            $scope.switchAddDesc();
+            $scope.$broadcast("task info received",{success:false});
         }else{
             $scope.updateTaskDescription(element.value);
         }
@@ -240,10 +251,13 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         }
         if(data.type ===0){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4}, populate:'submitter'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4,schedule:null}, populate:'submitter'});
         }else if(data.type ===1){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
             dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:0}, populate:'submitter'});
+        }else if(data.type ===2){
+            dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:4},populate:'user attachments'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:5,schedule:null}, populate:'submitter'});
         }
     })
 
@@ -259,14 +273,17 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         $scope.taskUpdating = false;
         $scope.tempSchedule = null;
         if(!data.success){
-            alert(data.message);
+            if(data.message)
+                alert(data.message);
         }else{
             if(Array.isArray(data.result))
                 $rootScope.task = data.result[0];
             else
                 $rootScope.task = data.result;
             $rootScope.taskStatus = $rootScope.task.status.toString();
-            $rootScope.schedule = new Date($rootScope.task.schedule);
+            $rootScope.schedule = $rootScope.task.schedule;
+            if($rootScope.schedule)
+                $rootScope.schedule = new Date($rootScope.task.schedule);
             $scope.refreshBackground();
             $scope.refreshCommentData();
             $scope.refreshTaskBasic();
@@ -429,6 +446,11 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             $scope.comments.push(data.result);
             $scope.comment['1'] = "";
             $scope.attachments['1'].length = 0;
+            if($scope.status === '5'){
+                $scope.status = '0';
+                if(!$scope.tempSchedule)
+                    $scope.tempSchedule = Date.now();
+            }
             dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule,status:Number($scope.status)},populate:'submitter'});
         }
     });
@@ -454,6 +476,8 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         }else if(rec.type === 3){
             rec.description = rec.comment;
             rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> changed the desciption on <b>"+current+"</b>" ;
+        }else if(rec.type === 4){
+            rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> <b>hang </b>the task on <b>"+current+"</b>" ;
         }
 
     }
@@ -476,6 +500,14 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     $scope.$on('task info received',function(event,data){
         if($scope.addingDesc){
             $scope.switchAddDesc();
+        }
+        if(data.success){
+            let task = null;
+            if(Array.isArray(data.result))
+               task = data.result[0];
+            else
+                task = data.result;
+            $scope.status = task.status.toString();
         }
     });
 

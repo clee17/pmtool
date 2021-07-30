@@ -42,7 +42,8 @@
 <div id="statusBar" style="display:flex;flex-direction:row;">
     <a href="/tasks" target="_self" style="margin-right:0.5rem;">BACK</a>
     <span> >  Created On {{ create | date:'&y/&m/&d'}} by <%- submitter.name %></span>
-    <button style="margin-left:auto;" ng-disabled="taskUpdating || task.status>4" ng-click="closeTask()">{{ task.status | buttonStatus}}</button>
+    <button style="margin-left:auto;margin-right:0.5rem;" ng-disabled="taskUpdating || task.status>=4"  ng-click="pendTask()">HANG</button>
+    <button ng-disabled="taskUpdating" ng-click="closeTask()">{{ task.status | buttonStatus}}</button>
     <button style="margin-left:0.5rem;margin-right:2rem;" ng-disabled="taskUpdating">LINK</button>
 </div>
 <div class="mainContents" id="mainContents_0" style="display:flex;flex-direction:column;" ng-controller="infoCon">

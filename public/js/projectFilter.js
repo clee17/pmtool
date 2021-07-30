@@ -574,3 +574,30 @@ app.directive('filterCheck',function(){
         }
     }
 })
+
+
+
+app.directive('taskType',function(){
+    return{
+        restrict:"EA",
+        scope:{
+            type:"@",
+        },
+        link:function(scope,element,attr){
+            let type = Number(scope.type);
+            console.log(type === 0);
+            if(type === 0){
+                element.html('<div style="background:darkred;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">IS</div>')
+            }else if(type=== 1)
+                element.html('<div style="background:orangered;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">RQ</div>')
+            else if(type ===2)
+                element.html('<div style="background:darkgreen;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">RL</div>')
+            else if(type === 3)
+                element.html('<div style="background:yellow;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">QA</div>')
+            else if(type ===4)
+                element.html('<div style="background:dodgerblue;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">DOC</div>')
+            else if(type ===5)
+                element.html('<div style="background:lightgray;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">OTH</div>')
+        }
+    }
+})

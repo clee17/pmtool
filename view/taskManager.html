@@ -250,7 +250,7 @@
         </div>
 
 <!--        主记录区-->
-        <div id="main_records" ng-controller="entryCon">
+        <div id="main_records" ng-controller="entryCon" style="margin-bottom:2rem;">
             <table class="entryTable">
             <tr style="font-weight:bold;">
                 <td>Due</td>
@@ -272,12 +272,12 @@
                 ng-click="goToTask(task._id)"
                 task-record schedule="{{task.schedule}}" status="{{task.status}}">
                 <td class="dateInfo">{{task.dueOn | date:"&y/&m/&d"}}</td>
-                <td task-type type="{{task.type}}"></td>
+                <td task-type type="{{task.type}}" style="max-width:6.5rem;"></td>
                 <td>{{task.status | taskStatus}}</td>
                 <td class="listInfo" info-list info="{{task.account}}"></td>
                 <td class="listInfo" info-list info="{{task.project}}"></td>
                 <td class="dateInfo" info-list info="{{task.version}}" ></td>
-                <td class="descInfo" info-format description="{{task.description}}" title="{{task.title}}" valign="top">{{task.description}}</td>
+                <td class="descInfo" info-format description="{{task.description}}" title="{{task.title}}" valign="top" style="max-height:6rem;">{{task.description}}</td>
                 <td class="dateInfo">{{task.schedule | date:"&y/&m/&d"}}</td>
                 <td class="descInfo" log-analysis logs="{{task.log}}" style="overflow:auto;max-width:12rem;min-width:16rem;font-size:0.85rem;"></td>
                 <td>{{task.product | productinfo}}</td>

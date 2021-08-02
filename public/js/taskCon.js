@@ -19,7 +19,7 @@ app.directive('infoFormat',function(){
         link:function(scope,element,attr){
             let title =  '<b>'+scope.title+'</b><br>';
             let result = scope.description.replace(/\n/g,'<br>');
-            element.html('<div style="max-height:6.5rem;overflow:auto;">'+title + result+'</div>');
+            element.html(title+'<div style="max-height:6.5rem;overflow:auto;">'+result+'</div>');
         }
     }
 });
@@ -189,6 +189,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
     $rootScope.accounts = [];
     $scope.tasks = [];
     $rootScope.search = {status:{$in:[]},type:{$in:[]},pid:1};
+    $rootScope.dateSearch = {date:{$gte:null,$lte:null}};
 
     $scope.onClick = function(event){
         let target = event.target;
@@ -264,6 +265,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
     }
 
     $rootScope.loadTask = function(){
+        $rootScope.taskReceived = false;
         let search = JSON.parse(JSON.stringify($rootScope.search));
         delete search.pid;
         let request = [
@@ -291,6 +293,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
     $rootScope.loadPage = function(){
         if($rootScope.countingPage)
             return;
+        $rootScope.countReceived = false;
         $rootScope.countingPage = true;
         let search = JSON.parse(JSON.stringify($rootScope.search));
         delete search.pid;
@@ -322,6 +325,9 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
     })
 
     $scope.$on('tasks received',function(event,data){
+        $scope.taskReceived = true;
+        $scope.checkRefreshed();
+        delete $rootScope.search.date;
         if(!data.success){
             alert(data.message);
         }else{
@@ -331,14 +337,28 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
 
 
     $scope.initialize = function(){
+        if($rootScope.refreshing)
+            return;
+        $rootScope.refreshing = true;
         $scope.loadSearch();
         $scope.loadTask();
         $scope.loadPage();
     }
 
     $rootScope.refresh = function(){
+        if($rootScope.refreshing)
+            return;
+        $rootScope.refershing = true;
         $scope.loadTask();
         $scope.loadPage();
+    }
+
+    $rootScope.checkRefreshed = function(){
+        if($rootScope.countReceived && $rootScope.taskReceived && $rootScope.refreshing){
+            $rootScope.countReceived = false;
+            $rootScope.taskReceived = false;
+            $rootScope.refreshing = false;
+        }
     }
 
     $scope.$on('refresh page after search',function(event,data){
@@ -402,7 +422,6 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
         }
     }
 
-
     $scope.selectFilter = function(index,id,event,signal){
         if(!$scope[index])
             return;
@@ -448,7 +467,25 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
         }
     }
 
-    $scope.$on('refresh filter',function(evetnt,data){
+    $scope.filterDate = function() {
+        if(!$rootScope.dateSearch.$lte && !$rootScope.dateSearch.$gte)
+            alert('no date selected');
+        else {
+          let newDate = JSON.parse(JSON.stringify($rootScope.dateSearch));
+          if(!newDate.$lte)
+              delete newDate.$lte;
+          if(!newDate.$gte)
+              delete newDate.$gte;
+
+            let request = [
+                { $match: newDate},
+            ]
+
+
+        }
+    }
+
+    $scope.$on('refresh filter',function(event,data){
         $scope.$broadcast('filter refreshed', {selected:$scope.selectedStatus,index:'status'});
         $scope.$broadcast('filter refreshed', {selected:$scope.selectedTypes,index:'types'});
     })
@@ -490,10 +527,11 @@ app.controller("pageCon",function($scope,$rootScope,dataManager){
 
     $scope.$on('countReceived',function(event,data){
         $rootScope.countingPage = false;
+        $rootScope.countReceived = true;
+        $rootScope.checkRefreshed();
         if(data.success){
             $scope.maxCount = data.maxCount;
             $scope.maxPage = Math.ceil(data.maxCount/35);
-
         }else
             alert(data.message);
     });

@@ -213,13 +213,19 @@
 <!--        头部搜索条件filter栏-->
         <div style="width:100%;display:flex;flex-direction:column;" ng-controller="searchCon">
             <div  style="display:flex;flex-direction:row;padding-left:4rem;min-height:2rem;border-bottom:solid 1px rgba(205,205,205,1);">
-                <button id="statusButton" class="header_button" ng-click="switchFilter($event,0)">STATUS</button>
-                <button id="typeButton" class="header_button" ng-click="switchFilter($event,1)" style="margin-left:1rem;">TASK TYPE</button>
+                <button id="statusButton" class="header_button" ng-click="switchFilter($event,0)" ng-disabled="taskUpdating">STATUS</button>
+                <button id="typeButton" class="header_button" ng-click="switchFilter($event,1)" style="margin-left:1rem;" ng-disabled="taskUpdating">TASK TYPE</button>
                 <div style="position:relative;margin-left:0.5rem;margin-top:auto;margin-bottom:auto;">
                     <input id="currentCompanyName" placeholder="company name" ng-model="searchName" ng-change="searchCompany()">
                     <button style="position:absolute;right:5px; top:4px;" class="closeBtn" ng-show="company !== null" ng-click="clearCompany()"><i class="fas fa-times-circle"></i></button>
                 </div>
-
+                <div id="date_filter" style="margin-left:auto;margin-right:2rem;margin-top:auto;margin-bottom:auto;">
+                    <span>开始日期:</span>
+                    <input type="date" id="date_start" ng-model="dateSearch.date.$gte">
+                    <span style="margin-left:0.5rem;" ng-model="dateSearch.date.$lte">结束日期:</span>
+                    <input type="date" id="date_end">
+                    <button ng-click="filterDate()">SEARCH</button>
+                </div>
             </div>
             <div style="height:1rem;position:relative;padding-left:4rem;">
                 <div class="filterBoard float-board" index="status">

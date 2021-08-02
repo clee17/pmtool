@@ -19,7 +19,7 @@ app.directive('infoFormat',function(){
         link:function(scope,element,attr){
             let title =  '<b>'+scope.title+'</b><br>';
             let result = scope.description.replace(/\n/g,'<br>');
-            element.html(title + result);
+            element.html('<div style="max-height:6.5rem;overflow:auto;">'+title + result+'</div>');
         }
     }
 });

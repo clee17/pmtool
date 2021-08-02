@@ -82,7 +82,6 @@ app.controller('accountCon',function($scope,$rootScope,$window,$location,dataMan
             return;
         $rootScope.pageId = data.id;
         $window.history.pushState(null,null,'/accounting/'+data.id);
-        console.log($rootScope.pageId);
     })
 
     $scope.$on('leftLoaded',function(){

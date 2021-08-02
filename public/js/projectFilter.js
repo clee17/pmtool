@@ -585,7 +585,6 @@ app.directive('taskType',function(){
         },
         link:function(scope,element,attr){
             let type = Number(scope.type);
-            console.log(type === 0);
             if(type === 0){
                 element.html('<div style="background:darkred;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;">IS</div>')
             }else if(type=== 1)

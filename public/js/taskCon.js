@@ -325,7 +325,7 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
     })
 
     $scope.$on('tasks received',function(event,data){
-        $scope.taskReceived = true;
+        $rootScope.taskReceived = true;
         $scope.checkRefreshed();
         delete $rootScope.search.date;
         if(!data.success){
@@ -423,6 +423,8 @@ app.controller("searchCon",function($scope,$rootScope,$location,$window,dataMana
     }
 
     $scope.selectFilter = function(index,id,event,signal){
+        if($rootScope.refreshing)
+            return;
         if(!$scope[index])
             return;
         let fIndex = $scope[index].indexOf(id);

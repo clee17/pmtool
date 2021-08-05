@@ -225,6 +225,22 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
         $rootScope.$broadcast($rootScope.submitType+'CancelDoc');
     }
 
+    $scope.hangProject = function(){
+        if($rootScope.projectUpdating)
+            return;
+        $rootScope.projectUpdating = true;
+        let updateQuery = {
+            populate: 'account',
+            search:{_id:$rootScope.project._id},
+            updateExpr:{
+                status:7,
+                schedule:null
+            }
+        }
+
+        dataManager.saveData('project','project status updated', updateQuery);
+    }
+
     let renameAttach = function(blob,filename){
         console.log(blob);
         console.log(filename);

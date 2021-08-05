@@ -63,13 +63,19 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
     });
 
     $scope.refreshCommentData = function(){
-        $scope.scheduleNow = new Date($rootScope.project.schedule);
-        let year = $scope.scheduleNow.getFullYear();
-        let day = ("0" + $scope.scheduleNow.getDate()).slice(-2);
-        let month = ("0" + ($scope.scheduleNow.getMonth() + 1)).slice(-2);
         let element = document.getElementById('commentTime');
-        if(element)
+        if(!element)
+            return;
+        if(!$rootScope.project.schedule){
+            element.value = "";
+        }else{
+            let schedule = new Date($rootScope.project.schedule);
+            let year = schedule.getFullYear();
+            let day = ("0" + schedule.getDate()).slice(-2);
+            let month = ("0" + (schedule.getMonth() + 1)).slice(-2);
             element.value = year+'-'+month+'-'+day;
+            $scope.scheduleNow = schedule;
+        }
     }
 
     $scope.updateProject = function(dateNow){
@@ -136,21 +142,25 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
             return;
         }
         $scope.commentSubmit.saving = true;
-
         let data = {
             date:new Date(Date.now()),
             comment: $scope.commentSubmit.contents,
             user: $rootScope.user._id,
             project:$rootScope.project._id
         };
-
         let element = document.getElementById('commentTime');
         if(element)
-            data.schedule = new Date(element.value);
-        data.schedule.setHours(new Date(Date.now()).getHours());
-        data.schedule.setMinutes(new Date(Date.now()).getMinutes());
-        data.schedule.setSeconds(new Date(Date.now()).getSeconds());
-        data.status = $rootScope.project.status;
+            data.schedule = element.value;
+        if(data.schedule ==="")
+            data.schedule = null;
+        else
+            data.schedule = new Date(data.schedule);
+        data.status = Number($scope.projectUpdate.status);
+        if(data.schedule && data.status === 7)
+            data.status = 0;
+        else if(data.status !== 7 && !data.schedule){
+            data.schedule = Date.now();
+        }
         data.populate = 'user attachments';
         let formData = new FormData();
         for(let i=0;i<$scope.attachments.length;++i){
@@ -172,7 +182,15 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
             $scope.refreshCommentData();
             $scope.commentSubmit.contents = "";
             $scope.attachments.length = 0;
-            $scope.updateProject(data.result.schedule);
+            let updateQuery = {
+                populate: 'account',
+                search:{_id:$rootScope.project._id},
+                updateExpr:{
+                    status:data.result.status,
+                    schedule:data.result.schedule
+                }
+            }
+            dataManager.saveData('project','project status updated', updateQuery);
         }
     })
 
@@ -188,6 +206,18 @@ app.controller("commentCon",function($scope,$rootScope,$location,$window,dataMan
     $scope.$on('upload attach',function(event,data){
 
     });
+
+    $scope.$on('project status updated',function(event,data){
+        $rootScope.projectUpdating = false;
+        if(!data.success)
+            alert(data.message);
+        else{
+            $rootScope.project.status = data.result.status;
+            $scope.projectUpdate.status = data.result.status.toString();
+            $rootScope.project.schedule = data.result.schedule;
+            $scope.refreshCommentData();
+        }
+    })
 
     $scope.initialize = function(){
         $scope.projectUpdate.status = $rootScope.project.status.toString();

@@ -104,6 +104,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         {index:4,name:"MP"},
         {index:5,name:"closed"},
         {index:6,name:"re-open"},
+        {index:7,name:"PENDING"},
     ];
 
     $scope.searchName = "";
@@ -352,7 +353,7 @@ app.controller("projectDashboard",function($scope,$rootScope,dataManager,$locati
         event.stopPropagation();
         let elements = document.getElementsByClassName('filterBoard');
         if(elements.length>0){
-            $rootScope.$broadcast('floatClicked', {target:elements[0],index:'status',height:14});
+            $rootScope.$broadcast('floatClicked', {target:elements[0],index:'status',height:2*$scope.status.length});
         }
     };
 

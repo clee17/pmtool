@@ -43,7 +43,10 @@
         <a href="/tutorial" target="_blank">REFERENCE</a>
     </div>
 </div>
-<div id="statusBar"><a href="/" target="_self">首页</a> > 当前状态:<span >{{project.status | status}}</span></div>
+<div id="statusBar" style="display:flex;flex-direction:row;">
+    <a href="/" target="_self">首页</a> > 当前状态:<span >{{project.status | status}}</span>
+    <div style="margin-left:auto;"><button ng-click="hangProject()" ng-disabled="project.status === 7">HANG</button></div>
+</div>
 <div class="mainContents" ng-controller="infoCon">
     <div id="projectInfo">
         <div><div>platform:</div><div delivery-info info="platform"></div></div>
@@ -191,7 +194,7 @@
                 <option value="2">development</option>
                 <option value="3">delivery </option>
                 <option value="4">MP</option>
-                <option value="7">mass production</option>
+                <option value="7">PENDING</option>
             </select>
         </div>
         <div style="display:flex;flex-direction:row;">

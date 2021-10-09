@@ -47,10 +47,26 @@
     <button style="margin-left:0.5rem;margin-right:2rem;" ng-disabled="taskUpdating || task.progress >= 100" ng-click="completeTask()">COMPLETE</button>
 </div>
 <div class="mainContents" id="mainContents_0" style="display:flex;flex-direction:column;" ng-controller="infoCon">
-    <div style="font-size:1.5rem;font-weight:bold;"><%- title %></div>
+    <div style="font-size:1.5rem;font-weight:bold;display:flex;flex-direction:row;">
+        <%- title %>
+        <div style="margin-left:1.5rem;background:rgba(152,75,67,1);padding:2px;border-radius:5px;color:white;min-width:2rem;text-align:center;height:1.7rem;font-size:1.3rem;">{{task.hours}}</div>
+    </div>
+
+
+    <!--    Basic Info -->
+    <div style="display:flex;flex-direction:row;margin-top:0.5rem;margin-left:0.5rem;">
+        <div style="margin-right:0.5rem;">MAN HOURS:</div>
+        <div style="min-width:4rem;color:rgba(152,75,67,0.8);font-weight:bold;">{{task.hours}}</div>
+        <div style="margin-left:1rem;margin-right:0.5rem;">MAN DAYS:</div>
+        <div style="min-width:4rem;color:rgba(152,75,67,0.8);font-weight:bold;">{{task.hours | hourToDay}}</div>
+    </div>
+    <div style="margin-top:1rem;margin-left:0.5rem;margin-bottom:1.5rem;display:flex;flex-direction:column;font-weight:bold;">
+        <div>Participated Engineer:</div>
+    </div>
+
 <!--    关联Task-->
     <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;padding-top:0.3rem;padding-left:0.5rem;">
-        <div style="display:flex;flex-direction:row;">BELONG TO:</div>
+        <div style="display:flex;flex-direction:row;font-weight:bold;">BELONG TO:</div>
         <div ng-show="!task.parent || task.parent.length ===0" style="margin-left:1.5rem;color:gray;margin-top:0.5rem;">No Parent Task</div>
         <div ng-repeat="line in task.parent" style="padding-left:0.5rem;width:100%;display:flex;flex-direction:row;">
             <task-type type="{{line.type}}" style="font-size:0.5rem;margin-top:3px;"></task-type>
@@ -64,10 +80,11 @@
     </div>
 
     <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;padding-top:0.3rem;padding-left:0.5rem;">
-        <div style="display:flex;flex-direction:row;">SUB TASK:</div>
+        <div style="display:flex;flex-direction:row;font-weight:bold;">SUB TASK:</div>
         <div ng-show="!task.children || task.children.length ===0" style="margin-left:1.5rem;color:gray;margin-top:0.5rem;">No Children Task</div>
         <div ng-repeat="line in task.children" style="padding-left:0.5rem;width:100%;display:flex;flex-direction:row;">
             <task-type type="{{line.type}}" style="font-size:0.5rem;margin-top:3px;"></task-type>
+            <div style="color:rgba(152,75,67,1);margin-top:3px;padding:5px;">{{line.hours}}</div>
             <div style="display:inline-block;padding:5px;margin:5px;border-radius:5px;position:relative;flex:1;margin-left:0.5rem;margin-right:2rem;overflow:hidden;" sub-task>
                 <div progress-bar progress="{{line.progress}}" id="{{line._id}}" style="height:100%;top:0;position:absolute;left:0;z-index:0;"></div>
                 <div style="z-index:99;position:relative;">{{line.title}}</div>
@@ -106,13 +123,14 @@
 <!--    评论内容-->
     <div style="display:flex;flex-direction:column;min-height:6rem;flex:1;margin-left:1.5rem;">
         <div ng-show="comments.length === 0" style="margin:auto;color:rgba(140,140,140,0.8);font-size:2rem;">NO COMMENT NOW</div>
-        <div ng-repeat="comment in comments">
-            <div style="display:flex;flex-direction:row;" class="subRow" ng-if="comment.type <2">
+        <div ng-repeat="comment in comments" >
+            <div style="display:flex;flex-direction:row;" class="subRow" ng-if="comment.type <2 || comment.type>= 10" comment-type type="{{comment.type}}">
                 <div>提交人：{{comment.user.name}}</div>
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | taskStatus}}</div>
+                <div>man hours：{{comment.hours}}</div>
             </div>
-            <div ng-if="comment.type <2" style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name,attach)" >
+            <div ng-if="comment.type <2 || comment.type >=10" style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name,attach)" >
               <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
               <span style="max-width:6rem;">{{attach.name}}</span>
           </span></div>
@@ -137,17 +155,29 @@
 
 <!--    底部新评论-->
     <div style="display:flex;flex-direction:column;padding:1.5rem;margin-top:2rem;">
+        <div style="display:flex;flex-direction:row;margin-top:0.5rem;margin-bottom:1.5rem;">
+            <button ng-disabled="userType===0" style="margin-left:1.5rem;" ng-click="switchUserType(0)">PM</button>
+            <button ng-disabled="userType===1" style="margin-left:1.5rem;" ng-click="switchUserType(1)">ENGINEER</button>
+        </div>
         <div style="display:flex;flex-direction:row;">
-            <div style="margin-left:1rem;">提交人：{{user.name}}</div>
-            <div style="margin-left:4rem;">schedule：</div>
-            <input ng-disabled="!updatable(1)" type="date" id="commentTime">
-            <div style="margin-left:4rem;">status：</div>
-            <select ng-disabled="!updatable(1)" ng-model="status">
+            <div style="margin-left:1rem;" ng-show="userType ===1">工程师：</div>
+            <select ng-disabled="!updatable(1)" ng-show="userType===1" ng-model="engineer" style="min-width:5rem;">
+                <option ng-repeat="engineer in engineers" value="{{engineer._id}}">{{engineer.name}}</option>
+            </select>
+
+            <div style="margin-left:1rem;" ng-show="userType ===0">提交人：{{user.name}}</div>
+            <div style="margin-left:4rem;" ng-show="userType===0">schedule：</div>
+            <input ng-disabled="!updatable(1)" type="date" id="commentTime" ng-show="userType===0">
+            <div style="margin-left:4rem;" ng-show="userType===0">status：</div>
+            <select ng-disabled="!updatable(1)" ng-model="status" ng-show="userType===0">
                 <option value="0">Verifying</option>
                 <option value="1">Engineer Assigned</option>
                 <option value="2">QA</option>
                 <option value="3">Feedback </option>
             </select>
+            <div></div>
+            <div style="margin-left:2rem;">Hours spent:</div>
+            <input ng-disabled="!updatable(1)" style="margin-left:0.5rem;width:3rem;" type="number" ng-model="manHour">
         </div>
         <div style="display:flex;flex-direction:row;margin-bottom:0.5rem;">
             <div style="flex:1;display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;">

@@ -132,6 +132,15 @@ app.filter('currency',function(){
     }
 })
 
+app.filter('hourToDay',function(){
+    return function(hour){
+        if(!hour)
+            hour =0;
+        let days = hour/8;
+        return days.toFixed(2);
+    }
+})
+
 app.filter('payStatus',function(){
     return function(status){
         if(typeof status !== 'number')

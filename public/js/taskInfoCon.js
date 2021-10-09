@@ -123,6 +123,28 @@ app.directive('subTask',function($rootScope,$location){
     }
 });
 
+app.directive('commentType',function($rootScope,$location){
+    return{
+        restrict:"A",
+        scope:{
+            type:"@"
+        },
+        link:function(scope,element,attr){
+            let type = Number(scope.type);
+            element.css('padding','4px');
+            element.css('marginLeft','1.5rem');
+            element.css('marginRight','1.5rem');
+            element.css('borderRadius','5px');
+            let children = element.children();
+            children[0].style.marginLeft = '5px';
+            if(type === 11){
+                element.css('background','rgba(152,75,67,1)');
+                element.css('color','white');
+            }
+        }
+    }
+});
+
 
 app.directive('progressBar',function(){
     return{
@@ -412,6 +434,10 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
 
 app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.user = $rootScope.user;
+    $scope.userType = 0; //default a PM user.
+    $scope.manHour = 0;
+    $scope.engineer = null;
+    $scope.engineers = [];
     $scope.addingComment = false;
     $scope.addingDesc = false;
 
@@ -519,10 +545,22 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         }
     }
 
+    $scope.switchUserType = function(type){
+        $scope.userType = type;
+        console.log('type should be switched');
+    }
+
     $scope.submitComment = function(index,parent){
         let contents = $scope.comment[index.toString()];
         if(!contents || contents.length< 10){
             alert('评论内容不得少于10个字符');
+            return;
+        }
+        if($scope.userType === 1 && !$scope.engineer){
+            alert("增加工程师记录不能工程师为空");
+            return;
+        }else if($scope.userType === 1 && $scope.manHour ===0){
+            alert("增加工程师记录人时不能为空");
             return;
         }
         $scope.saving[index.toString()].saving = true;
@@ -530,12 +568,12 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         let data = {
             search:{
                 date:new Date(Date.now()),
-                parent:parent,
                 status:$scope.status,
                 type:index,
                 comment: contents,
                 user: $rootScope.user._id,
-                task:$rootScope.taskId
+                task:$rootScope.taskId,
+                hours:$scope.manHour
             },
             populate:'user attachments',
             updateExpr:{
@@ -543,6 +581,10 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             },
             info: {index:index},
         };
+
+        data.search.user = $scope.userType? $scope.engineer : $rootScope.user._id;
+        if($scope.userType)
+           data.search.type = 10 + index;
 
         let element = document.getElementById('commentTime');
         if(element)
@@ -558,6 +600,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         dataManager.uploadFile("/upload/attach/taskComment","task comment saved on index"+ index, formData);
     }
 
+
     $scope.$on('task comment saved on index1',function(event,data){
         if(!data.success){
             alert(data.message);
@@ -570,7 +613,9 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
                 if(!$scope.tempSchedule)
                     $scope.tempSchedule = Date.now();
             }
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule,status:Number($scope.status)},populate:'submitter'});
+            let manHour = $rootScope.task.hours;
+            manHour += data.result.hours;
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{schedule:$scope.tempSchedule,status:Number($scope.status),hours:manHour},populate:'submitter'});
         }
     });
 
@@ -633,8 +678,18 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         }
     });
 
+    $scope.$on('engineers received',function(event,data){
+        if(data.success)
+            $scope.engineers = data.result;
+        else{
+            $scope.engineers = [];
+            alert(data.message);
+        }
+    });
+
     $scope.initialize = function(){
         dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($rootScope.commentPage.pageId-1),limit:35}});
+        dataManager.requestData('user','engineers received',{search:{type:1}});
     }
 
     $scope.initialize();

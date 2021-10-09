@@ -44,17 +44,36 @@
     <span> >  Created On {{ create | date:'&y/&m/&d'}} by <%- submitter.name %></span>
     <button style="margin-left:auto;margin-right:0.5rem;" ng-disabled="taskUpdating || task.status>=4"  ng-click="pendTask()">HANG</button>
     <button ng-disabled="taskUpdating" ng-click="closeTask()">{{ task.status | buttonStatus}}</button>
-    <button style="margin-left:0.5rem;margin-right:2rem;" ng-disabled="taskUpdating">LINK</button>
+    <button style="margin-left:0.5rem;margin-right:2rem;" ng-disabled="taskUpdating || task.progress >= 100" ng-click="completeTask()">COMPLETE</button>
 </div>
 <div class="mainContents" id="mainContents_0" style="display:flex;flex-direction:column;" ng-controller="infoCon">
     <div style="font-size:1.5rem;font-weight:bold;"><%- title %></div>
 <!--    关联Task-->
-    <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;">
-        <div style="display:flex;flex-direction:row;"></div>
-        <div ng-repeat="task in task.parent" style="border-radius:5px;background:rgba(250,250,250,1);position:relative;">
-            <task-type type="task.type"></task-type>
-            <span>{{task.title}}</span>
-             <a href="{{task._id | tasklink}}" style="margin-let:0.5rem;">check</a>
+    <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;padding-top:0.3rem;padding-left:0.5rem;">
+        <div style="display:flex;flex-direction:row;">BELONG TO:</div>
+        <div ng-show="!task.parent || task.parent.length ===0" style="margin-left:1.5rem;color:gray;margin-top:0.5rem;">No Parent Task</div>
+        <div ng-repeat="line in task.parent" style="padding-left:0.5rem;width:100%;display:flex;flex-direction:row;">
+            <task-type type="{{line.type}}" style="font-size:0.5rem;margin-top:3px;"></task-type>
+            <div sub-task>
+                <div progress-bar progress="{{line.progress}}"  id="{{line._id}}" style="height:100%;top:0;position:absolute;left:0;z-index:0;"></div>
+                <div style="z-index:99;position:relative;">{{line.title}}</div>
+                <a style="opacity:0;width:100%;top:0;position:absolute;left:0;" href="{{'/task/info?id='+line._id}}" target="_blank" >a</a>
+                <div style="opacity:0.4;left:0;top:0;position:absolute;height:100%;width:100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;padding-top:0.3rem;padding-left:0.5rem;">
+        <div style="display:flex;flex-direction:row;">SUB TASK:</div>
+        <div ng-show="!task.children || task.children.length ===0" style="margin-left:1.5rem;color:gray;margin-top:0.5rem;">No Children Task</div>
+        <div ng-repeat="line in task.children" style="padding-left:0.5rem;width:100%;display:flex;flex-direction:row;">
+            <task-type type="{{line.type}}" style="font-size:0.5rem;margin-top:3px;"></task-type>
+            <div style="display:inline-block;padding:5px;margin:5px;border-radius:5px;position:relative;flex:1;margin-left:0.5rem;margin-right:2rem;overflow:hidden;" sub-task>
+                <div progress-bar progress="{{line.progress}}" id="{{line._id}}" style="height:100%;top:0;position:absolute;left:0;z-index:0;"></div>
+                <div style="z-index:99;position:relative;">{{line.title}}</div>
+                <a style="opacity:0;width:100%;position:absolute;left:0;" href="{{'/task/info?id='+line._id}}" target="_blank" >a</a>
+                <div style="opacity:0.4;left:0;top:0;position:absolute;height:100%;width:100%;"></div>
+            </div>
         </div>
     </div>
 
@@ -200,9 +219,10 @@
         </div>
         <div id="alertBoard">
             <div id="alertTaskInfo" style="margin:2rem;"></div>
-            <div style="display:flex;flex-direction:row;margin-top:1rem;">
+            <div style="display:flex;flex-direction:row;margin-top:1rem;" id="alertTaskButton">
                 <button style="margin-left:6rem;margin-right:auto;" ng-click="answerAlert(true)" ng-disabled="savingTask">提交</button>
                 <button style="margin-left:auto;margin-right:6rem;" ng-click="answerAlert(false)" ng-disabled="savingTask">取消</button>
+                <button style="margin-left:auto;margin-right:auto;" ng-click="answerAlert(false)" ng-disabled="savingTask">确定</button>
             </div>
         </div>
     </div>

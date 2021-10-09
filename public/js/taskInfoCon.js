@@ -86,6 +86,78 @@ app.directive('deliveryInfo',function(){
 })
 
 
+app.directive('subTask',function($rootScope,$location){
+    return{
+        restrict:"EA",
+        scope:{
+
+        },
+        link:function(scope,element,attr){
+            element.css('display','inline-block');
+            element.css('padding','5px');
+            element.css('paddingLeft','7px');
+            element.css('margin','5px');
+            element.css('borderRadius','5px');
+            element.css('position','relative');
+            element.css('flex','1');
+            element.css('marginLeft','5px');
+            element.css('marginRight','4.5rem');
+            element.css('background','rgba(205,205,205,0.3)');
+
+            element
+                .on('mouseenter',function(){
+                    let children = element.children();
+                    children[3].style.background = 'rgba(255,255,255,0.4)';
+                    element.css('cursor','pointer');
+                })
+                .on('mouseleave',function(){
+                    let children = element.children();
+                    children[3].style.background = 'rgba(255,255,255,0)';
+                    element.css('cursor','auto');
+                })
+                .on('click',function(){
+                    let id = scope.$parent.line._id;
+                    window.location.href = '/task/info?id='+ id;
+                });
+        }
+    }
+});
+
+
+app.directive('progressBar',function(){
+    return{
+        restrict:"A",
+        scope: {
+            progress:"@",
+            id:"@"
+        },
+        link:function(scope,element, attr){
+            let progress = JSON.parse(scope.progress);
+            scope.refreshProgress = function(progress){
+                if(progress<1)
+                    progress = 1;
+                else if(progress >100)
+                    progress = 100;
+                if(progress >= 100)
+                    element.css('background','gray');
+                else
+                    element.css('background','lightgreen');
+                element.css('zIndex','0');
+                element.css('opacity','0.4');
+                element.css('width',progress+'%');
+            }
+
+            scope.refreshProgress(progress);
+
+            scope.$on('progress refreshed',function(event,data){
+                if(scope.id === data._id)
+                   scope.refreshProgress(data.progress);
+            })
+        }
+    }
+})
+
+
 app.filter('buttonStatus',function(){
     return function(status){
         if(status === 4)
@@ -122,6 +194,20 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         $rootScope.taskUpdating = true;
         $scope.$broadcast('alertMessage',{message:"是否确认挂起本任务?",info:{message:'pendTask',type:2}});
     }
+
+    $scope.completeTask = function(){
+      if($rootScope.taskUpdating)
+          return;
+      $rootScope.taskUpdating = true;
+      for(let i=0; i<$rootScope.task.children.length;++i){
+          let task = $rootScope.task.children[i];
+          if(task.progress < 100){
+              $scope.$broadcast('alertMessage',{message:"因尚有sub task 没有完成，无法完成本任务。",type:1,height:'8rem',info:{message:'completeTask'}});
+              return;
+          }
+      }
+      $scope.$broadcast('alertMessage',{message:"Do you wish to complete this task?", height:'8rem',info:{message:'completeTask',type:5}});
+    };
 
     $rootScope.submitDoc = function(){
         if($rootScope.submitType === 'projectActive'){
@@ -212,7 +298,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
     }
 
     $rootScope.initialize = function(){
-        dataManager.requestData('tasks','task info received',{search:{_id:$rootScope.taskId},populate:'submitter'});
+        dataManager.requestData('tasks','task info received',{search:{_id:$rootScope.taskId},populate:'submitter parent children'});
         $scope.refreshPage();
     }
 
@@ -251,15 +337,26 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         }
         if(data.type ===0){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4,schedule:null}, populate:'submitter'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4,schedule:null}, populate:'submitter parent children'});
         }else if(data.type ===1){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:0}, populate:'submitter'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:0}, populate:'submitter parent children'});
         }else if(data.type ===2){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:4},populate:'user attachments'});
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:5,schedule:null}, populate:'submitter'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:5,schedule:null}, populate:'submitter parent children'});
+        }else if(data.type === 5){
+            dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:5},populate:'user attachments'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{progress:100}, populate:'submitter parent children'});
         }
     })
+
+    $scope.updateProgress = function(){
+        let parent = $rootScope.task.parent;
+        for(let i =0; i< parent.length;++i){
+            if(parent[i])
+               dataManager.updateProgress(parent[i]._id);
+        }
+    }
 
     $scope.$on('countReceived',function(event,data){
         if(data.success){
@@ -276,10 +373,18 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
             if(data.message)
                 alert(data.message);
         }else{
+            let task = null;
             if(Array.isArray(data.result))
-                $rootScope.task = data.result[0];
+               task = data.result[0];
             else
-                $rootScope.task = data.result;
+                task = data.result;
+            if($rootScope.task && $rootScope.task.progress <100 && task.progress >= 100){
+                $scope.updateProgress();
+            }
+            if(!task)
+                return;
+            else
+                $rootScope.task = task;
             $rootScope.taskStatus = $rootScope.task.status.toString();
             $rootScope.schedule = $rootScope.task.schedule;
             if($rootScope.schedule)
@@ -290,6 +395,19 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
             $scope.refreshPage();
         }
     });
+
+    $scope.$on('progress updated',function(eventd,data){
+        if(!data.success){
+            alert(data.message);
+        }else{
+            for(let i=0; i<$rootScope.task.parent.length;++i){
+                let parent = $rootScope.task.parent[i];
+                if(parent._id === data._id){
+                    $rootScope.$broadcast('progress refreshed',{_id:parent._id,progress:data.progress});
+                }
+            }
+        }
+    })
 });
 
 app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManager){
@@ -393,6 +511,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     }
 
     $scope.goToCommentPage = function(index){
+        console.log(index);
         if(index <= $scope.page && index >=1 ){
             $rootScope.commentPage.pageId = index;
             $scope.reqeusting = true;
@@ -478,6 +597,8 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> changed the desciption on <b>"+current+"</b>" ;
         }else if(rec.type === 4){
             rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> <b>hang </b>the task on <b>"+current+"</b>" ;
+        }else if(rec.type === 5){
+            rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> <b style='color:green;'>complete </b>the task on <b>"+current+"</b>";
         }
 
     }
@@ -507,6 +628,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
                task = data.result[0];
             else
                 task = data.result;
+            $rootScope.task = task;
             $scope.status = task.status.toString();
         }
     });
@@ -527,8 +649,7 @@ app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManag
             $scope.info = null;
             cancelDoc();
         }else{
-            if($scope.info.type === 0)
-                $rootScope.taskUpdating = false;
+            $rootScope.taskUpdating = false;
             cancelDoc();
         }
     };
@@ -540,6 +661,13 @@ app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManag
         if(!element)
             return;
         element.innerHTML = data.message;
+        element = document.getElementById('alertTaskButton');
+        if(!element)
+            return;
+        let buttons = element.children;
+        buttons[0].style.display = data.type? 'none':'auto';
+        buttons[1].style.display = data.type? 'none':'auto';
+        buttons[2].style.display = data.type? 'auto':'none';
 
         $scope.info = data.info;
         $scope.answering = true;
@@ -551,7 +679,7 @@ app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManag
         setTimeout(function() {
             let element = document.getElementById("infoBoard");
             if(element)
-              element.style.height = '15rem';
+              element.style.height = data.height || '15rem';
               element.style.minWidth = '35rem';
             },10);
     })

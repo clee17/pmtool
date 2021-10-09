@@ -89,4 +89,8 @@ app.service("dataManager",function($http,$rootScope){
     manager.deleteDoc = function(id){
         manager.request('/deleteDoc/','document deleted',{_id:id});
     };
+
+    manager.updateProgress = function(id,child){
+        manager.request('/task/updateProgress/','progress updated',{_id:id,child:child});
+    }
 });

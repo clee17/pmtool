@@ -328,6 +328,68 @@ let handler = {
             })
     },
 
+    updateTaskProgress:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent: false,
+            failedLink: [],
+            message: "unknown failure"
+        };
+        let id = received._id;
+        let child = received.child;
+
+        if(!req.session.user){
+            handler.sendError(res,response,'you are not authorized to perform this action');
+            return;
+        }
+
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            handler.sendError(res, response, "no valid document id received");
+            return;
+        }
+
+        let fail = function(errMessage){
+            console.log(errMessage);
+            handler.sendError(res,response,errMessage);
+        }
+
+        let success = function(result){
+            response.message = 'progress updated';
+            response.success = true;
+            response._id = result._id;
+            response.progress = result.progress;
+            handler.sendResult(res,response);
+        }
+
+        handler.traceTaskProgress(id,success,fail);
+    },
+
+    traceTaskProgress:function(id,success,fail){
+        taskModel.findOne({_id:id}).populate([{ path: 'parent', select: {'progress': 1,'_id': 1}},{path:'children', select:{'_id':1,'progress':1}}]).exec()
+            .then(function(task){
+                let children = task.children;
+                let subProgress = 0;
+                if(children && children.length>0){
+                    for(let i=0;i<children.length;++i){
+                        subProgress += children[i].progress || 0;
+                    }
+                    subProgress = subProgress*100/(children.length * 100);
+                }
+                return taskModel.findOneAndUpdate({_id:id},{progress:subProgress},{upsert:false,new:true}).exec();
+            })
+            .then(function(result){
+                if(success)
+                    success(result);
+                for(let i=0; i< result.parent.length;++i){
+                    handler.traceTaskProgress(result.parent[i]._id,null,fail);
+                }
+            })
+            .catch(function(err){
+                if(fail)
+                   fail(err.message || JSON.stringify(err));
+            });
+    },
+
     QAManager:function(req,res){
         let pageId = req.query.pid;
         if(!pageId)
@@ -408,7 +470,6 @@ let handler = {
     },
 
     deleteDoc:function(req,res) {
-
         let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let response = {
             sent: false,
@@ -1081,6 +1142,7 @@ router.post('/replaceUpload/:tableId',handler.replaceUpload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);
 router.post('/getInfo/taskComment/',handler.taskComment);
+router.post('/task/updateProgress/',handler.updateTaskProgress);
 router.post('/login/',handler.login);
 router.post('/logout/',handler.logout);
 router.post('/pwdReset/',handler.pwd);

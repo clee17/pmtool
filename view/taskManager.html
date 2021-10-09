@@ -295,7 +295,7 @@
 
 <!--        尾部标签页码-->
         <div class="pageCount" id="pageCount" style="margin-top:auto;margin-bottom:1.5rem;" ng-controller="pageCon">
-            <button  ng-repeat="x in [].constructor(maxPage) track by $index" onclick="gotoPage($index)" ng-disabled="$index === (pid-1)">
+            <button  ng-repeat="x in [].constructor(maxPage) track by $index" ng-click="goToPage($index)" ng-disabled="$index === (pid-1)">
                 {{$index+1}}</button>
         </div>
 

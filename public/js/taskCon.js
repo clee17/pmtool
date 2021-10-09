@@ -1,4 +1,3 @@
-
 app.directive('infoReceiver',function($rootScope){
     return{
         restrict:"E",
@@ -377,16 +376,12 @@ app.controller("taskCon",function($scope,$rootScope,$location,$window,$cookies,d
 
 });
 
-
-
-
 app.controller("entryCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.goToTask = function(id){
         $window.location.href= '/task/info?id='+id;
     }
 
 });
-
 
 app.controller("searchCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.status = [

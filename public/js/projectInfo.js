@@ -242,8 +242,6 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,dataManage
     }
 
     let renameAttach = function(blob,filename){
-        console.log(blob);
-        console.log(filename);
         if (window.navigator.msSaveOrOpenBlob) {
             navigator.msSaveBlob(blob, filename);
         } else {

@@ -66,13 +66,14 @@
 
 <!--    关联Task-->
     <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;padding-top:0.3rem;padding-left:0.5rem;">
-        <div style="display:flex;flex-direction:row;font-weight:bold;">BELONG TO:</div>
+        <div style="display:flex;flex-direction:row;font-weight:bold;">BELONG TO:
+            <button style="margin-left:auto; margin-right:2rem;" ng-click="addParentTask()">ADD</button></div>
         <div ng-show="!task.parent || task.parent.length ===0" style="margin-left:1.5rem;color:gray;margin-top:0.5rem;">No Parent Task</div>
         <div ng-repeat="line in task.parent" style="padding-left:0.5rem;width:100%;display:flex;flex-direction:row;">
             <task-type type="{{line.type}}" style="font-size:0.5rem;margin-top:3px;"></task-type>
             <div sub-task>
                 <div progress-bar progress="{{line.progress}}"  id="{{line._id}}" style="height:100%;top:0;position:absolute;left:0;z-index:0;"></div>
-                <div style="z-index:99;position:relative;">{{line.title}}</div>
+                <div style="z-index:5;position:relative;">{{line.title}}</div>
                 <a style="opacity:0;width:100%;top:0;position:absolute;left:0;" href="{{'/task/info?id='+line._id}}" target="_blank" >a</a>
                 <div style="opacity:0.4;left:0;top:0;position:absolute;height:100%;width:100%;"></div>
             </div>
@@ -80,7 +81,8 @@
     </div>
 
     <div style="display:flex;flex-direction:column;margin-bottom:0.5rem;padding-top:0.3rem;padding-left:0.5rem;">
-        <div style="display:flex;flex-direction:row;font-weight:bold;">SUB TASK:</div>
+        <div style="display:flex;flex-direction:row;font-weight:bold;">SUB TASK:
+            <button style="margin-left:auto; margin-right:2rem;" ng-click="addChildTask()">ADD</button></div>
         <div ng-show="!task.children || task.children.length ===0" style="margin-left:1.5rem;color:gray;margin-top:0.5rem;">No Children Task</div>
         <div ng-repeat="line in task.children" style="padding-left:0.5rem;width:100%;display:flex;flex-direction:row;">
             <task-type type="{{line.type}}" style="font-size:0.5rem;margin-top:3px;"></task-type>
@@ -96,7 +98,7 @@
 
 
     <!--    说明-->
-    <div style="display:flex;flex-direction:row;"><button style="margin-left:auto" ng-disabled="taskUpdating" ng-click="switchAddDesc()">EDIT</button></div>
+
     <div style="min-height:1rem;padding:0.5rem;">
           <span ng-repeat="attach in task.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name)">
               <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">
@@ -104,7 +106,7 @@
           </span>
     </div>
     <div style="margin-top:0.5rem;min-height:5rem;" ng-hide="addingDesc" id="description"><%- description %></div>
-
+    <div style="display:flex;flex-direction:row;"><button style="margin-left:auto" ng-disabled="taskUpdating" ng-click="switchAddDesc()">EDIT</button></div>
 
     <div ng-show="addingDesc" style="display:flex;flex-direction:column;border:solid 1px rgba(152,75,67,1);border-radius:5px;padding:1.5rem;box-shadow: 4px 0 5px -3px rgba(185,185,185,0.8);">
         <textarea style="min-height:6rem;" ng-disabled="taskUpdating" id="descriptionBox"></textarea>
@@ -202,57 +204,49 @@
 
 
 <!--   Cover Page-->
-<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;" ng-controller="coverCon">
+<div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;flex-direction:column;z-index:999;" ng-controller="coverCon">
     <div id="infoBoard" class="addTask addDoc" style="position:relative;">
         <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);" ng-show="savingTask">
             <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
         </div>
-        <div style="margin:1rem;display:flex;flex-direction:column;display:none;" >
-            <table id="docDetail" class="displayTable" style="flex:1;margin-top:0.5rem;">
-                <tr><td colspan=2><input ng-model="newTask.title" placeholder="Task Title(mandatory)" style="min-width:30rem;" id="titleInput"></td></tr>
-                <tr><td>Type:</td><td>
-                    <select ng-disabled="savingTask" ng-model="newTask.type" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:99;">
-                        <option value="0">Issue</option>
-                        <option value="1">Requirement</option>
-                        <option value="2">release</option>
-                        <option value="3">QA</option>
-                        <option ng-repeat="account in Accounts" value="account._id">{{account.name}}</option>
-                    </select>
-                </td></tr>
-                <tr><td>Due On:</td><td><input  type="date" id="NewTaskDate" ng-model="newTask.dueOn"></td></tr>
-                <tr><td>Account:</td><td>
-                    <select ng-disabled="savingTask" ng-model="newTask.account" ng-change="loadProjects(target)" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:98;">
-                        <option value="0">Please select account</option>
-                        <option ng-repeat="account in accounts" value="{{account._id}}">{{account.name}}</option>
-                    </select>
-                </td></tr>
-                <tr><td>Project:</td><td>
-                    <select ng-disabled="savingTask" ng-change="loadVersions()" ng-model="newTask.project" onchange="this.size=0" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:97;">
-                        <option value="0">Please select project</option>
-                        <option ng-repeat="project in projects" value="{{project._id}}">{{project.name}}</option>
-                    </select>
-                </td></tr>
-                <tr><td style="min-width:7.5rem;width:7.5rem;">Found on Version:</td><td>
-                    <select ng-disabled="savingTask" ng-model="newTask.version" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:95;" onchange="this.size=0">
-                        <option value="0">Please select version</option>
-                        <option ng-repeat="version in versions" value="{{version._id}}">{{version | versionname}}</option>
-                    </select>
-                </td></tr>
-                <tr><td colspan="2">
-                    <textarea ng-disabled="savingTask" ng-model="newTask.description" style="min-height:8rem;min-width:30rem;border-radius:5px;"></textarea>
-                </td></tr>
-            </table>
-            <div style="display:flex;flex-direction:row;margin-top:1rem;">
-                <button style="margin-left:6rem;margin-right:auto;" ng-click="submitDoc()" ng-disabled="savingTask">提交</button>
-                <button style="margin-left:auto;margin-right:6rem;" ng-click="cancelAddDoc()" ng-disabled="savingTask">取消</button>
-            </div>
-        </div>
-        <div id="alertBoard">
+
+        <div id="alertBoard" ng-show="infoType===0">
             <div id="alertTaskInfo" style="margin:2rem;"></div>
             <div style="display:flex;flex-direction:row;margin-top:1rem;" id="alertTaskButton">
                 <button style="margin-left:6rem;margin-right:auto;" ng-click="answerAlert(true)" ng-disabled="savingTask">提交</button>
                 <button style="margin-left:auto;margin-right:6rem;" ng-click="answerAlert(false)" ng-disabled="savingTask">取消</button>
                 <button style="margin-left:auto;margin-right:auto;" ng-click="answerAlert(false)" ng-disabled="savingTask">确定</button>
+            </div>
+        </div>
+
+        <div id="newTaskBoard" ng-controller="newTaskCon" ng-show="infoType===1" style="margin:2rem;display:flex;flex-direction:column;" >
+            <div style="display:flex;flex-direction:row;margin-bottom:0.5rem;">
+                <button ng-disabled="mode===0" ng-click="switchMode(0)" ng-disabled="status ===2 ">Existed</button>
+                <button ng-disabled="mode===1" ng-click="switchMode(1)" ng-show="type===1" style="margin-left:1rem;" ng-disabled="status===2">NEW</button>
+            </div>
+            <!--               Existed task-->
+            <div style="display:flex;flex:1;flex-direction:column;" ng-show="mode===0">
+                <div>Pease provide a task id for existed task:</div>
+                <div style="display:flex;flex-direction:row;margin-top:0.5rem;margin-left:auto;margin-right:auto;">
+                    <input ng-model="taskId">
+                    <button style="margin-left:1rem;margin-right:2rem;" ng-click="searchTask()" ng-disabled="status===2">Search</button></div>
+                <table style="min-height:3rem;">
+                    <tr ng-repeat="task in existedTasks">
+                        <td info-line info="{{task.account}}" minWidth="6rem"></td>
+                        <td info-line info="{{task.project}}" minWidth="8rem"></td>
+                        <td >{{task.title}}</td>
+                    </tr>
+                    <tr ng-show="status===2"><td colspan="4">   <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i></td></tr>
+                    <tr ng-show="existedTasks.length===0 && status===4" > <td colspan="4">No related tasks found</td></tr>
+                </table>
+                <div style="display:flex;flex-direction:row;margin-bottom:1rem;">
+                    <button ng-click="addRelatedTask()" style="margin-left:auto;margin-right:auto;" ng-disabled="status!==4">ADD</button>
+                </div>
+            </div>
+
+            <!--                basic function-->
+            <div style="display:flex;flex-direction:row;margin-top:auto;margin-bottom:2rem;">
+                <button style="margin-left:auto;margin-right:auto;" ng-click="answerAlert(false)" ng-disabled="status ===2">Cancel</button>
             </div>
         </div>
     </div>

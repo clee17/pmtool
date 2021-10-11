@@ -372,7 +372,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         }
     })
 
-    $scope.updateProgress = function(){
+    $rootScope.updateProgress = function(){
         let parent = $rootScope.task.parent;
         for(let i =0; i< parent.length;++i){
             if(parent[i])
@@ -401,7 +401,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
             else
                 task = data.result;
             if($rootScope.task && $rootScope.task.progress <100 && task.progress >= 100){
-                $scope.updateProgress();
+                $rootScope.updateProgress();
             }
             if(!task)
                 return;
@@ -428,6 +428,8 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
                     $rootScope.$broadcast('progress refreshed',{_id:parent._id,progress:data.progress});
                 }
             }
+            if($rootScope.task._id === data._id)
+                $rootScope.task.progress = data.progress;
         }
     })
 });
@@ -466,6 +468,14 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     };
     $scope.description = {};
     $scope.status = $rootScope.taskStatus;
+
+    $scope.addParentTask = function(){
+        $rootScope.$broadcast('newTask',{type:0,mode:0});
+    }
+
+    $scope.addChildTask = function(){
+        $rootScope.$broadcast('newTask',{type:1,mode:0});
+    };
 
     $scope.switchAddDesc = function(){
         $scope.addingDesc = !$scope.addingDesc;
@@ -697,6 +707,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 
 app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.answering = false;
+    $scope.infoType = 0;
     $scope.answerAlert = function(result){
         $scope.answering = false;
         if(result){
@@ -709,12 +720,32 @@ app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManag
         }
     };
 
+    $scope.showBoard = function(width,height){
+        let topLayer = document.getElementById('pageCover');
+        if(topLayer)
+            topLayer.style.display = 'flex';
+
+        setTimeout(function() {
+            let element = document.getElementById("infoBoard");
+            if(element)
+                element.style.height = height || '15rem';
+            element.style.minWidth = width || '20rem';
+        },10);
+    }
+
+    $scope.$on('newTask',function(event,data){
+        $scope.infoType = 1;
+        data.showBoard = $scope.showBoard;
+        $scope.$broadcast('newTaskBoard',data);
+    })
+
     $scope.$on('alertMessage',function(event,data){
         if($scope.answering)
             return;
         let element = document.getElementById("alertTaskInfo");
         if(!element)
             return;
+        $scope.infoType = 0;
         element.innerHTML = data.message;
         element = document.getElementById('alertTaskButton');
         if(!element)
@@ -727,15 +758,154 @@ app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManag
         $scope.info = data.info;
         $scope.answering = true;
 
-        let topLayer = document.getElementById('pageCover');
-        if(topLayer)
-            topLayer.style.display = 'flex';
+        $scope.showBoard('35rem',data.height);
 
-        setTimeout(function() {
-            let element = document.getElementById("infoBoard");
-            if(element)
-              element.style.height = data.height || '15rem';
-              element.style.minWidth = '35rem';
-            },10);
+    })
+});
+
+app.controller("newTaskCon",function($scope,$rootScope,$location,$window,dataManager) {
+    $scope.mode = 0;
+    $scope.type = 0; //parent or children
+    $scope.status = 0;
+    $scope.existedTasks = [];
+    $scope.showBoard = null;
+    $scope.taskId = "";
+
+    $scope.initialize = function(mode,type){
+        $scope.taskId = "";
+        $scope.mode = mode;
+        $scope.type = type;
+        $scope.switchMode($scope.mode);
+    }
+
+    $scope.switchMode = function(newMode){
+        $scope.mode = newMode;
+        $scope.status = 0;
+        $scope.existedTasks = [];
+        if(newMode ===1){
+            if($scope.showBoard)
+                $scope.showBoard('45rem','35rem');
+        }else if(newMode===0){
+            if($scope.showBoard)
+                $scope.showBoard('45rem','15rem');
+        }
+    }
+
+    $scope.searchTask = function(){
+        if($scope.status===2)
+            return;
+        let id = $scope.taskId;
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            alert("please provide an valid id");
+            return;
+        }
+        $scope.status = 2;
+        dataManager.requestData('tasks','searchTask received',{populate:'project account',search:{_id:id},cond:{limit:1}});
+    }
+
+    $scope.addRelatedTask = function(){
+        if($scope.existedTasks.length ===0){
+            alert("please search again");
+            return;
+        }
+        if($scope.existedTasks[0]._id === $rootScope.task._id){
+            alert("cannot add the task itself as a related task.")
+            return;
+        }else if($scope.type===1){
+            for(let i=0; i<$rootScope.task.parent.length;++i){
+               let parent = $rootScope.task.parent[i];
+               if(parent._id === $scope.taskId){
+                   alert("cannot add parent task as child task");
+                   return;
+               }
+            }
+        }else if($scope.type ===0){
+            for(let i=0; i<$rootScope.task.children.length;++i){
+                let child = $rootScope.task.children[i];
+                if(child._id === $scope.taskId){
+                    alert("cannot add child task as parent task");
+                    return;
+                }
+            }
+        }
+
+        $scope.status = 2;
+        let searchCon = {_id:$rootScope.task._id};
+        if($scope.type)
+            searchCon.children = $scope.taskId;
+        else
+            searchCon.parent = $scope.taskId;
+        dataManager.requestData('tasks','no duplicate task',{search:searchCon});
+
+    }
+
+    $scope.addParentTask = function(){
+        dataManager.updateData('tasks',"related task updated",{search:{_id:$rootScope.taskId},updateExpr:{$push: {parent:$scope.taskId}}, populate:'parent'});
+    }
+
+    $scope.addChildTask = function(){
+        dataManager.updateData('tasks',"related task updated",{search:{_id:$rootScope.taskId},updateExpr:{$push: {children:$scope.taskId}}, populate:'children'});
+
+    }
+
+    $scope.$on('no duplicate task',function(event,data){
+        if(!data.success){
+            alert(data.message);
+        }else{
+            if(data.result.length >0){
+                $scope.status = 4;
+                alert("the target task already existed");
+                return;
+            }
+            if($scope.type){
+                $scope.addChildTask();
+            }else{
+                $scope.addParentTask();
+            }
+        }
+    })
+
+    $scope.$on('related task updated',function(event,data){
+         $scope.status = 4;
+        if(!data.success){
+            alert(data.message);
+        } else{
+
+            if($scope.type){
+                $rootScope.task.children = data.result.children;
+                dataManager.updateData('tasks',"related tasks updated 2 ",{search:{_id:$scope.taskId},updateExpr:{$push: {parent:$rootScope.task._id}}});
+                dataManager.updateProgress($rootScope.task._id);
+            }else{
+                $rootScope.task.parent = data.result.parent;
+                dataManager.updateData('tasks',"related tasks updated 2 ",{search:{_id:$scope.taskId},updateExpr:{$push: {children:$rootScope.task._id}}});
+                $rootScope.updateProgress();
+            }
+
+            $scope.status = 1;
+            $scope.existedTasks = [];
+            $scope.taskId = "";
+        }
+    })
+
+
+    $scope.$on('searchTask received',function(event,data){
+        $scope.status = 1;
+        if(data.success){
+            $scope.status = 4;
+            $scope.existedTasks = [];
+            $scope.existedTasks = $scope.existedTasks.concat(data.result);
+        }else{
+            alert(data.message);
+        }
+    })
+
+    $scope.$on('newTaskBoard',function(event,data){
+        $scope.showBoard = data.showBoard;
+        $scope.initialize(data.mode,data.type);
+    })
+
+    $scope.$watch("taskId",function(oldVal,newVal){
+        $scope.status = 1;
+        $scope.existedTasks = [];
     })
 });

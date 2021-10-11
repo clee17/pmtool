@@ -336,7 +336,6 @@ let handler = {
             message: "unknown failure"
         };
         let id = received._id;
-        let child = received.child;
 
         if(!req.session.user){
             handler.sendError(res,response,'you are not authorized to perform this action');

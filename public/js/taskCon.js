@@ -90,30 +90,6 @@ app.directive('logAnalysis',function($filter){
 
 
 
-app.directive('infoList',function(){
-    return{
-        restrict:"A",
-        scope: {
-            info:"@"
-        },
-        link:function(scope,element, attr){
-            let info = JSON.parse(scope.info);
-            let html = "";
-            if(!Array.isArray(info)){
-                html += ' <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >'+info+ '</div>';
-                element.html(html);
-            }else if(info.length === 0){
-                element.html("no info");
-            }else{
-                for (let i = 0; i < info.length; ++i) {
-                    let info_d = info[i];
-                    html += ' <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >'+info_d.name + '</div>';
-                }
-                element.html(html);
-            }
-        }
-    }
-});
 
 app.directive('taskRecord',function(){
     return{

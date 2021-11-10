@@ -212,6 +212,70 @@ let handler = {
         
     },
 
+    effort:function(req,res){
+        let render = {};
+        if(!req.session.user){
+            res.render('login.html', {});
+        }else{
+            render.user = req.session.user;
+            res.render('effortInfo.html',render);
+        }
+    },
+
+    hrsByEng:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        if(!received.maxTime)
+            received.maxTime = 0;
+        else if(!received.minTime)
+            received.minTime = 0;
+
+
+        let response = {
+            success:false,
+            result:null,
+            message:""
+        }
+
+        if(received.minTime === received.maxTime && received.minTime ===0){
+            response.message = "timestamp missing";
+            handler.sendResult(res,response);
+            return;
+        }else if(!received.eng){
+            response.message = "englist missing";
+            handler.sendResult(res,response);
+            return;
+        }
+
+        let eng = received.eng;
+        for(let i=0; i<eng.length;++i){
+            eng[i] = mongoose.Types.ObjectId(eng[i]);
+        }
+
+        taskCommentModel.aggregate([
+            {$match:{date:{$lte:new Date(received.maxTime),$gte:new Date(received.minTime)},type:{$gte:10,$lte:20},user:{$in:eng}}},
+            {$group:{_id:{"task":"$task",user:"$user",year:{$year:{date:"$date"}},day:{$dayOfYear:{date:"$date"}}},"hours":{$sum:"$hours"}}},
+            {$set:{"_id.hours":"$hours"}},
+            {$replaceRoot:{newRoot: "$_id"}},
+            {$lookup:{from:'tasks',localField:'task',foreignField:"_id",as:"task"}},
+            {$unwind:{path: "$task", preserveNullAndEmptyArrays: true }},
+            {$lookup:{from:'project',localField:"task.project",foreignField:"_id",as:"project"}},
+            {$unwind:{path: "$project", preserveNullAndEmptyArrays: true }},
+            {$lookup:{from:'account',localField:"project.account",foreignField:"_id",as:"project.account"}},
+            {$unwind:{path: "$project.account", preserveNullAndEmptyArrays: true }},
+        ])
+            .then(function(docs){
+                response.result = docs;
+                response.success = true;
+                handler.sendResult(res,response);
+            })
+            .catch(function(err){
+                if(typeof err != 'string')
+                    err = JSON.stringify(err);
+                response.message = err;
+                handler.sendResult(res,response);
+            });
+    },
+
     developer:function(){
         userModel.aggregate([
             {$match:{_id:mongoose.Types.ObjectId(id)}},
@@ -1113,6 +1177,8 @@ router.get('/pwdSet',handler.pwdReset);
 router.get('/project/info',handler.pmInfo);
 router.get('/developer',handler.developer);
 router.get('/account',handler.account);
+router.get('/efforts',handler.effort);
+router.post('/hrsByEng',handler.hrsByEng);
 router.get('/tutorial',handler.tutorial);
 router.get('/tutorial/:contentId',handler.tutorial);
 router.get('/tasks',handler.taskManager)

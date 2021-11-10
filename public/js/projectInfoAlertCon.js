@@ -1,8 +1,9 @@
 app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
     $scope.paymentAlerts = [];
     $scope.taskAlerts = [];
-    $scope.alertPage = ['payment','bugfix'];
     $scope.alertPageId = 0;
+    $scope.maxType = 6;
+    $scope.alerts = [];
     $scope.alertPageIndex = function(){
         return $scope.alertPageId;
     }

@@ -103,15 +103,10 @@
         </div>
     </div>
     <div style="width:100%;border-bottom:solid 1px lightgray;padding-bottom:0.5rem;"></div>
-    <div ng-show="!noAlert()" style="display:flex;flex-direction:column;">
+    <div ng-show="alerts.length >0" style="display:flex;flex-direction:column;">
         <div style="display:flex;flex-direction:row;">
-            <button class="inlineBtn" id="btnPayment" ng-click="gotoAlertPage(1)" ng-disabled="alertPageIndex() === 1" ng-show="paymentAlerts.length >0">PAYMENT</button>
-            <button class="inlineBtn" id="btnBugAlert" ng-click="gotoAlertPage(2)" ng-disabled="alertPageIndex() ===2" ng-show="taskAlerts.length >0">Bugfix</button>
-            <div style="margin-left:auto;margin-right:4rem;margin-top:auto;margin-bottom:0;">
-                <a href="/accounting/payment" target="_blank"  class="simpleBtn" style="text-decoration:none;line-height:1.5rem;font-family:Arial ,serif;margin-top:0.5rem;">View more</a>
-            </div>
+            <button class="inlineBtn" ng-repeat="x in [].constructor(maxType) track by $index" ng-click="goToPage($index)"></button>
         </div>
-        <div ng-show="alertPageIndex() === 1">
             <table style="margin-left:1rem;margin-top:1rem;">
                 <tr ng-repeat="alert in paymentAlerts">
                     <td style="padding-left:2rem;"><div style="border-radius:0.3rem;text-align:center;line-height:1.3rem;width:1.3rem;height:1.3rem;padding:0;color:white;background:rgba(152,75,67,0.8);" class="inlineBtn">P</div></td>
@@ -123,24 +118,9 @@
                     <td style="padding-left:2rem;">Repeat By:</td>
                 </tr>
             </table>
-        </div>
-        <div ng-show="alertPageIndex() === 2" style="display:flex;flex-direction:column;">
-            <table style="margin-left:1rem;margin-top:1rem;">
-                <tr ng-repeat="task in taskAlerts">
-                    <td style="padding-left:2rem;"><div style="border-radius:0.3rem;text-align:center;line-height:1.3rem;width:1.3rem;height:1.3rem;padding:0;color:white;background:rgba(189,160,82,1);" class="inlineBtn">T</div></td>
-                    <td style="padding-left:0.5rem;">{{task.title}}</td>
-                    <td style="padding-left:0.5rem;">{{task.date | date:'&y/&m/&d'}}</td>
-                    <td style="padding-left:0.5rem;max-width:17rem;"><div class="singleLine">{{task.comment}}</div></td>
-                    <td style="padding-left:0.5rem;max-width:17rem;">
-                        <div style="max-width:15rem;height:1rem;" ng-if="task.logs.length>0" class="singleLine">{{task.logs[0].date | date:'&y/&m/&d'}}&nbsp&nbsp{{task.logs[0].contents}}</div>
-                    </td>
-                    <td style="padding-left:0.5rem;">Due By:</td>
-                </tr>
-            </table>
-        </div>
     </div>
 
-    <div style="min-height:3.5rem;display:flex;flex-direction:column;margin-bottom:-1.5rem;" ng-show="noAlert()">
+    <div style="min-height:3.5rem;display:flex;flex-direction:column;margin-bottom:-1.5rem;" ng-show="alerts.length === 0 ">
         <div style="margin:auto;font-weight:bold;height:1rem;">NO&nbsp&nbsp&nbsp&nbspUPDATES</div>
     </div>
 </div>

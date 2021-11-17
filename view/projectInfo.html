@@ -28,7 +28,45 @@
     <script src="/js/projectInfoPaymentCon.js"></script>
     <script src="/js/projectInfoReleaseCon.js"></script>
     <script src="/js/projectInfoPurchaseCon.js"></script>
+    <style>
+        #alertTypeSelector >button{
+            width:3rem;
+            margin-left:0.5rem;
+        }
+
+        #alertTypeSelector >button:hover{
+            opacity:0.6;
+        }
+
+        #alertTypeSelector >button:disabled:hover{
+            opacity:0.6;
+        }
+
+        #alertTypeSelector >button:disabled{
+            filter: grayscale(100%);
+            opacity:0.6;
+        }
+
+        #alertTypeSelector >button >div{
+            width:100%;
+            height:1rem;
+        }
+
+        #docDetail >div{
+            margin-bottom:0.5rem;
+
+        }
+
+        .buttonFunc >button{
+            margin-left:0.5rem;
+        }
+
+        .buttonFunc >a {
+            text-decoration:none;
+        }
+    </style>
 </head>
+
 
 <body ng-app="dashboard"
       ng-controller="rootCon">
@@ -97,31 +135,49 @@
 
 <div class="mainContents" ng-controller="alertCon">
     <div style="width:100%;display:flex;flex-direction:row;font-size:1.1rem;margin-top:-1rem;">
-        <div style="font-weight:bold;margin-left:1rem;">ALERT</div>
+        <div style="font-weight:bold;margin-left:1rem;">DASHBOARD</div>
         <div style="margin-left:auto;">
-            <button class="inlineBtn" style="transform:scale(2);padding:0;margin-right:2rem;"><i class="fa fa-angle-down"></i></button>
+            <a class="inlineBtn" style="padding:0;margin-right:2rem;font-size:1.5rem;" href="{{}}">...</a>
         </div>
     </div>
     <div style="width:100%;border-bottom:solid 1px lightgray;padding-bottom:0.5rem;"></div>
-    <div ng-show="alerts.length >0" style="display:flex;flex-direction:column;">
-        <div style="display:flex;flex-direction:row;">
-            <button class="inlineBtn" ng-repeat="x in [].constructor(maxType) track by $index" ng-click="goToPage($index)"></button>
-        </div>
-            <table style="margin-left:1rem;margin-top:1rem;">
-                <tr ng-repeat="alert in paymentAlerts">
-                    <td style="padding-left:2rem;"><div style="border-radius:0.3rem;text-align:center;line-height:1.3rem;width:1.3rem;height:1.3rem;padding:0;color:white;background:rgba(152,75,67,0.8);" class="inlineBtn">P</div></td>
-                    <td style="padding-left:2rem;">Unpaid payments</td>
-                    <td style="padding-left:2rem;">{{alert.PO}}&nbsp&nbsp&nbsp{{alert.status | payStatus}}
-                        &nbsp&nbsp&nbsp{{alert.amount}} {{alert.currency | currency}}</td>
-                    <td style="padding-left:2rem;">{{alert.date | date:'&y/&m/&d'}}</td>
-                    <td style="padding-left:2rem;">Due By:</td>
-                    <td style="padding-left:2rem;">Repeat By:</td>
-                </tr>
-            </table>
+    <div style="display:flex;flex-direction:row;" id="alertTypeSelector">
+        <button class="inlineBtn" ng-repeat="x in [].constructor(maxType) track by $index" ng-click="changeType($index)" task-type type="{{$index}}" ng-disabled="$index === taskType"></button>
+        <button style="margin-left:auto;margin-right:2rem;height:1.5rem;margin-top:0.5rem;" ng-click="newTask()">NEW</button>
     </div>
 
-    <div style="min-height:3.5rem;display:flex;flex-direction:column;margin-bottom:-1.5rem;" ng-show="alerts.length === 0 ">
-        <div style="margin:auto;font-weight:bold;height:1rem;">NO&nbsp&nbsp&nbsp&nbspUPDATES</div>
+    <div ng-show="records.length >0" style="display:flex;flex-direction:column;">
+        <div>
+            <div ng-repeat="rec in records" ng-show="rec.type === taskType && !duplicate(rec)" style="display:flex;flex-direction:column;margin-top:0.5rem;margin-left:0.5rem;">
+                <div style="display:flex;flex-direction:row;">
+                    <div task-type type="{{rec.type}}" style="font-size:0.8rem;"></div>
+                    <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:8rem;width:8rem;">{{rec.title}}</div>
+                    <div hrs-sign style="margin-right:1rem;line-height:1.5rem;">{{rec.hours + ' hrs'}}</div>
+                    <div style="line-height:1.5rem;margin-right:1rem;">{{rec.plan.start | date:'&y/&m/&d'}}</div>
+                    <div style="line-height:1.5rem;margin-right:1rem;">{{rec.plan.end | date:'&y/&m/&d'}}</div>
+                    <div style="line-height:1.5rem;margin-right:1rem;" hrs-compare rec="{{rec}}">{{rec.plan.hours + ' hrs'}}</div>
+                    <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
+                        <button class="inlineBtn" style="font-weight:bold;font-size:1rem;height:1rem;" ng-click="newChildTask(rec)">+</button>
+                        <a class="inlineBtn" style="margin-top:0;margin-bottom:auto;font-weight:bold;font-size:0.3rem;height:1rem;" target="_blank" href="{{'task/info?id='+ rec._id}}">●●●</a></div>
+                </div>
+                <div>
+                    <div ng-repeat="child in rec.children" style="display:flex;flex-direction:row;margin-left:2rem;">
+                        <div task-type type="{{child.type}}" style="font-size:0.4rem;"></div>
+                        <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:8rem;width:8rem;">{{child.title}}</div>
+                        <div hrs-sign style="margin-right:1rem;line-height:1.5rem;">{{child.hours + ' hrs'}}</div>
+                        <div style="line-height:1.5rem;margin-right:1rem;">{{child.plan.start | date:'&y/&m/&d'}}</div>
+                        <div style="line-height:1.5rem;margin-right:1rem;">{{child.plan.end | date:'&y/&m/&d'}}</div>
+                        <div style="line-height:1.5rem;margin-right:1rem;" hrs-compare rec="child">{{child.plan.hours + ' hrs'}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="min-height:3.5rem;display:flex;margin-bottom:-1.5rem;" ng-show="refreshing">
+        <i class="fa fa-spinner fa-spin" style="margin:auto;"></i>
+    </div>
+    <div style="min-height:3.5rem;display:flex;flex-direction:column;margin-bottom:-1.5rem;" ng-show="records.length === 0 && !refreshing">
+        <div style="margin:auto;font-weight:bold;height:1rem;">NO&nbsp&nbsp&nbsp&nbspTASKS</div>
     </div>
 </div>
 
@@ -363,11 +419,29 @@
 
 <div id="pageCover" class="coverLayer" style="background:rgba(58,58,58,0.4);position:fixed;display:none;">
     <div class="addDoc" style="position:relative;display:flex;flex-direction:column;">
-        <div style="margin:1rem;display:flex;flex-direction:column;overflow-y:auto;" id="coverDetail"></div>
+        <div style="margin:1rem;display:flex;flex-direction:column;overflow-y:auto;" id="coverDetail" ng-if="submitType !== 'task'"></div>
+        <div style="margin:1rem;display:flex;flex-direction:column;" ng-controller="newTaskCon" ng-show="submitType === 'task'">
+            <div id="docDetail" class="displayTable" style="flex:1;margin-top:0.5rem;">
+                <div><input ng-model="newTask.title" placeholder="Task Title(mandatory)" style="min-width:30rem;margin-bottom:0.5rem;" id="titleInput"></div>
+                <div id="newTaskType" style="display:flex;flex-direction:row;margin-bottom:0.5rem;height:2rem;position:relative;"><div style="line-height:2rem;height:100%;">Type:</div><div task-type type="{{newTask.type}}" style="padding-top:2px;margin-left:0.5rem;"></div></div>
+                <div style="margin-bottom:0.5rem;">Due On: <input  type="date" id="NewTaskDate" ng-model="newTask.dueOn"></div>
+                <div  style="display:flex;flex-direction:row;margin-bottom:0.5rem;"><div style="min-width:7.5rem;width:7.5rem;">related version:</div><div>
+                    <select ng-disabled="savingTask" ng-model="newTask.version" onmousedown="if(this.options.length>10){this.size=10}" onblur="this.size = 0" style="position:absolute;z-index:95;" onchange="this.size=0">
+                        <option value="0">Please select version</option>
+                        <option ng-repeat="version in versions" value="{{version._id}}">{{version | versionname}}</option>
+                    </select>
+                </div></div>
+                <div id="starterDateLine">Estimated Start: <input type="date" id="estimatedStarter" ng-model="newTask.plan.start"> </div>
+                <div id="endDateLine">Estimated End: <input type="date" id="estimatedEnd" ng-model="newTask.plan.end"></div>
+                <div>Estimated Hours: <input value="{{newTask.plan.hours}}"> <button ng-click="calcHour()">auto</button> </div>
+                <div><textarea ng-disabled="savingTask" ng-model="newTask.description" style="min-height:8rem;min-width:30rem;border-radius:5px;"></textarea></div>
+            </div>
+        </div>
         <div style="display:flex;flex-direction:row;margin-bottom:1.5rem;margin-top:auto;">
             <button style="margin-left:6rem;margin-right:auto;" ng-click="submitDoc()">提交</button>
             <button style="margin-left:auto;margin-right:6rem;" ng-click="cancelDoc()">取消</button>
         </div>
+
         <div class="addDocCover coverLayer" style="z-index:99;background:rgba(218,218,218,0.4);display:flex;" ng-show="saving">
             <i class="fa fa-spinner fa-spin fa-3x" style="margin:auto;"></i>
         </div>

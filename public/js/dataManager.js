@@ -53,11 +53,14 @@ app.service("dataManager",function($http,$rootScope){
 
     manager.requestAggregateData = function(tableName,symbol,data){
         manager.request('/aggregate/'+tableName,symbol,data);
-
     }
 
     manager.saveData = function(tableName,symbol,data){
         manager.request('/save/'+tableName,symbol,data);
+    }
+
+    manager.saveTask = function(symbol,data){
+        manager.request('/newTask/',symbol,data);
     }
 
     manager.updateData = function(tableName,symbol,data){

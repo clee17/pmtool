@@ -1,9 +1,7 @@
 var cancelDoc = function(){
-    console.log('entered');
     let elements = document.getElementsByClassName('addDoc');
     if(elements.length>0)
         elements[0].style.height = '0';
-    console.log(elements);
     let topLayer = document.getElementById('pageCover');
     topLayer.style.display = 'none';
     setTimeout(function(){
@@ -34,6 +32,15 @@ var getCurrentStatus = function(status){
     let statusList = [`'opportunities', 'business','development','delivery','maintenance','closed','re-open','mass production'`];
     return statusList[status];
 };
+
+var trimDigit = function(num,digit){
+    if(typeof num !== "string")
+        num = num.toString();
+    while(num.length < digit){
+        num = '0'+num;
+    }
+    return num;
+}
 
 var countryCodes = [
     {code:"54", country:"Argentina"},

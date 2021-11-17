@@ -412,7 +412,6 @@ let handler = {
         }
 
         let fail = function(errMessage){
-            console.log(errMessage);
             handler.sendError(res,response,errMessage);
         }
 
@@ -744,6 +743,51 @@ let handler = {
                 response.message = JSON.stringify(err);
                 handler.sendResult(res,response);
             })
+    },
+
+    saveTask:function(req,res,next){
+        let receivedStr = decodeURIComponent(req.body.data);
+        let received =JSON.parse(LZString.decompressFromBase64(receivedStr));
+
+        let response = {
+            sent:false,
+            index:"newTask",
+            info:received.info || null,
+            result:[],
+            message:"unknown failure"}
+
+        if(!received.title || !received.description){
+            handler.sendError(res,response,"missing title or description");
+            return;
+        }
+
+        let model = new taskModel();
+        let keys = Object.keys(received);
+        for(let i=0;i<keys.length;++i){
+            model[keys[i]] = received[keys[i]];
+        }
+
+        model.submitter = req.session.user._id;
+
+
+        model.save()
+            .then(function(doc){
+                response.result = doc;
+                response.success = true;
+                if(received.parent)
+                    return taskModel.findOneAndUpdate({_id:received.parent},{$addToSet:{children:doc._id}},{new:true}).exec()
+                else
+                    handler.sendResult(res,response);
+            })
+            .then(function(childDoc){
+                console.log(childDoc);
+                handler.sendResult(res,response);
+            })
+            .catch(function(err){
+                response.message =err;
+                handler.sendError(res,response,err.message || JSON.stringify(err));
+            })
+
     },
 
     save:function(req,res,next){
@@ -1199,6 +1243,7 @@ router.post('/search/:tableId',handler.search);
 router.post('/aggregate/:tableId',handler.aggregate);
 
 router.post('/save/:tableId',handler.save);
+router.post('/newTask/',handler.saveTask);
 router.post('/delete/:tableId',handler.delete);
 router.post('/upload/general/:tableId',handler.uploadGeneral);
 router.post('/upload/attach/:tableId',handler.uploadAttach);

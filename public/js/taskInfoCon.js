@@ -127,19 +127,25 @@ app.directive('commentType',function($rootScope,$location){
     return{
         restrict:"A",
         scope:{
-            type:"@"
+            type:"@",
+            usertype:"@",
         },
         link:function(scope,element,attr){
             let type = Number(scope.type);
+            let usertype = Number(scope.usertype);
             element.css('padding','4px');
             element.css('marginLeft','1.5rem');
             element.css('marginRight','1.5rem');
             element.css('borderRadius','5px');
             let children = element.children();
             children[0].style.marginLeft = '5px';
-            if(type === 11){
+            if(type === 11 && usertype === 2){
+                element.css('background','yellow');
+                element.css('color','black');
+            }else if(type === 11){
                 element.css('background','rgba(152,75,67,1)');
                 element.css('color','white');
+
             }
         }
     }
@@ -359,10 +365,10 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         }
         if(data.type ===0){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4,schedule:null}, populate:'submitter parent children'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:4,schedule:null,completed:new Date(Date.now())}, populate:'submitter parent children'});
         }else if(data.type ===1){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
-            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:0}, populate:'submitter parent children'});
+            dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:0,completed:null}, populate:'submitter parent children'});
         }else if(data.type ===2){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:4},populate:'user attachments'});
             dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{status:5,schedule:null}, populate:'submitter parent children'});
@@ -663,6 +669,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         if(!data.success)
             alert(data.message);
         else{
+            console.log(data.result);
             for(let i=0; i<data.result.length;++i) {
                 if(data.result[i].type >=2){
                     $scope.stringifyData(data.result[i]);
@@ -699,7 +706,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 
     $scope.initialize = function(){
         dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($rootScope.commentPage.pageId-1),limit:35}});
-        dataManager.requestData('user','engineers received',{search:{type:1}});
+        dataManager.requestData('user','engineers received',{search:{type:{$in:[1,2]}}});
     }
 
     $scope.initialize();

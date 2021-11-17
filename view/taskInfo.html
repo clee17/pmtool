@@ -59,6 +59,8 @@
         <div style="min-width:4rem;color:rgba(152,75,67,0.8);font-weight:bold;">{{task.hours}}</div>
         <div style="margin-left:1rem;margin-right:0.5rem;">MAN DAYS:</div>
         <div style="min-width:4rem;color:rgba(152,75,67,0.8);font-weight:bold;">{{task.hours | hourToDay}}</div>
+        <div style="margin-left:1rem;margin-right:0.5rem;">COMPLETED ON:</div>
+        <div style="min-width:4rem;color:rgba(152,75,67,0.8);font-weight:bold;">{{task.completed | date:'&y-&m-&d'}}</div>
     </div>
     <div style="margin-top:1rem;margin-left:0.5rem;margin-bottom:1.5rem;display:flex;flex-direction:column;font-weight:bold;">
         <div>Participated Engineer:</div>
@@ -126,7 +128,7 @@
     <div style="display:flex;flex-direction:column;min-height:6rem;flex:1;margin-left:1.5rem;">
         <div ng-show="comments.length === 0" style="margin:auto;color:rgba(140,140,140,0.8);font-size:2rem;">NO COMMENT NOW</div>
         <div ng-repeat="comment in comments" >
-            <div style="display:flex;flex-direction:row;" class="subRow" ng-if="comment.type <2 || comment.type>= 10" comment-type type="{{comment.type}}">
+            <div style="display:flex;flex-direction:row;" class="subRow" ng-if="comment.type <2 || comment.type>= 10" comment-type type="{{comment.type}}" usertype="{{comment.user.type}}">
                 <div>提交人：{{comment.user.name}}</div>
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | taskStatus}}</div>
@@ -168,8 +170,8 @@
             </select>
 
             <div style="margin-left:1rem;" ng-show="userType ===0">提交人：{{user.name}}</div>
-            <div style="margin-left:4rem;" ng-show="userType===0">schedule：</div>
-            <input ng-disabled="!updatable(1)" type="date" id="commentTime" ng-show="userType===0">
+            <div style="margin-left:4rem;">schedule：</div>
+            <input ng-disabled="!updatable(1)" type="date" id="commentTime">
             <div style="margin-left:4rem;" ng-show="userType===0">status：</div>
             <select ng-disabled="!updatable(1)" ng-model="status" ng-show="userType===0">
                 <option value="0">Verifying</option>

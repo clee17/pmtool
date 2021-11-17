@@ -151,7 +151,7 @@
             <div ng-repeat="rec in records" ng-show="rec.type === taskType && !duplicate(rec)" style="display:flex;flex-direction:column;margin-top:0.5rem;margin-left:0.5rem;">
                 <div style="display:flex;flex-direction:row;">
                     <div task-type type="{{rec.type}}" style="font-size:0.8rem;"></div>
-                    <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:8rem;width:8rem;">{{rec.title}}</div>
+                    <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:25rem;width:25rem;">{{rec.title}}</div>
                     <div hrs-sign style="margin-right:1rem;line-height:1.5rem;">{{rec.hours + ' hrs'}}</div>
                     <div style="line-height:1.5rem;margin-right:1rem;">{{rec.plan.start | date:'&y/&m/&d'}}</div>
                     <div style="line-height:1.5rem;margin-right:1rem;">{{rec.plan.end | date:'&y/&m/&d'}}</div>
@@ -163,7 +163,7 @@
                 <div>
                     <div ng-repeat="child in rec.children" style="display:flex;flex-direction:row;margin-left:2rem;">
                         <div task-type type="{{child.type}}" style="font-size:0.4rem;"></div>
-                        <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:8rem;width:8rem;">{{child.title}}</div>
+                        <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:25rem;width:25rem;">{{child.title}}</div>
                         <div hrs-sign style="margin-right:1rem;line-height:1.5rem;">{{child.hours + ' hrs'}}</div>
                         <div style="line-height:1.5rem;margin-right:1rem;">{{child.plan.start | date:'&y/&m/&d'}}</div>
                         <div style="line-height:1.5rem;margin-right:1rem;">{{child.plan.end | date:'&y/&m/&d'}}</div>

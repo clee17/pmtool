@@ -660,6 +660,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> <b>hang </b>the task on <b>"+current+"</b>" ;
         }else if(rec.type === 5){
             rec.comment =  '<b style="color:rgba(152,75,67,1)">'+ rec.user.name +  "</b> <b style='color:green;'>complete </b>the task on <b>"+current+"</b>";
+        }else if(rec.type === 6 || 7){// change type 6 + change estimation 7
         }
 
     }

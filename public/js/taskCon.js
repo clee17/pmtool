@@ -24,15 +24,6 @@ app.directive('infoFormat',function(){
 });
 
 
-app.filter('versionname',function(){
-    return function(version) {
-        if(version.name && version.name.length >0)
-            return version.name
-        else
-            return version.version.main.toString()+'.'+version.version.update.toString()+'.'+version.version.fix.toString();
-    }
-})
-
 app.filter('objectify',function(){
     return function(obj) {
         if(!obj)

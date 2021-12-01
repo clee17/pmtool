@@ -195,6 +195,17 @@ app.filter('docType',function(){
     }
 });
 
+
+app.filter('versionname',function(){
+    return function(version) {
+        if(version.name && version.name.length >0)
+            return version.name
+        else
+            return version.version.main.toString()+'.'+version.version.update.toString()+'.'+version.version.fix.toString();
+    }
+})
+
+
 app.filter('docSource',function(){
     return function(type){
         if(typeof type !== 'number')
@@ -606,9 +617,24 @@ app.directive('taskType',function(){
                 element.html('<div style="background:dodgerblue;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">DOC</div>')
             else if(type ===5)
                 element.html('<div style="background:lightgray;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">OTH</div>')
+            else if(type ===6)
+                element.html('<div style="background:mediumpurple;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">TA</div>')
+            else if(type ===7)
+                element.html('<div style="background:greenyellow;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">PAY</div>')
+
         }
     }
 })
+
+app.filter('taskType',function(){
+    return function(type){
+        if(typeof type !== 'number')
+            type = Number(type);
+        let typeList = ['ISSUE','Milestone','Release','QA',"DOC",'OTHER',"TASK","PAYMENT"];
+        return typeList[type] || 'Unknown';
+    }
+})
+
 
 
 app.directive('infoList',function(){

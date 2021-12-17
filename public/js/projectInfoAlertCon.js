@@ -68,7 +68,7 @@ app.directive('taskStatus',function(){
 app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
     $scope.taskType = 1;
     $scope.records = [];
-    $scope.maxType = 6;
+    $scope.maxType = 7;
     $scope.taskTypeList = [''];
 
     $scope.dayOrHour = false;
@@ -98,13 +98,14 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
 
     $scope.refresh = function(){
         $scope.refreshing = true;
-        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:{path:'children',populate:{path:'children'}}})
+        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:{path:'children',populate:{path:'children',populate:{path:'children'}}}})
     }
 
     $scope.$on('alert tasks received',function(event,data){
         $scope.refreshing = false;
         if(data.success){
             $scope.records = data.result;
+
         }else
             alert(data.message);
     })
@@ -120,10 +121,19 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
             if(data.result.parent.length ===0)
                $scope.records.push(data.result);
             else{
+                $scope.records.push(data.result);
                 for(let i=0; i<$scope.records.length;++i){
                     let id = $scope.records[i]._id;
                     if(data.result.parent.indexOf(id) >=0)
                         $scope.records[i].children.push(data.result);
+                    for(let j=0;j<$scope.records[i].children.length;++j){
+                        id= $scope.records[i].children[j]._id;
+                        console.log(data.result.parent.indexOf(id)>=0);
+                        if(data.result.parent.indexOf(id) >=0){
+                            $scope.records[i].children[j].children.push(data.result);
+                            console.log($scope.records[i].children[j]);
+                        }
+                    }
                 }
             }
         }else{
@@ -283,15 +293,26 @@ app.controller("newTaskCon",function($scope,$rootScope,$compile,$timeout,$window
                node = $compile("<div style=\"line-height:2rem;height:100%;\">Type:</div><div task-type type=\"{{newTask.type}}\" style=\"padding-top:2px;margin-left:0.5rem;\"></div>")($scope);
             else
                 node = $compile("<div style='line-height:2rem;height:100%;'>Type:</div><div style='height:2rem;margin-left:0.5rem;'><select ng-disabled=\"savingTask\" ng-model=\"newTask.type\" onchange=\"this.size=0\" onmousedown=\"if(this.options.length>10){this.size=10}\" onblur=\"this.size = 0\" style=\"position:absolute;z-index:99;top:0.5rem;\">\n" +
-                    "                        <option value=\"0\">Issue</option>" +
                     "                        <option value=\"1\">Requirement</option>" +
                     "                        <option value=\"2\">release</option>" +
                     "                        <option value=\"3\">QA</option>" +
+                    "                        <option value=\"0\">Issue</option>" +
                     "                        <option value=\"4\">Documentation</option>" +
+                    "                        <option value=\"6\">task</option>" +
+                    "                        <option value=\"7\">payment</option>" +
                     "                        <option value=\"5\">Other</option>" +
                     "                    </select></div>")($scope);
             element.append(node);
         }
+
+
+
+
+
+
+
+
+
     });
 
 

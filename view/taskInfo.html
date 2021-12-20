@@ -147,7 +147,7 @@
         <div ng-if="commentPage.startIndex>1"><button ng-click="goToCommentPage(1)">1</button></div>
         <div ng-if="commentPage.startIndex>2">…</div>
         <div ng-repeat="x in [].constructor(7) track by $index">
-            <button ng-if="$index+commentPage.startIndex <= commentPage.page"
+            <button ng-if="$index+commentPage.startIndex <= commentPage.maxPage"
                     ng-click="goToCommentPage($index+ commentPage.startIndex)"
                     ng-disabled="commentPage.pageId - commentPage.startIndex === $index">{{$index+commentPage.startIndex}}</button></div>
         <div ng-if="commentPage.startIndex+7 < commentPage.pageMax">…</div>

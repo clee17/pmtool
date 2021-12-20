@@ -198,12 +198,7 @@ app.filter('buttonStatus',function(){
 app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,dataManager){
     $scope.addDescription = [];
     $rootScope.maxCount = 0;
-    $rootScope.commentPage = {
-        page:1,
-        pageId:1,
-        startIndex:1,
-        maxCount:0
-    };
+
 
     $scope.closeTask = function(){
         if($rootScope.taskUpdating)
@@ -386,13 +381,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         }
     }
 
-    $scope.$on('countReceived',function(event,data){
-        if(data.success){
-            $rootScope.commentPage.maxCount = data.maxCount;
-            $rootScope.commentPage.maxPage = Math.ceil(data.maxCount/20);
-        }else
-            alert("countReceived"+data.message);
-    });
+
 
     $scope.$on('task info received',function(event,data) {
         $scope.taskUpdating = false;
@@ -448,6 +437,12 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     $scope.engineers = [];
     $scope.addingComment = false;
     $scope.addingDesc = false;
+    $scope.commentPage = {
+        page:1,
+        pageId:1,
+        startIndex:1,
+        maxCount:0
+    };
 
     $scope.attachIndex= 0;
 
@@ -474,6 +469,21 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     };
     $scope.description = {};
     $scope.status = $rootScope.taskStatus;
+
+    $scope.setPageID = function(){
+        $rootScope.commentPage.page = Math.ceil( $rootScope.commentPage.maxCount / 35);
+        $rootScope.commentPage.startIndex = $scope.pageId - 7;
+        if( $rootScope.commentPage.startIndex<1)
+            $rootScope.commentPage.startIndex = 1;
+    }
+
+    $scope.goToCommentPage = function(index){
+        if(index <= $scope.commentPage.maxPage && index >=1 ){
+            $scope.commentPage.pageId = index;
+            $scope.reqeusting = true;
+            dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($scope.commentPage.pageId-1),limit:35}});
+        }
+    }
 
     $scope.addParentTask = function(){
         $rootScope.$broadcast('newTask',{type:0,mode:0});
@@ -545,21 +555,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         upload.outerHTML= upload.outerHTML;
     }
 
-    $scope.setPageID = function(){
-        $rootScope.commentPage.page = Math.ceil( $rootScope.commentPage.maxCount / 35);
-        $rootScope.commentPage.startIndex = $scope.pageId - 7;
-        if( $rootScope.commentPage.startIndex<1)
-            $rootScope.commentPage.startIndex = 1;
-    }
 
-    $scope.goToCommentPage = function(index){
-        console.log(index);
-        if(index <= $scope.page && index >=1 ){
-            $rootScope.commentPage.pageId = index;
-            $scope.reqeusting = true;
-            dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($rootScope.commentPage.pageId-1),limit:35}});
-        }
-    }
 
     $scope.switchUserType = function(type){
         $scope.userType = type;
@@ -621,7 +617,10 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         if(!data.success){
             alert(data.message);
         }else{
-            $scope.comments.push(data.result);
+            if($scope.commentPage.pageId >= $scope.commentPage.maxPage)
+                $scope.comments.push(data.result);
+            $scope.commentPage.maxCount++;
+            $scope.commentPage.maxPage = Math.ceil(data.maxCount/20);
             $scope.comment['1'] = "";
             $scope.attachments['1'].length = 0;
             if($scope.status === '5'){
@@ -640,7 +639,10 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
             alert(data.message);
         }else{
             $scope.stringifyData(data.result);
-            $scope.comments.push(data.result);
+            if($scope.commentPage.pageId >= $scope.commentPage.maxPage)
+                $scope.comments.push(data.result);
+            $scope.commentPage.maxCount++;
+            $scope.commentPage.maxPage = Math.ceil(data.maxCount/20);
         }
     });
 
@@ -665,12 +667,20 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 
     }
 
+    $scope.$on('countReceived',function(event,data){
+        if(data.success){
+            $scope.commentPage.maxCount = data.maxCount;
+            $scope.commentPage.maxPage = Math.ceil(data.maxCount/35);
+            console.log($scope.commentPage);
+        }else
+            alert("countReceived"+data.message);
+    });
+
 
     $scope.$on("comments received",function(event,data){
         if(!data.success)
             alert(data.message);
         else{
-            console.log(data.result);
             for(let i=0; i<data.result.length;++i) {
                 if(data.result[i].type >=2){
                     $scope.stringifyData(data.result[i]);
@@ -706,7 +716,8 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
     });
 
     $scope.initialize = function(){
-        dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($rootScope.commentPage.pageId-1),limit:35}});
+        dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($scope.commentPage.pageId-1),limit:35}});
+        dataManager.countPage('taskComment',{search:{task:$rootScope.taskId}});
         dataManager.requestData('user','engineers received',{search:{type:{$in:[1,2]}}});
     }
 

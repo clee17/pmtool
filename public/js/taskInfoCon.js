@@ -284,14 +284,25 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         xhr.send();
     }
 
-    $scope.refreshCommentData = function(){
-        let element = document.getElementById('commentTime');
+    $rootScope.getDateStamp = function(){
+        let element = document.getElementById('logTime');
+        if(!element)
+            return new Date(Date.now());
+        let value = element.value;
+        if(value === "" || !value)
+            return new Date(Date.now())
+        else
+            return new Date(element.value);
+    }
+    $scope.refreshTime= function(sign,t){
+        let element = document.getElementById(sign);
         if(!element)
             return;
-        if(!$rootScope.task.schedule){
+        if(!t){
             element.value = "";
         }else{
-            let schedule = new Date($rootScope.task.schedule);
+            // let schedule = new Date($rootScope.task.schedule);
+            let schedule = new Date(t);
             let year = schedule.getFullYear();
             let day = ("0" + schedule.getDate()).slice(-2);
             let month = ("0" + (schedule.getMonth() + 1)).slice(-2);
@@ -333,7 +344,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
             status:$rootScope.task.status,
             task:$rootScope.taskId,
             user:$rootScope.user._id,
-            date:Date.now()
+            date:$rootScope.getDateStamp()
         }
         dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:3,comment:$rootScope.task.comment},populate:'user attachments'});
         dataManager.updateData('tasks',"task info received",{search:{_id:$rootScope.taskId},updateExpr:{description:value}, populate:'submitter'});
@@ -356,7 +367,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
             status:$rootScope.task.status,
             task:$rootScope.taskId,
             user:$rootScope.user._id,
-            date:Date.now()
+            date:$rootScope.getDateStamp()
         }
         if(data.type ===0){
             dataManager.saveData('taskComment', "task comment saved on index2",{search:search,updateExpr:{type:2},populate:'user attachments'});
@@ -407,7 +418,8 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
             if($rootScope.schedule)
                 $rootScope.schedule = new Date($rootScope.task.schedule);
             $scope.refreshBackground();
-            $scope.refreshCommentData();
+            $scope.refreshTime('logTime',Date.now());
+            $scope.refreshTime('commentTime',$rootScope.task.schedule);
             $scope.refreshTaskBasic();
             $scope.refreshPage();
         }
@@ -579,7 +591,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 
         let data = {
             search:{
-                date:new Date(Date.now()),
+                date:$rootScope.getDateStamp(),
                 status:$scope.status,
                 type:index,
                 comment: contents,
@@ -601,6 +613,9 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         let element = document.getElementById('commentTime');
         if(element)
             $scope.tempSchedule = new Date(element.value);
+        element = document.getElementById('logTime');
+        if(element)
+            $scope.date = new Date(element.value);
         let formData = new FormData();
         let attachments = $scope.attachments[index.toString()];
         for(let i=0;i<attachments.length;++i){
@@ -719,6 +734,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         dataManager.requestData('taskComment','comments received',{populate:'user attachments',search:{task:$rootScope.taskId},cond:{sort:{date:1},skip:35*($scope.commentPage.pageId-1),limit:35}});
         dataManager.countPage('taskComment',{search:{task:$rootScope.taskId}});
         dataManager.requestData('user','engineers received',{search:{type:{$in:[1,2]}}});
+        $scope.refreshTime('logTime',Date.now());
     }
 
     $scope.initialize();

@@ -170,6 +170,8 @@
             </select>
 
             <div style="margin-left:1rem;" ng-show="userType ===0">提交人：{{user.name}}</div>
+            <div style="margin-left:4rem;">Date：</div>
+            <input ng-disabled="!updatable(1)" type="date" id="logTime">
             <div style="margin-left:4rem;">schedule：</div>
             <input ng-disabled="!updatable(1)" type="date" id="commentTime">
             <div style="margin-left:4rem;" ng-show="userType===0">status：</div>

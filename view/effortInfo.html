@@ -110,18 +110,19 @@
 <div id="main">
     <div class="topBtnRow"><button onclick="showPageCover(22)" class="addDocBtn">New Entry</button></div>
     <div id="dateSelector">
-        <input type="date" style="margin-left:4rem;" id="date"">
+        <input type="date" style="margin-left:4rem;" id="date">
         <select ng-model="entrynumCount" style="margin-left:2rem;">
             <option value="7">7 days</option>
             <option value="14">14 days</option>
             <option value="28">28 days</option>
-            <option value="mon">monthly</option>
+            <option value="31">31 days</option>
         </select>
         <button style="margin-left:6rem;margin-right:auto;" ng-disabled="refreshing" ng-click="refreshData()">search</button>
     </div>
     <div id="projectDash" style="display:flex;flex-direction:column;padding:1rem;padding-left:4rem;padding-right:4rem;">
-        <div  ng-repeat="project in projectList">
+        <div  ng-repeat="project in projectList" ng-show="projectVisible(project._id)">
             <div class="projectBar" style="display:flex;flex-direction:row;font-size:1.2rem;font-weight:bold;">
+                <div><input name="Viewitonly" type="checkbox" value="false" ng-model="projectSwitches[project._id]" ng-change="Viewitonly(project._id)" ng-show="projectsCount>1"/></div>
                 <div>{{project.account.name}}</div>
                 <div>{{project.name}}</div>
                 <div hrs-sign>{{project.hrs | projecthrs}}</div>
@@ -131,8 +132,8 @@
                 <div ng-repeat="task in project.tasks" style="display:flex;flex-direction:row;position:relative;">
                     <div task-type type="{{task.type}}" style="max-width:2.5rem;font-size:0.8rem;margin-right:0.3rem;"></div>
                     <div style="margin-right:1rem;">{{task.title}}</div>
-                    <div hrs-sign style="margin-right:0.5rem;line-height:1.5rem;">{{task.hours | projecthrs}}</div>
-                    <div class="progress-bar" progress="{{task.hours}}" max="{{entrynum*8}}" project="{{project}}" style="width:30rem;opacity:0.5;"></div>
+                    <div hrs-sign style="margin-right:0.5rem;line-height:1.5rem;">{{task.hrs | projecthrs}}</div>
+                    <div class="progress-bar" progress="{{task.hrs}}" max="{{entrynum*8}}" project="{{project}}" style="width:30rem;opacity:0.5;"></div>
                 </div>
             </div>
 

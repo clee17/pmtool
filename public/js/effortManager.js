@@ -39,10 +39,6 @@ app.directive('progressBar',function($rootScope){
             for(let i=0; i<row;++i){
                 html += '<div style="margin-bottom:1px;width:100%;height:0.5rem;background:'+color+';"></div>'
             }
-
-            console.log(progress);
-            console.log(max);
-            console.log(last);
             html +=  '<div style="width:'+last*100+'%;height:0.5rem;background:'+color+';">&nbsp</div>';
             element.html(html);
         }
@@ -184,6 +180,21 @@ app.controller("effortCon",function($scope,$rootScope,dataManager,$location,$win
     $scope.entries = [];
     $scope.view = 1;
 
+    $scope.selectedProject = null;
+    $scope.projectSwitches = {};
+
+    $scope.projectVisible = function(projectId){
+        console.log(!($scope.selectedProject && $scope.selectedProject !== projectId));
+        return !($scope.selectedProject && $scope.selectedProject !== projectId);
+    }
+
+    $scope.Viewitonly = function(id){
+        if($scope.selectedProject)
+            $scope.selectedProject = null;
+        else
+            $scope.selectedProject = id;
+    }
+
     $scope.engineers = [];
     $rootScope.projects = {};
     $scope.projectList = [];
@@ -242,36 +253,24 @@ app.controller("effortCon",function($scope,$rootScope,dataManager,$location,$win
         }
     };
 
-    $scope.updateTaskList = function(tasks,project){
-        let tempTask = {};
+    $scope.updateTaskList = function(project,rec){
+        let recorded = false;
+        let task = rec.task;
 
-        for(let i=0;i<tasks.length;++i){
-            if(tempTask[tasks[i]._id]){
-                tempTask[tasks[i]._id].hours += tasks[i].hours;
-            }else{
-                tempTask[tasks[i]._id] = tasks[i];
+        let tasks = project.tasks;
+        for(let i=0;i<project.tasks.length;++i){
+            let t = project.tasks[i];
+            if(t._id === task._id){
+                t.hrs += rec.hours;
+                recorded = true;
             }
-
-            if(!tempTask[tasks[i]._id].sub)
-                tempTask[tasks[i]._id].sub = [];
-            let sub = tempTask[tasks[i]._id].sub;
-
-            let recorded = false;
-            for(let i=0; i<sub.length;++i){
-                if(sub[i]._id === tasks[i]._id)
-                    recorded = true;
-            }
-            if(!recorded)
-               tempTask[tasks[i]._id].sub.push({_id:tasks[i]._id,user:tasks[i].user,hours:tasks[i].hours});
         }
 
-        let keys = Object.keys(tempTask);
-        project.tasks = [];
-        for(let i=0;i<keys.length;++i){
-            project.tasks.push(tempTask[keys[i]]);
+        if(!recorded){
+            project.tasks.push(task);
+            task.hrs = 0;
+            task.hrs += rec.hours;
         }
-
-        console.log(project.tasks);
 
     }
 
@@ -326,18 +325,19 @@ app.controller("effortCon",function($scope,$rootScope,dataManager,$location,$win
             if (!$scope.calender[records[i].year][records[i].day][records[i].user])
                 $scope.calender[records[i].year][records[i].day][records[i].user] = [];
             $scope.calender[records[i].year][records[i].day][records[i].user].push(records[i]);
-
+            // console.log(project.hrs);
             if (!$rootScope.projects[records[i].project._id]) {
                 $rootScope.addProject(records[i].project._id, records[i].project);
             }
             let project = $rootScope.projects[records[i].project._id];
             if(!project.tasks)
                 project.tasks = [];
-            project.tasks.push(records[i].task);
-            $scope.updateTaskList(project.tasks,project);
-            project.hrs += records[i].task.hours;
+            $scope.updateTaskList(project,records[i]);
+            project.hrs += records[i].hours;
+
         }
             $scope.updateProjectList();
+
             $scope.$broadcast("rec filed",{calender:$scope.calender,now:$rootScope.today});
     }
 

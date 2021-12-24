@@ -160,16 +160,17 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
         if(rec.parent.length === 0)
             return;
         else{
-            for(let i=0;i<$scope.records.length;++i){
-                if($scope.records[i].type !== $scope.taskType)
-                    continue;
-                let children = $scope.records[i].children;
-                for(let child=0;child<children.length;++child){
-                    let childId = children[child]._id || children[child];
-                    if(rec._id === childId)
-                        return true;
+            let parent = rec.parent;
+            let task = rec;
+            while(parent.length >0){
+                for(let i=0;i<$scope.records.length;++i){
+                    if(parent.indexOf($scope.records[i]._id)>=0){
+                        parent = $scope.records[i].parent;
+                        task = $scope.records[i];
+                    }
                 }
             }
+            return task.type === $scope.taskType;
         }
     }
 

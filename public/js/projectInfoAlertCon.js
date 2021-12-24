@@ -98,7 +98,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
 
     $scope.refresh = function(){
         $scope.refreshing = true;
-        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:{path:'children',populate:{path:'children',populate:{path:'children'}}}})
+        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:{path:'children',populate:{path:'children',populate:{path:'children',populate:{path:'children'}}}}})
     }
 
     $scope.$on('alert tasks received',function(event,data){
@@ -115,6 +115,17 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
         cancelDoc();
     })
 
+    $scope.checkChildrenTask = function(children,record){
+        for(let i=0;i<children.length;++i){
+            let id= children[i]._id;
+            if(record.parent.indexOf(id) >=0){
+                children[i].children.push(record);
+            }
+            if(children[i].children)
+                $scope.checkChildrenTask(children[i].children,record);
+        }
+    }
+
     $scope.$on("new task saved",function(event,data){
         $scope.taskSaving = false;
         if(data.success){
@@ -122,19 +133,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
                $scope.records.push(data.result);
             else{
                 $scope.records.push(data.result);
-                for(let i=0; i<$scope.records.length;++i){
-                    let id = $scope.records[i]._id;
-                    if(data.result.parent.indexOf(id) >=0)
-                        $scope.records[i].children.push(data.result);
-                    for(let j=0;j<$scope.records[i].children.length;++j){
-                        id= $scope.records[i].children[j]._id;
-                        console.log(data.result.parent.indexOf(id)>=0);
-                        if(data.result.parent.indexOf(id) >=0){
-                            $scope.records[i].children[j].children.push(data.result);
-                            console.log($scope.records[i].children[j]);
-                        }
-                    }
-                }
+                $scope.checkChildrenTask($scope.records,data.result);
             }
         }else{
             alert(data.message);

@@ -200,6 +200,10 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
     $rootScope.maxCount = 0;
 
 
+    $rootScope.showAlert = function(message,data){
+        $scope.$broadcast('alertMessage',{message:message,info:data});
+    }
+
     $scope.closeTask = function(){
         if($rootScope.taskUpdating)
             return;
@@ -505,6 +509,35 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
         $rootScope.$broadcast('newTask',{type:1,mode:0});
     };
 
+    $scope.deleteComment = function(comment){
+        $rootScope.deletingComment = true;
+        $rootScope.showAlert("Will this comment '"+comment.comment+"' be deleted",{_id:comment._id,info:"deleteComment"});
+    }
+
+    $scope.$on('alertConfirmed',function(event,data){
+        if(data.info !== 'deleteComment')
+            return;
+        dataManager.deleteTaskComment(data._id);
+        $rootScope.deletingComment = true;
+    })
+
+
+    $scope.$on('task comment deleted',function(event,data){
+        $rootScope.deletingComment = false;
+        if(data.success){
+            for (let i=0;i<$scope.comments.length;++i){
+                if($scope.comments[i]._id === data.result._id){
+                    $scope.comments.splice(i,1);
+                    return;
+                }
+            }
+            $scope.task.hours = data.newHrs;
+        }else{
+            alert(data.message);
+        }
+    })
+
+
     $scope.switchAddDesc = function(){
         $scope.addingDesc = !$scope.addingDesc;
         if($scope.addingDesc)
@@ -517,6 +550,8 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 
     $scope.updatable  = function(index){
         if(!$rootScope.task || $rootScope.task.status === 4)
+            return false;
+        if($rootScope.deletingComment)
             return false;
         if(!$scope.addingComment){
             if(index === 0)
@@ -716,7 +751,7 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
                task = data.result[0];
             else
                 task = data.result;
-            $rootScope.task = task;
+            $scope.task = $rootScope.task = task;
             $scope.status = task.status.toString();
         }
     });
@@ -743,14 +778,16 @@ app.controller("infoCon",function($scope,$rootScope,$location,$window,dataManage
 app.controller("coverCon",function($scope,$rootScope,$location,$window,dataManager){
     $scope.answering = false;
     $scope.infoType = 0;
+
     $scope.answerAlert = function(result){
         $scope.answering = false;
         if(result){
-            $scope.$emit('alertConfirmed',$scope.info);
+            $rootScope.$broadcast('alertConfirmed',JSON.parse(JSON.stringify($scope.info)));
             $scope.info = null;
             cancelDoc();
         }else{
             $rootScope.taskUpdating = false;
+            $rootScope.deletingComment = false;
             cancelDoc();
         }
     };

@@ -133,6 +133,7 @@
                 <div>提交日期：{{comment.date | date:'&y/&m/&d &h:&i:&s'}}</div>
                 <div>status：{{comment.status | taskStatus}}</div>
                 <div>man hours：{{comment.hours}}</div>
+                <button style="border:none;background:none;margin-left:auto;margin-right:2rem;" class="inlineBtn" ng-disabled="!updatable()" ng-click="deleteComment(comment)"><i class="fas fa-window-close"></i></button>
             </div>
             <div ng-if="comment.type <2 || comment.type >=10" style="min-height:1rem;padding:0.5rem;margin-left:1.5rem;"><span ng-repeat="attach in comment.attachments" class="backGrayBtn" style="padding:5px;margin-right:0.5rem;" ng-click="openAttach(attach.link,attach.name,attach)" >
               <img src="{{attach.name | linkIcon}}" style="width:1.2rem;margin-left:0.5rem;">

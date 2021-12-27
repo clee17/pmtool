@@ -65,7 +65,7 @@ app.directive('taskStatus',function(){
     }
 })
 
-app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
+app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManager) {
     $scope.taskType = 1;
     $scope.records = [];
     $scope.maxType = 7;
@@ -98,14 +98,31 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
 
     $scope.refresh = function(){
         $scope.refreshing = true;
-        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:{path:'children',populate:{path:'children',populate:{path:'children',populate:{path:'children'}}}}})
+        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:
+                [{path:'engineer'},{path:'submitter'},{path:'children',
+                    populate:[{path:'engineer'},{path:'submitter'},{path:'children',
+                        populate:[{path:'engineer'},{path:'submitter'},{path:'children',
+                            populate:[{path:'engineer'},{path:'submitter'},{path:'children',populate:[{path:'engineer'},{path:'submitter'}]}]}]}]}]})
     }
+
+    $scope.$on('log received',function(event,data){
+        if(data.success){
+            $scope.logs = data.result;
+            console.log($scope.logs);
+        } else
+            alert(data.message);
+    });
+
 
     $scope.$on('alert tasks received',function(event,data){
         $scope.refreshing = false;
         if(data.success){
             $scope.records = data.result;
-
+            let recordList = [];
+            for(let i=0; i<$scope.records.length;++i){
+                recordList.push($scope.records[i]._id);
+            }
+            dataManager.requestData('taskComment','log received',{search:{task:{$in:recordList},date:{$gte:Date.now()-7*24*60*60*1000,$lte:Date.now()}},cond:{sort:{date:1}},populate:'user submitter'});
         }else
             alert(data.message);
     })
@@ -172,6 +189,73 @@ app.controller('alertCon',function($scope,$rootScope,$location,dataManager) {
             }
             return task.type === $scope.taskType;
         }
+    }
+
+    $scope.ExportExcel = function(){
+        let taskList = [];
+        for(let i=0;i<$scope.records.length;++i){
+            if($scope.records[i].parent.length ===0 && $scope.records[i].type === $scope.taskType && !$scope.duplicate($scope.records[i]))
+                taskList.push(JSON.parse(JSON.stringify($scope.records[i])));
+        }
+
+        let subChildren = true;
+        while(subChildren){
+            subChildren = false;
+            for(let i=0;i<taskList.length;++i){
+                if(taskList[i].children.length >0){
+                    if(!taskList[i].prefix)
+                        taskList[i].prefix = "";
+                    let children = taskList[i].children;
+                    for(let j=0;j<children.length;++j){
+                        children[j].title = taskList[i].prefix + ">"+children[j].title;
+                        children[j].prefix = taskList[i].prefix+ ">";
+                    }
+                    taskList =taskList.slice(0,i+1).concat(children).concat(taskList.slice(i+1,taskList.length));
+                    subChildren = true;
+                    taskList[i].children = [];
+                    break;
+                }
+            }
+        }
+        let dateNow = new Date(Date.now());
+        var sheetName = dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
+        var fileName = $rootScope.project.name + '_'+ dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
+        let table = "<table><tr><td>Info</td><td>Type</td><td>owner</td><td>PM</td><td>Log Last Week</td><td>Effort</td><td>Today</td></tr>";
+
+        for(let i=0;i<taskList.length;++i){
+            let t = taskList[i];
+            table += '<tr>';
+            let title = t.title;
+            if(t.parent.length ===0)
+                title = '<b style="font-size:2rem;">'+t.title + '</b>';
+            else if(t.prefix ==='>')
+                title = '<b style="font-size:1rem;font-style:italic;">'+t.title + '</b>';
+            table += '<td>'+title+'</td>';
+            table += '<td>'+$filter('taskType')(t.type)+'</td>';
+            let engineer = t.engineer? t.engineer.name : "";
+            table += '<td>'+engineer+'</td>';
+            let name = t.submitter? t.submitter.name:'';
+            table += '<td>'+name+'</td>';
+            //effort
+            table += '<td>';
+            for(let i=0;i<$scope.logs.length;++i){
+                if($scope.logs[i].task === t._id){
+                    stringifyData($scope.logs[i]);
+                    let log = $scope.logs[i];
+                    let date = new Date(log.date);
+                    table += date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'    ';
+                    table += log.user.name + '    ';
+                    table += log.comment + '\n';
+                }
+            }
+            table += '</td>';
+            table += '<td>'+t.hours/8+'/'+(t.plan.hours/8).toFixed(2)+'</td>';
+            table += '<td></td>';
+            table += '</tr>';
+        }
+        table += '</table>';
+
+        tableToExcel(table, sheetName, fileName, "dlink");
     }
 
     $scope.refresh();
@@ -629,7 +713,6 @@ app.controller("editTaskCon",function($scope,$rootScope,$compile,$filter,$timeou
                     if(update.hours)
                         updateQuery.updateExpr["plan.hours"] = Number($scope.newTask.plan.hours);
 
-                    console.log($scope.newTask.plan.hours);
                     let original = $rootScope.getDateMessage($scope.tempSave.plan.start) +'/' + $rootScope.getDateMessage($scope.tempSave.plan.end) + '('+$scope.tempSave.plan.hours+')';
                     let newDate = $rootScope.getDateMessage($scope.newTask.plan.start) +'/' + $rootScope.getDateMessage($scope.newTask.plan.end) + '('+$scope.newTask.plan.hours+')';
 

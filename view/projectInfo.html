@@ -158,11 +158,12 @@
             <label for="switchButton"></label>
         </div>
         <button style="margin-left:2rem;margin-right:2rem;height:1.5rem;margin-top:0.5rem;" ng-click="ExportExcel()">Export</button>
+        <a id="dlink" style="opacity:0;height:1px;"></a>
         <button style="margin-left:2rem;margin-right:2rem;height:1.5rem;margin-top:0.5rem;" ng-click="newTask()">NEW</button>
     </div>
 
     <div ng-show="records.length >0" style="display:flex;flex-direction:column;">
-        <div>
+        <div id="taskBoard">
             <div ng-repeat="rec in records" ng-show="rec.type === taskType && !duplicate(rec)" style="display:flex;flex-direction:column;margin-top:0.5rem;margin-left:0.5rem;">
                 <div class="task-record" task-status status="{{rec.status}}" >
                     <div task-type type="{{rec.type}}" style="font-size:0.8rem;"></div>

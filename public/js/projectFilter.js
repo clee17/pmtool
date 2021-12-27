@@ -630,7 +630,7 @@ app.filter('taskType',function(){
     return function(type){
         if(typeof type !== 'number')
             type = Number(type);
-        let typeList = ['ISSUE','Milestone','Release','QA',"DOC",'OTHER',"TASK","PAYMENT"];
+        let typeList = ['ISSUE','Requirement','Release','QA',"DOC",'OTHER',"TASK","PAYMENT"];
         return typeList[type] || 'Unknown';
     }
 })

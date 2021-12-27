@@ -254,10 +254,10 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
             //start
             let stamp = t.plan.start? new Date(t.plan.start) : null;
             let dateStamp = stamp? stamp.getFullYear()+'-'+(stamp.getMonth()+1)+'-'+stamp.getDate() : "";
-            table += '<td>'+stamp+'</td>';
+            table += '<td>'+dateStamp+'</td>';
             stamp = t.plan.end? new Date(t.plan.end) : null;
             dateStamp = stamp? stamp.getFullYear()+'-' + (stamp.getMonth()+1) + '-' + stamp.getDate(): "";
-            stamp = t.plan.end ? new Date(t.plan.end) :null;
+            table += '<td>' + dateStamp + '</td>';
             table += '<td>'+t.hours/8+'</td>';
             table += '<td>'+(t.plan.hours/8).toFixed(2)+'</td>';
             table += '<td></td>';

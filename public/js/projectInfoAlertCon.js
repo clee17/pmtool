@@ -220,7 +220,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
         let dateNow = new Date(Date.now());
         var sheetName = dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
         var fileName = $rootScope.project.name + '_'+ dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
-        let table = "<table><tr><td>Info</td><td>Type</td><td>owner</td><td>PM</td><td>Log Last Week</td><td>Effort</td><td>Today</td></tr>";
+        let table = "<table><tr><td>Info</td><td>Type</td><td>owner</td><td>PM</td><td>Log Last Week</td><td>Estimated Start</td><td>Estimated End</td><td>Effort</td><td>Estimated Effort</td><td>Today</td></tr>";
 
         for(let i=0;i<taskList.length;++i){
             let t = taskList[i];
@@ -246,12 +246,20 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
                     table += date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'    ';
                     table += log.user.name + '    ';
                     if(log.hours)
-                        table += +log.hours+'hrs    ';
+                        table += '<b>'+log.hours+'hrs</b>    ';
                     table += log.comment + '\n';
                 }
             }
             table += '</td>';
-            table += '<td>'+t.hours/8+'/'+(t.plan.hours/8).toFixed(2)+'</td>';
+            //start
+            let stamp = t.plan.start? new Date(t.plan.start) : null;
+            let dateStamp = stamp? stamp.getFullYear()+'-'+(stamp.getMonth()+1)+'-'+stamp.getDate() : "";
+            table += '<td>'+stamp+'</td>';
+            stamp = t.plan.end? new Date(t.plan.end) : null;
+            dateStamp = stamp? stamp.getFullYear()+'-' + (stamp.getMonth()+1) + '-' + stamp.getDate(): "";
+            stamp = t.plan.end ? new Date(t.plan.end) :null;
+            table += '<td>'+t.hours/8+'</td>';
+            table += '<td>'+(t.plan.hours/8).toFixed(2)+'</td>';
             table += '<td></td>';
             table += '</tr>';
         }

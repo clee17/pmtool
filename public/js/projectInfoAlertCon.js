@@ -245,6 +245,8 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
                     let date = new Date(log.date);
                     table += date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'    ';
                     table += log.user.name + '    ';
+                    if(log.hours)
+                        table += +log.hours+'hrs    ';
                     table += log.comment + '\n';
                 }
             }

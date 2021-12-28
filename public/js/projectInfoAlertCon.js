@@ -98,7 +98,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
 
     $scope.refresh = function(){
         $scope.refreshing = true;
-        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id},cond:{sort:{"plan.start":1}},populate:
+        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id},populate:
                 [{path:'engineer'},{path:'submitter'},{path:'children',
                     populate:[{path:'engineer'},{path:'submitter'},{path:'children',
                         populate:[{path:'engineer'},{path:'submitter'},{path:'children',
@@ -114,11 +114,24 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
             alert(data.message);
     });
 
+    $scope.sortTask = function(a,b){
+            let at = new Date(a.plan.start);
+            let bt = new Date(b.plan.start);
+            return at-bt;
+    }
+
+    $scope.stackSort = function(rec){
+        if(rec.children)
+            rec.children.sort($scope.sortTask);
+        rec.children.forEach($scope.stackSort);
+    }
 
     $scope.$on('alert tasks received',function(event,data){
         $scope.refreshing = false;
         if(data.success){
-            $scope.records = data.result;
+            $scope.records = JSON.parse(JSON.stringify(data.result));
+            $scope.records = $scope.records.sort($scope.sortTask);
+            $scope.records.forEach($scope.stackSort);
             let recordList = [];
             for(let i=0; i<$scope.records.length;++i){
                 recordList.push($scope.records[i]._id);

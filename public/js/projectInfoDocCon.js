@@ -275,7 +275,7 @@ app.controller("docCon",function($scope,$rootScope,$compile,$http,dataManager) {
 
     $scope.initialize = function(){
         let data = [
-            { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]},{$eq:[[],"$parent"]},{$lte:["$type",2]}]}}},
+            { $match:{$expr:{$and:[{$eq:[{$toObjectId: $rootScope.project._id} ,"$project"]},{$lte:["$type",2]}]}}},
             { $lookup:{from:"doc",localField:"_id",foreignField:"parent",as:"draft"}},
         ];
         dataManager.requestAggregateData('docs','contracts requested', data);

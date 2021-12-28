@@ -365,7 +365,7 @@
         </table>
     </div>
 
-    <div ng-show="currentPage=='contracts'" style="display:flex;flex-direction:column;" ng-controller="docCon">
+    <div ng-show="currentPage === 'contracts'" style="display:flex;flex-direction:column;" ng-controller="docCon">
         <button style="margin-left:auto;margin-right:2rem;" class="simpleBtn" ng-click="showCover('contracts')">ADD DOCUMENT</button>
         <table style="margin-left:auto;margin-right:auto;margin-top:2rem;" class="dataListTable">
             <tr>
@@ -379,7 +379,7 @@
                 <td></td>
             </tr>
             <tr ng-show="docs.length === 0"><td colspan="7" style="text-align:center;">
-                <b>No record of bugs under this project</b>
+                <b>No record of documents under this project</b>
             </td></tr>
             <tr ng-repeat="doc in docs">
                 <td>{{doc.name}}</td>

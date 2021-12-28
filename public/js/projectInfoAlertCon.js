@@ -98,7 +98,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
 
     $scope.refresh = function(){
         $scope.refreshing = true;
-        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id,status:{$lt:4}},cond:{sort:{"plan.start":1}},populate:
+        dataManager.requestData('tasks','alert tasks received',{search:{project:$rootScope.project._id},cond:{sort:{"plan.start":1}},populate:
                 [{path:'engineer'},{path:'submitter'},{path:'children',
                     populate:[{path:'engineer'},{path:'submitter'},{path:'children',
                         populate:[{path:'engineer'},{path:'submitter'},{path:'children',
@@ -110,7 +110,6 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
     $scope.$on('log received',function(event,data){
         if(data.success){
             $scope.logs = data.result;
-            console.log($scope.logs);
         } else
             alert(data.message);
     });

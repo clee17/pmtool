@@ -68,7 +68,7 @@ app.directive('taskStatus',function(){
 app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManager) {
     $scope.taskType = 1;
     $scope.records = [];
-    $scope.maxType = 7;
+    $scope.maxType = 8;
     $scope.taskTypeList = [''];
 
     $scope.dayOrHour = false;

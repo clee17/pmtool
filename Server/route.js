@@ -98,8 +98,7 @@ let handler = {
 
     checkOwner:function(req,res){
         let user = req.session.user;
-        if(user.title !== 'Program Manager')
-            return false;
+        return user.title === 'Program Manager';
     },
 
     index:function(req,res){
@@ -589,6 +588,56 @@ let handler = {
             })
     },
 
+    deleteTaskComment:function(req,res){
+        let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
+        let response = {
+            sent: false,
+            failedLink: [],
+            message: "unknown failure"
+        };
+
+        let id = received._id;
+        if(!handler.checkOwner(req)){
+            handler.sendError(res,response,'you are not authorized to perform this action');
+            return;
+        }
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            handler.sendError(res, response, "no valid task id received");
+            return;
+        }
+
+
+        taskCommentModel.findOne({_id:id}).exec()
+            .then(function(result){
+                if(!result)
+                    throw "no such task found";
+                else{
+                    response.result = JSON.parse(JSON.stringify(result));
+                    return taskCommentModel.deleteOne({_id:id}).exec();
+                }
+            })
+            .then(function (result) {
+                if (result) {
+                    if(!response.result.hours)
+                        response.result.hours = 0;
+                    console.log(response.result);
+                    return taskModel.findOneAndUpdate({_id:response.result.task},{$inc:{hours:0-response.result.hours}},{new:true}).exec();
+                } else {
+                    response.message = err ? err.message : 'failed due to unknown error';
+                }
+            })
+            .then(function(result) {
+                response.success = true;
+                response.newHrs=  result.hours;
+                handler.sendResult(res,response);
+
+            })
+            .catch(function(err){
+                response.success = false;
+                handler.sendError(res,response,err.message || err);
+            });
+    },
+
     count:function(req,res){
         let received = JSON.parse(LZString.decompressFromBase64(req.body.data));
         let response = {
@@ -685,6 +734,7 @@ let handler = {
                 handler.sendResult(res,response);
             })
             .catch(function(err){
+                console.log(err);
                 if(typeof err != 'string')
                     err = JSON.stringify(err);
                 response.message = err;
@@ -1248,6 +1298,7 @@ router.post('/delete/:tableId',handler.delete);
 router.post('/upload/general/:tableId',handler.uploadGeneral);
 router.post('/upload/attach/:tableId',handler.uploadAttach);
 router.post('/deleteDoc/',handler.deleteDoc);
+router.post('/deleteTaskComment/',handler.deleteTaskComment);
 router.post('/replaceUpload/:tableId',handler.replaceUpload);
 router.post('/getInfo/developers',handler.developers);
 router.post('/getInfo/products',handler.products);

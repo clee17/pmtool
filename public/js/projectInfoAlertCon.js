@@ -102,7 +102,9 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
                 [{path:'engineer'},{path:'submitter'},{path:'children',
                     populate:[{path:'engineer'},{path:'submitter'},{path:'children',
                         populate:[{path:'engineer'},{path:'submitter'},{path:'children',
-                            populate:[{path:'engineer'},{path:'submitter'},{path:'children',populate:[{path:'engineer'},{path:'submitter'}]}]}]}]}]})
+                            populate:[{path:'engineer'},{path:'submitter'},{path:'children',
+                                populate:[{path:'engineer'},{path:'submitter'},{path:'children',
+                                populate:[{path:'engineer'},{path:'submitter'}]}]}]}]}]}]});
     }
 
     $scope.$on('log received',function(event,data){

@@ -231,9 +231,24 @@
                                        <div style="line-height:1.5rem;margin-right:1rem;">{{child4.completed | date:'&y/&m/&d'}} <span ng-show="!child4.completed">UNCOMPLTED</span></div>
                                        <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child4}}" hrs="{{child4.plan.hours}}" >{{child4.plan.hours + ' hrs'}}</div>
                                        <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
-<!--                                           <button class="inlineBtn" style="font-weight:bold;font-size:1rem;height:1rem;" ng-click="newChildTask(child4,3)">+</button>-->
+                                           <button class="inlineBtn" style="font-weight:bold;font-size:1rem;height:1rem;" ng-click="newChildTask(child4,3)">+</button>
                                            <button class="inlineBtn" style="font-size:0.3rem;margin-left:0;" ng-click="editTask(child4)" ng-disabled="child4.status >=4"><i class="fas fa-pen" style="margin:auto;"></i></button>
                                            <a class="inlineBtn" style="margin-top:0;margin-bottom:auto;font-weight:bold;line-height:0.5rem;" target="_blank" href="{{'task/info?id='+ child4._id}}">…</a></div>
+                                   </div>
+                                   <div ng-repeat="child5 in child4.children" class="task-record" style="margin-left:1rem;display:flex;flex-direction:column;">
+                                       <div class="task-record" style="" task-status status="{{child5.status}}">
+                                           <div task-type type="{{child5.type}}" style="font-size:0.4rem;"></div>
+                                           <div style="margin-right:1rem;margin-left:1rem;line-height:1.5rem;max-width:25rem;width:25rem;">{{child5.title}}</div>
+                                           <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{child5.hours}}" rec="{{rec}}">{{child5.hours + ' hrs'}}</div>
+                                           <div style="line-height:1.5rem;margin-right:1rem;">{{child5.plan.start | date:'&y/&m/&d'}}</div>
+                                           <div style="line-height:1.5rem;margin-right:1rem;">{{child5.plan.end | date:'&y/&m/&d'}}</div>
+                                           <div style="line-height:1.5rem;margin-right:1rem;">{{child5.completed | date:'&y/&m/&d'}} <span ng-show="!child5.completed">UNCOMPLTED</span></div>
+                                           <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child5}}" hrs="{{child5.plan.hours}}" >{{child5.plan.hours + ' hrs'}}</div>
+                                           <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
+                                               <button class="inlineBtn" style="font-weight:bold;font-size:1rem;height:1rem;" ng-click="newChildTask(child5,3)">+</button>
+                                               <button class="inlineBtn" style="font-size:0.3rem;margin-left:0;" ng-click="editTask(child5)" ng-disabled="child5.status >=4"><i class="fas fa-pen" style="margin:auto;"></i></button>
+                                               <a class="inlineBtn" style="margin-top:0;margin-bottom:auto;font-weight:bold;line-height:0.5rem;" target="_blank" href="{{'task/info?id='+ child5._id}}">…</a></div>
+                                       </div>
                                    </div>
                                </div>
                            </div>

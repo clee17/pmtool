@@ -222,11 +222,11 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
         let dateNow = new Date(Date.now());
         var sheetName = dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
         var fileName = $rootScope.project.name + '_'+ dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
-        let table = "<table><tr><td>Info</td><td>Type</td><td>owner</td><td>PM</td><td>Log Last Week</td><td>Estimated Start</td><td>Estimated End</td><td>Effort</td><td>Estimated Effort</td><td>Today</td></tr>";
+        let table = "<table><tr><td>Task Info</td><td>Type</td><td>Owner</td><td>PM</td><td>Log Last Week</td><td>Estimated Start</td><td>Estimated End</td><td>Effort</td><td>Estimated Effort</td><td>Today</td></tr>";
 
         for(let i=0;i<taskList.length;++i){
             let t = taskList[i];
-            table += '<tr>';
+            table += t.status === 4? '<tr style="background:gray;">': '<tr>';
             let title = t.title;
             if(t.parent.length ===0)
                 title = '<b style="font-size:2rem;">'+t.title + '</b>';

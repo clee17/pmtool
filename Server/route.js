@@ -211,6 +211,40 @@ let handler = {
         
     },
 
+    pmReport:function(req,res){
+        if(!req.session.user){
+            res.render('login.html',{});
+            return;
+        }
+        let id = req.query.id;
+        if(!id || !id.match(/^[0-9a-fA-F]{24}$/)){
+            res.render('projectReport.html',{title:'未知的项目',header:'请输入有效的项目id',errInfo:"",account:""});
+            return;
+        }
+
+        projectModel.findOne({_id:id}).populate('account').exec()
+            .then(function(result){
+                if(!result)
+                    throw "no valid project found";
+                else{
+                    let render = {};
+                    render.project = JSON.parse(JSON.stringify(result));
+                    render.title = result.name;
+                    render.header = result.name;
+                    render.errInfo = "";
+                    render.account = result.account? result.account.name: "";
+                    render.user = req.session.user;
+                    render.setting = SETTING;
+                    res.render('projectReport.html',render);
+                }
+
+            })
+            .catch(function(err){
+                console.log(err);
+                res.render('projectReport.html',{title:'unknown project',header:'unknown project',errInfo:err,account:""});
+            })
+    },
+
     effort:function(req,res){
         let render = {};
         if(!req.session.user){
@@ -1269,6 +1303,7 @@ let handler = {
 router.get('/',handler.index);
 router.get('/pwdSet',handler.pwdReset);
 router.get('/project/info',handler.pmInfo);
+router.get('/project/report',handler.pmReport);
 router.get('/developer',handler.developer);
 router.get('/account',handler.account);
 router.get('/efforts',handler.effort);

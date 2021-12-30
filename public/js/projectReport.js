@@ -384,7 +384,7 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
                 $scope.flatContributeTaskList.push([]);
                 length = $scope.flatContributeTaskList.length-1;
                 $scope.flatContributeTaskList[length].push(taskList[i]);
-                index = taskList[i].userList.length;
+                index = taskList[i].userList? taskList[i].userList.length :1;
             }else
                 $scope.flatContributeTaskList[length].push(taskList[i]);
         }

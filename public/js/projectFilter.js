@@ -35,6 +35,17 @@ app.filter('date',function($filter){
     }
 });
 
+app.filter('calenderDate',function(){
+    return function(date){
+        if(typeof date !== 'number')
+            date = Number(date);
+        let dateList = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th',
+        '13rd','14th','15th','16th','17th','18th','19th','20th','21st','22nd','23rd','24th','25th',
+        '26th','27th','28th','29th','30th','31st'];
+        return dateList[date];
+    }
+})
+
 app.filter('MP',function($filter){
     return function(entry){
         if(entry.status >= 7 || entry.MP)
@@ -395,6 +406,18 @@ app.filter('shortenContents',function(){
 
 
 
+app.filter('percentage',function(){
+    return function(num,digit){
+        if(typeof num !== 'number')
+            num = Number(num);
+        if(typeof digit !== 'number')
+            digit = Number(digit);
+         num = num.toFixed(4);
+         return num*100 + "%";
+    }
+});
+
+
 
 app.directive('uploadAccount',function($compile,$rootScope){
     return{
@@ -608,7 +631,7 @@ app.directive('taskType',function(){
             if(type === 0){
                 element.html('<div style="background:darkred;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">IS</div>')
             }else if(type=== 1)
-                element.html('<div style="background:orangered;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">RQ</div>')
+                element.html('<div style="background:orangered;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">MS</div>')
             else if(type ===2)
                 element.html('<div style="background:darkgreen;border-radius:0.5rem;font-weight:bold;color:white;padding:5px;text-align:center;display:inline-block;font-size:inherit;margin:inherit;">RL</div>')
             else if(type === 3)

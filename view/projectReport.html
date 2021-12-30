@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%- title %></title>
+    <base href="/">
+    <link href="/css/general.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/projectInfo.css" rel="stylesheet" type="text/css"/>
+    <link href="/fontawesome/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <script src="/lib/lz-string.min.js"></script>
+    <script src="/lib/angular.min.js"></script>
+    <script>
+        var app = angular.module("dashboard",[]);
+        app.config(function($locationProvider){
+            $locationProvider.html5Mode(true);
+        });
+    </script>
+    <script src="/js/general.js"></script>
+    <script src="/js/doc.js"></script>
+    <script src="/js/dataManager.js"></script>
+    <script src="/js/projectFilter.js"></script>
+    <script src="/js/projectReport.js"></script>
+    <style>
+        #alertTypeSelector >button{
+            width:3rem;
+            margin-left:0.5rem;
+        }
+
+        #alertTypeSelector >button:hover{
+            opacity:0.6;
+        }
+
+        #alertTypeSelector >button:disabled:hover{
+            opacity:0.6;
+        }
+
+        #alertTypeSelector >button:disabled{
+            filter: grayscale(100%);
+            opacity:0.6;
+        }
+
+        #alertTypeSelector >button >div{
+            width:100%;
+            height:1rem;
+        }
+
+        #docDetail >div{
+            margin-bottom:0.5rem;
+
+        }
+
+        .buttonFunc >button{
+            margin-left:0.5rem;
+        }
+
+        .buttonFunc >a {
+            text-decoration:none;
+        }
+
+        .task-record{
+            padding-left:0.5rem;
+            display:flex;
+            flex-direction:row;
+            border-radius:5px;
+            padding-top:2px;
+            padding-bottom:2px;
+        }
+
+        #reportRoot >div{
+            background:white;
+            display:flex;
+            flex-direction:column;
+            width:100%;
+            padding:1.5rem;
+            height:1160px;
+            margin-bottom:1rem;
+        }
+
+        .infoSign {
+            background:black;
+            color:white;
+            font-weight:bold;
+            border-radius:0.5rem;
+            padding:5px;
+            font-size:0.7rem;
+            font-family:arial,serif;
+            margin-right:0.5rem;
+        }
+
+        #reportRoot h3{
+            margin-top:2.5rem;
+            margin-bottom:0.5rem;
+        }
+
+        p{
+            text-indent:2rem;
+        }
+
+        .subP {
+            padding-left:1.5rem;
+        }
+
+        .subP p{
+            margin-top:0.5rem;
+            margin-bottom:0.5rem;
+            text-indent:2rem;
+        }
+
+        .infoListTable td{
+            padding:0.2rem;
+        }
+
+       .infoListTable tr>td:first-child{
+           width:6rem;
+        }
+
+       .taskDetailList{
+           border-collapse: collapse;
+       }
+
+       .taskDetailList tr{
+           border-bottom:solid 1px lightgray;
+       }
+
+        .taskDetailList tr>td:first-child{
+          max-width:1.5rem;
+       }
+
+        .taskDetailList tr>td:nth-child(2){
+            width:1.5rem;
+        }
+
+        .taskDetailList td{
+            padding:0.2rem;
+        }
+    </style>
+</head>
+
+
+<body ng-app="dashboard"
+      ng-controller="rootCon">
+<info-receiver  ng-init="projectId = '<%= encodeURIComponent(project._id) %>';
+                         user = '<%= encodeURIComponent(JSON.stringify(user)) %>';
+                         setting = '<%= encodeURIComponent(JSON.stringify(setting)) %>';"></info-receiver>
+<div id="reportRoot" style="width:820px;display:flex;flex-direction:column;">
+    <%- errInfo %>
+    <div id="frontPage" style="padding-top:2rem;">
+        <h2 style="margin-left:auto;margin-right:auto;">Project Report of <%- account %> <%- header %></h2>
+        <div style="width:100%;border-bottom:solid 1px rgba(185,185,185,1);margin:5px;"></div>
+        <div style="padding-left:0.5rem;margin-bottom:1rem;">{{dateNow | date:'&y/&m/&d      &h:&i:&s'}}</div>
+        <div style="display:flex;flex-direction:column;margin:1rem;">
+        <h3 style="margin-top:0">Project Effort</h3>
+        <div class="subP">
+            <span class="infoSign">HOURS</span><span><b>{{effort.total}}</b> man hours</span>
+            <span class="infoSign" style="margin-left:2rem;">DAYS</span><span><b>{{(effort.total/8).toFixed(2)}}</b> man days</span>
+            <p style="margin-top:1.5rem;">This project started from <span id="projectStart"></span><span id="projectEnd"></span></p>
+            <p>{{projectDuration}} calender days have been spent on this project (weekends and holidays included). </p>
+            <p>This report is divided into two parts, in section 1 we will give an in-depth view of each milestone. Detailed list of tasks are attached in the following sections.</p>
+        </div>
+        <h3>Project Achievements</h3>
+            <div class="subP" style="display:flex;flex-direction:column;">
+                <p>Overally, <b>{{records.length}}</b> tasks are completed in this project. </p>
+                <table class="infoListTable">
+                    <tr><td><span class="infoSign" style="background:mediumpurple;">SUBTASK</span></td><td><b>{{taskType['6']}}</b> sub tasks completed</span></td></tr>
+                    <tr><td><span class="infoSign" style="background:dodgerblue;">DOCUMENT</span></td><td><b>{{taskType['4']}}</b> documents generated</span></td></tr>
+                    <tr><td><span class="infoSign" style="background:darkred;">ISSUE</span></td><td><b>{{taskType['0']}}</b> bugfixes solved</span></td></tr>
+                    <tr ng-show="taskType['1']>0"><td><span class="infoSign" style="background:orangered;">MILESTONE</span></td><td><b>{{taskType['1']}}</b> milestones reached</span></td></tr>
+                    <tr ng-show="taskType['2']>0"><td><span class="infoSign" style="background:darkgreen;">RELEASES</span></td><td><b>{{taskType['2']}}</b> releases generated</span></td></tr>
+                    <tr ng-show="taskType['7']>0"><td><span class="infoSign" style="background:greenyellow;">PAYMENT</span></td><td><b>{{taskType['7']}}</b> payments received</span></td></tr>
+                </table>
+            </div>
+        <h3>Project Contributor</h3>
+            <div class="subP">
+                <h4 style="margin-top:0.5rem;">Effort Contribution</h4>
+                <table class="infoListTable" style="width:100%;">
+                    <tr ng-repeat="user in users" ng-show="effort[user].hours >0">
+                        <td><b>{{effort[user].name}}</b></td>
+                        <td style="white-space:nowrap;">{{(effort[user].hours/8).toFixed(2)}} man days</td>
+                        <td style="width:35rem;"><div style="background:lightgray;width:100%;height:1rem;position:relative;">
+                            <div style="width:6rem;background:orangered;height:1rem;" contributor-hour hours="{{effort[user].hours}}" total="{{effort.total}}"></div>
+                        </div></td>
+                    </tr>
+                </table>
+                <h4 style="margin-top:1.5rem;">Task Contribution</h4>
+                <table class="infoListTable" style="width:100%;">
+                    <tr ng-repeat="user in users" ng-show="effort[user].taskList.length >0 && effort[user].hours >0">
+                        <td><b>{{effort[user].name}}</b></td>
+                        <td>{{sum(effort[user].taskCount)}} tasks participated</td>
+                        <td style="width:30rem;"><div style="background:lightgray;width:100%;height:1rem;position:relative;">
+                            <div style="width:6rem;background:orangered;height:1rem;" contributor-task count="{{effort[user].taskCount}}" total="{{records.length}}"></div>
+                        </div></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="milestone" ng-repeat="x in [].constructor(milestonenum) track by $index" style="width:820px;padding-top:2rem;">
+        <h2 style="min-height:1rem;"><span ng-show="$index === 0">1 milestones</span></h2>
+        <p style="margin-top:1rem;">This project has reached {{taskType['1']}} milestones, which are listed below:</p>
+        <div style="margin-left:2rem;margin-top:1rem;">
+            <div ng-repeat="task in taskTypeList['1']" style="margin-top:0.5rem;margin-bottom:1rem;">
+               <div> {{$index+1}}
+                <span task-type type="{{task.type}}" style="font-size:0.5rem;margin-left:0.5rem;margin-right:0.5rem;"></span>
+                   <span style="font-weight:bold;margin-right:0.5rem;">{{task.totalHours/8}}M/D</span>
+                   {{ task.title}}
+                   <span ng-show="task.start">, from {{task.start | date:'&y/&m/&d'}} to {{task.completed | date:'&y/&m/d'}}</span>
+               </div>
+                <div style="margin-left:2rem;">{{task.description}}</div>
+            </div>
+        </div>
+    </div>
+    <div ng-repeat="ms in taskTypeList['1']">
+        <h2 style="margin-bottom:0.5rem;">1.{{$index+1}}  {{ms.title}}</h2>
+
+        <p style="margin-top:0.5rem;margin-bottom:0.5rem;">{{ms.description}}</p>
+        <p ng-show="ms.taskCount" style="margin-top:0.5rem;">The following tasks are completed in this milestone.</p>
+        <div style="display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;margin-top:0.5rem;">
+            <div ng-repeat="x in [].constructor(maxType) track by $index" ng-show="$index !== 1 && ms.taskType && ms.taskType[$index.toString()]>0">
+                <div style="margin-left:1.5rem;"><span task-type type="{{$index}}" style="font-size:0.8rem;"></span>
+                    <span>{{ms.taskType[$index.toString()]}} completed</span></div>
+            </div>
+        </div>
+        <p style="margin-top:1rem;">There are <b>{{ms.totalHours}} MHRS (alson known as {{ms.totalHours/8}} M/D)</b> spent in this milestone. </p>
+        <!--        Contribution of milestone-->
+        <div style="margin-left:2rem;">
+            <h3>Effort Contribution:</h3>
+            <div style="width:100%;">
+                <div ng-repeat="user in ms.userList" ng-show="user.taskHours>0" style="display:flex;flex-direction:row;">
+                    <div style="width:7rem;"><b>{{user.name}}</b></div>
+                    <div style="width:10rem;">{{user.taskHours}} MHRS</div>
+                    <div style="width:30rem;min-width:30rem;"><div style="background:lightgray;width:100%;height:1rem;position:relative;">
+                        <div style="width:6rem;background:orangered;height:1rem;" contributor-hour hours="{{user.taskHours}}" total="{{ms.totalHours}}" width="30"></div>
+                    </div></div> </div>
+                <div ng-show="ms.userList.length ===0">no one contributes in the milestone yet.</div>
+            </div>
+            <h3>Task Participation:</h3>
+            <div style="width:100%;">
+                <div ng-repeat="user in ms.userList" ng-show="user.taskCount>0 && user.taskHours >0" style="display:flex;flex-direction:column;">
+                    <div style="display:flex;flex-direction:row;">
+                        <div style="width:7rem;"><b>{{user.name}}</b></div>
+                        <div style="width:10rem;">{{user.taskCount}} tasks participated</div>
+                        <div style="width:30rem;min-width:30rem;"><div style="background:lightgray;width:100%;height:1rem;position:relative;">
+                            <div style="width:6rem;background:orangered;height:1rem;" contributor-hour hours="{{user.taskCount}}" total="{{ms.taskCount}}" width="30"></div>
+                        </div></div>
+                    </div>
+                    <div>
+                        <div ng-repeat="task in user.taskTypeList" ng-show="task.length >0" style="display:flex;flex-direction:row;">
+                           <div style="width:4rem;padding-top:5px;"> <span task-type type="{{$index}}" style="font-size:0.8rem;"></span> </div>
+                            <div style="display:flex;flex-direction:column;padding-top:5px;">
+                                <div ng-repeat="t in task"><div get-hour user ="{{user._id}}" task ="{{t}}" style="min-width:6rem;display:inline-block;"></div>{{user.taskList[t].title}} </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="ms.userList.length ===0">no one contributes in the milestone yet.</div>
+            </div>
+        </div>
+    </div>
+    <div ng-repeat="x in [].constructor(detailnum) track by $index" style="width:820px;padding-top:2rem;">
+        <h2 style="min-height:1rem;"><span ng-show="$index === 0">2 List of tasks</span></h2>
+        <table  class="taskDetailList" style="margin-top:1.5rem;">
+            <tr style="background:lightgreen;font-weight:bold;color:black;">
+                <td></td><td>TYPE</td><td>TITLE</td><td>EFFORT</td><td>START</td><td>END</td>
+            </tr>
+            <tr ng-repeat="task in flatTaskList[$index]">
+                <td>{{task.index+1}}</td>
+                <td task-type type="{{task.type}}" style="max-width:6.5rem;font-size:0.8rem;"></td>
+                <td style="max-width:12rem;">{{task.prefix+ task.title}}</td>
+                <td>{{(task.hours/8).toFixed(2)}} M/D</td>
+                <td>{{task.start | date:'&y/&m/&d'}} <span ng-show="!task.start">PENDED</span></td>
+                <td>{{task.completed | date:'&y/&m/&d'}} <span ng-show="!task.completed">UNCOMPLTED</span></td>
+            </tr>
+        </table>
+    </div>
+    <div ng-repeat="x in [].constructor(taskUserNum) track by $index" style="width:820px;padding-top:2rem;">
+        <h2 style="min-height:1rem;"><span ng-show="$index === 0">3 List of Contribution</span></h2>
+        <table  class="taskDetailList" style="margin-top:1.5rem;">
+            <tr style="background:lightgreen;font-weight:bold;color:black;">
+                <td></td><td>TYPE</td><td>TITLE</td><td>Hours</td><td>Contribution</td>
+            </tr>
+            <tr ng-repeat="task in flatContributeTaskList[$index]">
+                <td>{{task.index+1}}</td>
+                <td task-type type="{{task.type}}" style="max-width:6.5rem;font-size:0.8rem;"></td>
+                <td style="max-width:12rem;">{{task.prefix+ task.title}}</td>
+                <td style="max-width:12rem;">{{task.hours}} MHRS</td>
+                <td>
+                    <div ng-repeat="user in task.userList">
+                        <span style="width:5rem;"><b>{{ $parent.task.users[user].name}}</b></span>
+                        <span style="width:5rem;">{{$parent.task.users[user].hourCount}} MHRS</span>
+                        <span style="width:5rem;">{{($parent.task.users[user].hourCount/$parent.task.hours) | percentage:'2'}}</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

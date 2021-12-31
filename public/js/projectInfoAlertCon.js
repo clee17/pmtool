@@ -188,8 +188,10 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
     }
 
     $scope.duplicate = function(rec){
+        if($scope.taskType !== 1)
+            return false;
         if(rec.parent.length === 0)
-            return;
+            return false;
         else{
             let parent = rec.parent;
             let task = rec;

@@ -206,14 +206,14 @@
                    {{ task.title}}
                    <span ng-show="task.start">, from {{task.start | date:'&y/&m/&d'}} to {{task.completed | date:'&y/&m/d'}}</span>
                </div>
-                <div style="margin-left:2rem;">{{task.description}}</div>
+                <div style="margin-left:2rem;" content-format contents="{{task.description}}">{{task.description}}</div>
             </div>
         </div>
     </div>
     <div ng-repeat="ms in taskTypeList['1']">
         <h2 style="margin-bottom:0.5rem;">1.{{$index+1}}  {{ms.title}}</h2>
 
-        <p style="margin-top:0.5rem;margin-bottom:0.5rem;">{{ms.description}}</p>
+        <p style="margin-top:0.5rem;margin-bottom:0.5rem;" content-format contents="{{ms.description}}">{{ms.description}}</p>
         <p ng-show="ms.taskCount" style="margin-top:0.5rem;">The following tasks are completed in this milestone.</p>
         <div style="display:flex;flex-direction:row;flex-wrap:wrap;margin-left:2rem;margin-top:0.5rem;">
             <div ng-repeat="x in [].constructor(maxType) track by $index" ng-show="$index !== 1 && ms.taskType && ms.taskType[$index.toString()]>0">

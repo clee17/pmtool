@@ -154,7 +154,7 @@
             <span class="infoSign">HOURS</span><span><b>{{effort.total}}</b> man hours</span>
             <span class="infoSign" style="margin-left:2rem;">DAYS</span><span><b>{{(effort.total/8).toFixed(2)}}</b> man days</span>
             <p style="margin-top:1.5rem;">This project started from <span id="projectStart"></span><span id="projectEnd"></span></p>
-            <p>{{projectDuration}} calender days have been spent on this project (weekends and holidays included). </p>
+            <p>{{projectDuration}} days have been spent on this project (weekends and holidays included). </p>
             <p>This report is divided into two parts, in section 1 we will give an in-depth view of each milestone. Detailed list of tasks are attached in the following sections.</p>
         </div>
         <h3>Project Achievements</h3>
@@ -204,7 +204,7 @@
                 <span task-type type="{{task.type}}" style="font-size:0.5rem;margin-left:0.5rem;margin-right:0.5rem;"></span>
                    <span style="font-weight:bold;margin-right:0.5rem;">{{task.totalHours/8}}M/D</span>
                    {{ task.title}}
-                   <span ng-show="task.start">, from {{task.start | date:'&y/&m/&d'}} to {{task.completed | date:'&y/&m/d'}}</span>
+                   <span ng-show="taskStarted(task)">, from {{taskStarted(task) | date:'&y/&m/&d'}} to {{task.completed | date:'&y/&m/&d'}} <span ng-show="!task.completed">be continued</span></span>
                </div>
                 <div style="margin-left:2rem;" content-format contents="{{task.description}}">{{task.description}}</div>
             </div>
@@ -262,14 +262,13 @@
         <h2 style="min-height:1rem;"><span ng-show="$index === 0">2 List of tasks</span></h2>
         <table  class="taskDetailList" style="margin-top:1.5rem;">
             <tr style="background:lightgreen;font-weight:bold;color:black;">
-                <td></td><td>TYPE</td><td>TITLE</td><td>EFFORT</td><td>START</td><td>END</td>
+                <td>TYPE</td><td>TITLE</td><td>EFFORT</td><td>START</td><td>END</td>
             </tr>
             <tr ng-repeat="task in flatTaskList[$index]">
-                <td>{{task.index+1}}</td>
                 <td task-type type="{{task.type}}" style="max-width:6.5rem;font-size:0.8rem;"></td>
-                <td style="max-width:12rem;">{{task.prefix+ task.title}}</td>
+                <td style="max-width:15rem;min-width:15rem;text-overflow: ellipsis;display:block;max-height:1.2rem;overflow-y:auto;" content-format contents="{{task.prefix+ ' '+task.title}}" >{{task.prefix+ task.title}}</td>
                 <td>{{(task.hours/8).toFixed(2)}} M/D</td>
-                <td>{{task.start | date:'&y/&m/&d'}} <span ng-show="!task.start">PENDED</span></td>
+                <td>{{taskStarted(task) | date:'&y/&m/&d'}}<span ng-show="!taskStarted(task)">PENDED</span></td>
                 <td>{{task.completed | date:'&y/&m/&d'}} <span ng-show="!task.completed">UNCOMPLTED</span></td>
             </tr>
         </table>
@@ -278,17 +277,16 @@
         <h2 style="min-height:1rem;"><span ng-show="$index === 0">3 List of Contribution</span></h2>
         <table  class="taskDetailList" style="margin-top:1.5rem;">
             <tr style="background:lightgreen;font-weight:bold;color:black;">
-                <td></td><td>TYPE</td><td>TITLE</td><td>Hours</td><td>Contribution</td>
+               <td>TYPE</td><td>TITLE</td><td>Hours</td><td>Contribution</td>
             </tr>
             <tr ng-repeat="task in flatContributeTaskList[$index]">
-                <td>{{task.index+1}}</td>
                 <td task-type type="{{task.type}}" style="max-width:6.5rem;font-size:0.8rem;"></td>
-                <td style="max-width:12rem;">{{task.prefix+ task.title}}</td>
-                <td style="max-width:12rem;">{{task.hours}} MHRS</td>
+                <td content-format contents="{{task.prefix+ ' '+task.title}}" style="max-width:15rem;min-width:15rem;text-overflow: ellipsis;">{{task.prefix+ ' '+task.title}}</td>
+                <td style="max-width:12rem;">{{task.hours}} MHRS/{{task.hours/8}} M/D</td>
                 <td>
-                    <div ng-repeat="user in task.userList">
+                    <div ng-repeat="user in task.userList" ng-show="$parent.task.users[user].hourCount >0">
                         <span style="width:5rem;"><b>{{ $parent.task.users[user].name}}</b></span>
-                        <span style="width:5rem;">{{$parent.task.users[user].hourCount}} MHRS</span>
+                        <span style="width:5rem;">{{$parent.task.users[user].hourCount}} MHRS </span>
                         <span style="width:5rem;">{{($parent.task.users[user].hourCount/$parent.task.hours) | percentage:'2'}}</span>
                     </div>
                 </td>

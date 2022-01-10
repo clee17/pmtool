@@ -4,6 +4,7 @@ module.exports = new mongoose.Schema({
     title:{type:String,default:""},
     description:{type:String,default:""},
     dueOn:{type:Date,default:null},
+    started:{type:Date,default:null},
     completed:{type:Date,default:null},
     plan:{start:{type:Date,default:Date.now()},end:{type:Date,default:Date.now()+7*24*60*60*1000},hours:{type:Number,default:5*8},engineers:[{type:mongoose.Schema.ObjectId,ref:'user',default:null}]},
     schedule:{type:Date,default:Date.now()},

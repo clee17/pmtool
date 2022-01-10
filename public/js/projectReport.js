@@ -314,16 +314,16 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
       $scope.taskUserCount = 0;
       $scope.taskUserNum = 1;
       for(let i=0;i<records.length;++i){
-          let comment = $scope.comments[i];
-          for(let j=0;j<records.length;++j){
-              let task = records[j];
+          let task = records[i];
+          for(let j=0;j<$scope.comments.length;++j){
+              let comment = $scope.comments[j];
               if(task._id === comment.task._id){
                   if(!task.users){
                       task.users = {};
                       task.userList = [];
                   }
                   if(!task.users[comment.user._id]){
-                      task.users[comment.user._id] = comment.user;
+                      task.users[comment.user._id] = JSON.parse(JSON.stringify(comment.user));
                       task.userList.push(comment.user._id);
                   }
                   if(task.users[comment.user._id].hourCount === undefined)
@@ -346,19 +346,41 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
 
     }
 
+    $scope.taskStarted = function(task){
+      if(task.started)
+          return task.started;
+      else{
+          let started = null;
+          for(let i=0;i<$scope.comments.length;++i){
+              let comment = $scope.comments[i];
+              let dateNum = new Date(comment.date);
+              let dateTask = new Date(task.date);
+              if(!started && comment.task._id === task._id)
+                  started = comment.date;
+              else if(started && comment.task._id === task._id && dateNum <= dateTask)
+                  started = dateNum;
+          }
+          return started;
+      }
+
+    }
+
 
     $scope.divideTasks = function(){
         let taskList = JSON.parse(JSON.stringify($scope.rootTasks));
+        for(let i=0;i<taskList.length;++i){
+            taskList[i].index = i;
+        }
         let subChildren = true;
         while(subChildren){
             subChildren = false;
             for(let i=0;i<taskList.length;++i){
                 if(taskList[i].children.length >0){
                     if(!taskList[i].prefix)
-                        taskList[i].prefix = "";
+                        taskList[i].prefix = (taskList[i].index+1).toString();
                     let children = taskList[i].children;
                     for(let j=0;j<children.length;++j){
-                        children[j].prefix = taskList[i].prefix+ "__";
+                        children[j].prefix = "&nbsp"+taskList[i].prefix+ "."+(j+1).toString();
                     }
                     taskList = taskList.slice(0,i+1).concat(children).concat(taskList.slice(i+1,taskList.length));
                     subChildren = true;
@@ -378,7 +400,6 @@ app.controller("rootCon",function($scope,$rootScope,$location,$window,$filter,da
         index =0;
         for(let i=0; i<taskList.length;++i){
             index+= taskList[i].userList ? taskList[i].userList.length : 1;
-            taskList[i].index = i;
             let length = $scope.flatContributeTaskList.length-1;
             if(index >= $scope.subGroup){
                 $scope.flatContributeTaskList.push([]);

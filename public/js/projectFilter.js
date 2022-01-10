@@ -412,8 +412,8 @@ app.filter('percentage',function(){
             num = Number(num);
         if(typeof digit !== 'number')
             digit = Number(digit);
-         num = num.toFixed(4);
-         return num*100 + "%";
+         num = (num*100).toFixed(2);
+         return num + "%";
     }
 });
 

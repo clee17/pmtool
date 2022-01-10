@@ -158,6 +158,7 @@
             <label for="switchButton"></label>
         </div>
         <button style="margin-left:2rem;margin-right:2rem;height:1.5rem;margin-top:0.5rem;" ng-click="ExportExcel()">Export</button>
+        <a href="{{'project/report?id='+ project._id}}" target="_blank" class="inlineBtn" style="line-height:2rem;">Report</a>
         <a id="dlink" style="opacity:0;height:1px;"></a>
         <button style="margin-left:2rem;margin-right:2rem;height:1.5rem;margin-top:0.5rem;" ng-click="newTask()">NEW</button>
     </div>
@@ -171,6 +172,7 @@
                     <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{rec.hours}}" rec="{{rec}}">{{rec.hours + 'hrs'}}</div>
                     <div style="line-height:1.5rem;margin-right:1rem;">{{rec.plan.start | date:'&y/&m/&d'}}</div>
                     <div style="line-height:1.5rem;margin-right:1rem;">{{rec.plan.end | date:'&y/&m/&d'}}</div>
+                    <div style="line-height:1.5rem;margin-right:1rem;">{{rec.started | date:'&y/&m/&d'}} <span ng-show="!rec.started">UNSTARTED</span></div>
                     <div style="line-height:1.5rem;margin-right:1rem;">{{rec.completed | date:'&y/&m/&d'}} <span ng-show="!rec.completed">UNCOMPLTED</span></div>
                     <div style="line-height:1.5rem;margin-right:1rem;" rec="{{rec}}" hrs-sign hrs="{{rec.plan.hours}}">{{rec.plan.hours + 'hrs'}}</div>
                     <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
@@ -186,6 +188,7 @@
                         <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{child.hours}}" rec="{{rec}}">{{child.hours + ' hrs'}}</div>
                         <div style="line-height:1.5rem;margin-right:1rem;">{{child.plan.start | date:'&y/&m/&d'}}</div>
                         <div style="line-height:1.5rem;margin-right:1rem;">{{child.plan.end | date:'&y/&m/&d'}}</div>
+                        <div style="line-height:1.5rem;margin-right:1rem;">{{child.started | date:'&y/&m/&d'}} <span ng-show="!child.started">UNSTARTED</span></div>
                         <div style="line-height:1.5rem;margin-right:1rem;">{{child.completed | date:'&y/&m/&d'}} <span ng-show="!child.completed">UNCOMPLTED</span></div>
                         <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child}}" hrs="{{child.plan.hours}}" >{{child.plan.hours + ' hrs'}}</div>
                         <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
@@ -200,7 +203,8 @@
                             <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{child2.hours}}" rec="{{rec}}">{{child2.hours + ' hrs'}}</div>
                             <div style="line-height:1.5rem;margin-right:1rem;">{{child2.plan.start | date:'&y/&m/&d'}}</div>
                             <div style="line-height:1.5rem;margin-right:1rem;">{{child2.plan.end | date:'&y/&m/&d'}}</div>
-                            <div style="line-height:1.5rem;margin-right:1rem;">{{child2.completed | date:'&y/&m/&d'}} <span ng-show="!child2.completed">UNCOMPLTED</span></div>
+                               <div style="line-height:1.5rem;margin-right:1rem;">{{child2.started | date:'&y/&m/&d'}} <span ng-show="!child2.started">UNSTARTED</span></div>
+                               <div style="line-height:1.5rem;margin-right:1rem;">{{child2.completed | date:'&y/&m/&d'}} <span ng-show="!child2.completed">UNCOMPLTED</span></div>
                             <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child2}}" hrs="{{child2.plan.hours}}" >{{child2.plan.hours + ' hrs'}}</div>
                             <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
                                 <button class="inlineBtn" style="font-weight:bold;font-size:1rem;height:1rem;" ng-click="newChildTask(child2,2)">+</button>
@@ -214,6 +218,7 @@
                                    <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{child3.hours}}" rec="{{rec}}">{{child3.hours + ' hrs'}}</div>
                                    <div style="line-height:1.5rem;margin-right:1rem;">{{child3.plan.start | date:'&y/&m/&d'}}</div>
                                    <div style="line-height:1.5rem;margin-right:1rem;">{{child3.plan.end | date:'&y/&m/&d'}}</div>
+                                   <div style="line-height:1.5rem;margin-right:1rem;">{{child3.started | date:'&y/&m/&d'}} <span ng-show="!child3.started">UNSTARTED</span></div>
                                    <div style="line-height:1.5rem;margin-right:1rem;">{{child3.completed | date:'&y/&m/&d'}} <span ng-show="!child3.completed">UNCOMPLTED</span></div>
                                    <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child3}}" hrs="{{child3.plan.hours}}" >{{child3.plan.hours + ' hrs'}}</div>
                                    <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
@@ -228,6 +233,7 @@
                                        <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{child4.hours}}" rec="{{rec}}">{{child4.hours + ' hrs'}}</div>
                                        <div style="line-height:1.5rem;margin-right:1rem;">{{child4.plan.start | date:'&y/&m/&d'}}</div>
                                        <div style="line-height:1.5rem;margin-right:1rem;">{{child4.plan.end | date:'&y/&m/&d'}}</div>
+                                       <div style="line-height:1.5rem;margin-right:1rem;">{{child4.started | date:'&y/&m/&d'}} <span ng-show="!child4.started">UNSTARTED</span></div>
                                        <div style="line-height:1.5rem;margin-right:1rem;">{{child4.completed | date:'&y/&m/&d'}} <span ng-show="!child4.completed">UNCOMPLTED</span></div>
                                        <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child4}}" hrs="{{child4.plan.hours}}" >{{child4.plan.hours + ' hrs'}}</div>
                                        <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">
@@ -242,6 +248,7 @@
                                            <div hrs-sign style="margin-right:1rem;line-height:1.5rem;" hrs="{{child5.hours}}" rec="{{rec}}">{{child5.hours + ' hrs'}}</div>
                                            <div style="line-height:1.5rem;margin-right:1rem;">{{child5.plan.start | date:'&y/&m/&d'}}</div>
                                            <div style="line-height:1.5rem;margin-right:1rem;">{{child5.plan.end | date:'&y/&m/&d'}}</div>
+                                           <div style="line-height:1.5rem;margin-right:1rem;">{{child5.started | date:'&y/&m/&d'}} <span ng-show="!child5.started">UNSTARTED</span></div>
                                            <div style="line-height:1.5rem;margin-right:1rem;">{{child5.completed | date:'&y/&m/&d'}} <span ng-show="!child5.completed">UNCOMPLTED</span></div>
                                            <div style="line-height:1.5rem;margin-right:1rem;" hrs-sign rec="{{child5}}" hrs="{{child5.plan.hours}}" >{{child5.plan.hours + ' hrs'}}</div>
                                            <div class="buttonFunc" style="line-height:1rem;display:flex;flex-direction:row;">

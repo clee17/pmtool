@@ -136,7 +136,8 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
             for(let i=0; i<$scope.records.length;++i){
                 recordList.push($scope.records[i]._id);
             }
-            dataManager.requestData('taskComment','log received',{search:{task:{$in:recordList},date:{$gte:Date.now()-7*24*60*60*1000,$lte:Date.now()}},cond:{sort:{date:1}},populate:'user submitter'});
+            // date:{$gte:Date.now()-7*24*60*60*1000,$lte:Date.now()}
+            dataManager.requestData('taskComment','log received',{search:{task:{$in:recordList}},cond:{sort:{date:-1}},populate:'user submitter'});
         }else
             alert(data.message);
     })
@@ -236,18 +237,18 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
         let dateNow = new Date(Date.now());
         var sheetName = dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
         var fileName = $rootScope.project.name + '_'+ dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
-        let table = "<table><tr><td>Task Info</td><td>Type</td><td>Owner</td><td>PM</td><td>Log Last Week</td><td>Estimated Start</td><td>Estimated End</td><td>Effort</td><td>Estimated Effort</td><td>Today</td></tr>";
+        let table = "<table><td>Type</td><tr><td>Task Info</td><td>Owner</td><td>PM</td><td>Log</td><td>Effort(M/D)</td><td>Estimated Start</td><td>Estimated End</td><td>COMPLETED/PROGRESS</td></tr>";
 
         for(let i=0;i<taskList.length;++i){
             let t = taskList[i];
             table += t.status === 4? '<tr style="background:gray;">': '<tr>';
+            table += '<td>'+$filter('taskType')(t.type)+'</td>';
             let title = t.title;
             if(t.parent.length ===0)
                 title = '<b style="font-size:2rem;">'+t.title + '</b>';
             else if(t.prefix ==='>')
                 title = '<b style="font-size:1rem;font-style:italic;">'+t.title + '</b>';
             table += '<td>'+title+'</td>';
-            table += '<td>'+$filter('taskType')(t.type)+'</td>';
             let engineer = t.engineer? t.engineer.name : "";
             table += '<td>'+engineer+'</td>';
             let name = t.submitter? t.submitter.name:'';
@@ -257,27 +258,37 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
             for(let i=0;i<$scope.logs.length;++i){
                 if($scope.logs[i].task === t._id){
                     stringifyData($scope.logs[i]);
+                    if($scope.logs[i].type <10 && $scope.logs[i].type >1)
+                        continue;
                     let log = $scope.logs[i];
                     let date = new Date(log.date);
                     table += date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'    ';
                     table += log.user.name + '    ';
                     if(log.hours)
                         table += '<b>'+log.hours+'hrs</b>    ';
-                    table += log.comment + '\n';
+                    let comment = log.comment.replace(/\n/g,'<br style=\'mso-data-placement:same-cell;\'/>');
+                    table += comment + '<br style=\'mso-data-placement:same-cell;\'/>';
                 }
             }
             table += '</td>';
             //start
+            table += '<td>'+t.hours/8+'</td>';
+            // table += '<td>'+(t.plan.hours/8).toFixed(2)+'</td>';
             let stamp = t.plan.start? new Date(t.plan.start) : null;
             let dateStamp = stamp? stamp.getFullYear()+'-'+(stamp.getMonth()+1)+'-'+stamp.getDate() : "";
             table += '<td>'+dateStamp+'</td>';
             stamp = t.plan.end? new Date(t.plan.end) : null;
             dateStamp = stamp? stamp.getFullYear()+'-' + (stamp.getMonth()+1) + '-' + stamp.getDate(): "";
             table += '<td>' + dateStamp + '</td>';
-            table += '<td>'+t.hours/8+'</td>';
-            table += '<td>'+(t.plan.hours/8).toFixed(2)+'</td>';
-            table += '<td></td>';
+            table += '<td>';
+            if(t.completed){
+                table += 'completed on ';
+                let completed = new Date(t.completed);
+                table += completed.getFullYear()+'-'+(completed.getMonth()+1)+'-'+completed.getDate();
+            }
+            table +='</td>';
             table += '</tr>';
+
         }
         table += '</table>';
 

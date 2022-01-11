@@ -73,7 +73,7 @@ var tableToExcel = (function () {
             return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; });
         }
     return function (table, sheetName, fileName,linkId) {
-        var ctx = { worksheet: sheetName || 'Worksheet', table: table }
+        var ctx = { worksheet: sheetName || 'Worksheet', table: table };
         var dlinkInfo = document.getElementById(linkId);
         dlinkInfo.href = uri + base64(format(template, ctx));
         dlinkInfo.download = fileName;

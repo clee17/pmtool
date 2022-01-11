@@ -237,7 +237,7 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
         let dateNow = new Date(Date.now());
         var sheetName = dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
         var fileName = $rootScope.project.name + '_'+ dateNow.getFullYear()+'-'+(dateNow.getMonth()+1)+'-'+dateNow.getDate();
-        let table = "<table><td>Type</td><tr><td>Task Info</td><td>Owner</td><td>PM</td><td>Log</td><td>Effort(M/D)</td><td>Estimated Start</td><td>Estimated End</td><td>COMPLETED/PROGRESS</td></tr>";
+        let table = "<table><tr><td>Type</td><td>Task Info</td><td>Owner</td><td>PM</td><td>Log</td><td>Effort(M/D)</td><td>Estimated Start</td><td>Estimated End</td><td>COMPLETED/PROGRESS</td></tr>";
 
         for(let i=0;i<taskList.length;++i){
             let t = taskList[i];
@@ -266,8 +266,10 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
                     table += log.user.name + '    ';
                     if(log.hours)
                         table += '<b>'+log.hours+'hrs</b>    ';
-                    let comment = log.comment.replace(/\n/g,'<br style=\'mso-data-placement:same-cell;\'/>');
-                    table += comment + '<br style=\'mso-data-placement:same-cell;\'/>';
+                    let bs = '   <br style="mso-data-placement:same-cell;"/>   ';
+                    let comment = log.comment.replace(/\n/g,"");
+                    table += comment + bs;
+                    // ""
                 }
             }
             table += '</td>';
@@ -288,9 +290,10 @@ app.controller('alertCon',function($scope,$rootScope,$location,$filter,dataManag
             }
             table +='</td>';
             table += '</tr>';
-
+            table=table.replace("\n", "");
         }
         table += '</table>';
+
 
         tableToExcel(table, sheetName, fileName, "dlink");
     }
